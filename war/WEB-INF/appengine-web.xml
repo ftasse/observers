@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>observers-reports</application> <!-- registered app id -->
+  <application>gcdc2013-observers</application> <!-- registered app id -->
   <version>1</version>
   <threadsafe>true</threadsafe>
+  <sessions-enabled>true</sessions-enabled>
   
   <public-root>/static</public-root>
 

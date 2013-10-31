@@ -4,14 +4,32 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+  
   <servlet>
     <servlet-name>dashboard</servlet-name>
     <servlet-class>com.observers.servlet.DashboardServlet</servlet-class>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>dashboard</servlet-name>
     <url-pattern>/dashboard</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>connect</servlet-name>
+    <servlet-class>com.observers.servlet.ConnectServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>connect</servlet-name>
+    <url-pattern>/connect</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>oauth2callback</servlet-name>
+    <servlet-class>com.observers.servlet.ConnectServletCallback</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>oauth2callback</servlet-name>
+    <url-pattern>/oauth2callback</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

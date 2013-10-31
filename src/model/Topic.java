@@ -39,7 +39,7 @@ public class Topic extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-	private Long managerUserId;
+	private Long ownerUserId;
 
     @Getter
     @Setter
