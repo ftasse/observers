@@ -42,6 +42,8 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.observers.model.Jsonifiable;
 import com.observers.model.User;
 
+import com.google.api.client.http.GenericUrl;
+
 /**
  * Abstract servlet to be used by those servlets implementing a JSON ReST API,
  * or at least part of one. Abstracts out a lot of common logic, and makes it
@@ -85,6 +87,13 @@ public abstract class JsonRestServlet extends HttpServlet {
    * 100 seconds in milliseconds for token expiration calculations.
    */
   private static final Long HUNDRED_SECONDS_IN_MS = 100000l;
+
+  protected String getConnectRedirectUri(HttpServletRequest req) 
+      throws IOException {
+    GenericUrl url = new GenericUrl(req.getRequestURL().toString());
+    url.setRawPath("/oauth2callback");
+    return url.build();
+  }
 
   /**
    * Send an error down the given response.

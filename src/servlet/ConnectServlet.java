@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
-import com.google.api.client.http.GenericUrl;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 
 public class ConnectServlet extends JsonRestServlet {
@@ -27,18 +26,12 @@ public class ConnectServlet extends JsonRestServlet {
 
   	List<String> scopes = Arrays.asList(
   			"https://www.googleapis.com/auth/userinfo.email",
-  			"https://www.googleapis.com/auth/userinfo.profile");
+  			"https://www.googleapis.com/auth/userinfo.profile",
+  			"https://www.googleapis.com/auth/plus.me");
 
   	String url =
   	new GoogleAuthorizationCodeRequestUrl(CLIENT_ID,
-  		getRedirectUri(req), scopes).setState(state).setAccessType("offline").build();
+  		getConnectRedirectUri(req), scopes).setState(state).setAccessType("offline").build();
   	resp.sendRedirect(url);
-  }
-
-  protected String getRedirectUri(HttpServletRequest req) 
-  		throws IOException {
-    GenericUrl url = new GenericUrl(req.getRequestURL().toString());
-    url.setRawPath("/oauth2callback");
-    return url.build();
   }
 }

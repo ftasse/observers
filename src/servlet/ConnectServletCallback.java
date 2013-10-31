@@ -115,9 +115,8 @@ public class ConnectServletCallback extends JsonRestServlet {
     try {
       if (accessToken.code != null) {
         // exchange the code for a token (Web Frontend)
-        GoogleTokenResponse tokenFromExchange = exchangeCode(accessToken);
+        GoogleTokenResponse tokenFromExchange = exchangeCode(req, accessToken);
         credential.setFromTokenResponse(tokenFromExchange);
-        //logger.info("Token ----> " + (credential.getAccessToken()));
       } else {
       if (accessToken.access_token == null) {
           sendError(resp, 400, "Missing access token in request.");
@@ -159,13 +158,13 @@ public class ConnectServletCallback extends JsonRestServlet {
    * @return Token response from Google indicating token information.
    * @throws TokenDataException Failed to exchange code (code invalid).
    */
-  private GoogleTokenResponse exchangeCode(TokenData accessToken)
+  private GoogleTokenResponse exchangeCode(HttpServletRequest req, TokenData accessToken)
       throws TokenDataException {
     try {
       // Upgrade the authorization code into an access and refresh token.
       GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(
           TRANSPORT, JSON_FACTORY, CLIENT_ID, CLIENT_SECRET, accessToken.code,
-          "/oauth2callback").execute();
+          getConnectRedirectUri(req)).execute();
       return tokenResponse;
     } catch (IOException e) {
       throw new TokenDataException(e.getMessage());
