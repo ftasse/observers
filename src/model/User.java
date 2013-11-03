@@ -117,4 +117,18 @@ public class User extends Jsonifiable {
   @Setter
   @Expose
   public Long googleExpiresAt;
+
+  public void delete()
+  {
+      List<Topic> userTopics = ofy().load()
+          .type(Topic.class)
+          .filter("ownerUserId", id).list();
+      for (Topic topic: userTopics)
+        topic.delete();
+
+      List<Vote> userVotes = ofy().load().type(Vote.class)
+          .filter("ownerUserId", id).list();
+      ofy().delete().entities(userVotes);
+      ofy().delete().entity(this);
+  }
 }

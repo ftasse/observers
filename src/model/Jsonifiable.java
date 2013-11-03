@@ -77,7 +77,7 @@ public abstract class Jsonifiable {
       }
     }
   };
-
+  
   /**
    * Gson object to use in all serialization and deserialization.
    */
@@ -85,6 +85,7 @@ public abstract class Jsonifiable {
       .excludeFieldsWithoutExposeAnnotation()
       .registerTypeAdapter(Date.class, Jsonifiable.DATE_SERIALIZER)
       .registerTypeAdapter(Date.class, Jsonifiable.DATE_DESERIALIZER)
+      .registerTypeAdapter(Channel.class, new ChannelJsonSerializer())
       .create();
 
   /**

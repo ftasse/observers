@@ -14,6 +14,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.google.gson.JsonElement;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Date;
 import com.google.appengine.api.datastore.Text;
@@ -41,16 +45,6 @@ public class Topic extends Jsonifiable {
     @Expose
 	private Long ownerUserId;
 
-    @Getter
-    @Setter
-    @Expose
-	private List<Long> sourceIds;
-
-    @Getter
-    @Setter
-    @Expose
-	private List<Long> categoryIds;
-
     @Index
     @Getter
     @Setter
@@ -71,5 +65,29 @@ public class Topic extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-	private Date startDate;
+	private Date created;
+
+    public Collection<Channel> getChannels() {
+        return ofy().load().type(Channel.class).filter("topicId", id).list();
+    }
+
+    public Collection<Category> getCategories() {
+        return ofy().load().type(Category.class).filter("topicId", id).list();
+    }
+
+    public void delete()
+    {
+      ofy().delete().entities(getCategories()).now();
+
+      Collection<Channel> channels = getChannels();
+      for (Channel channel: channels)
+        channel.delete();
+
+      List<Report> topicReports = ofy().load().type(Report.class)
+      .filter("topicId", id).list();
+      for (Report report: topicReports)
+        report.delete();
+
+      ofy().delete().entity(this).now();
+    }
 }

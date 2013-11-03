@@ -38,7 +38,7 @@ import com.google.api.services.plus.model.PeopleFeed;
 import com.google.api.services.plus.model.Person;
 import com.google.gson.annotations.Expose;
 import lombok.Setter;
-//import com.google.plus.samples.photohunt.model.DirectedUserToUserEdge;
+
 import com.observers.model.Jsonifiable;
 import com.observers.model.User;
 
@@ -58,6 +58,8 @@ public class ConnectServletCallback extends JsonRestServlet {
   private final static Logger logger= Logger.getLogger(ConnectServletCallback.class .getName()); 
 
   /**
+   * Expects "code" and "state" parameters
+   *
    * Returns the following JSON response representing the User that was
    * connected:
    * {
@@ -83,7 +85,7 @@ public class ConnectServletCallback extends JsonRestServlet {
    *      IO-related errors occur such as network connectivity loss or local
    *      file-related errors.
    *
-   * @see javax.servlet.http.HttpServlet#doPost(
+   * @see javax.servlet.http.HttpServlet#doGet(
    *     javax.servlet.http.HttpServletRequest,
    *     javax.servlet.http.HttpServletResponse)
    */

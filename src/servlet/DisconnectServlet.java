@@ -71,15 +71,8 @@ public class DisconnectServlet extends JsonRestServlet {
       checkAuthorization(req);
       Long userId = Long.parseLong(req.getSession()
           .getAttribute(CURRENT_USER_SESSION_KEY).toString());
-      List<Topic> userTopics = ofy().load()
-          .type(Topic.class)
-          .filter("ownerUserId", userId).list();
-      ofy().delete().entities(userTopics);
-      List<Vote> userVotes = ofy().load().type(Vote.class)
-          .filter("ownerUserId", userId).list();
-      ofy().delete().entities(userVotes);
       User user = ofy().load().type(User.class).id(userId).get();
-      ofy().delete().entity(user);
+      user.delete();
 
       revokeToken(user.getGoogleAccessToken());
 

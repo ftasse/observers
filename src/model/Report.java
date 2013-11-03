@@ -15,6 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import com.google.appengine.api.datastore.Text;
@@ -25,6 +26,10 @@ import com.google.appengine.api.datastore.Link;
 @Cache
 @EqualsAndHashCode(of="id", callSuper=false)
 public class Report extends Jsonifiable {
+
+    public enum Mood {
+        SAD, HAPPY, INDIFFERENT
+    }
     
     @Expose
     public static String kind = "observers#report";
@@ -48,12 +53,23 @@ public class Report extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-	private Long sourceId;
+	private Long topicId;
 
     @Getter
     @Setter
     @Expose
-	private List<Long> categoryIds;
+	private Long channelId;
+
+    @Getter
+    @Setter
+    @Expose
+    private String channelReportId;
+
+
+    @Getter
+    @Setter
+    @Expose
+    private List<Long> categoryIds;
 
     @Getter
     @Setter
@@ -70,7 +86,7 @@ public class Report extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-	private String mood;
+	private Mood mood;
 
     @Index
     @Getter
@@ -82,13 +98,27 @@ public class Report extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-	private Date postDate;
+	private Date posted;
 
-      @OnLoad
+    @OnLoad
     protected void setupVoteNum() {
         List<Vote> votes = ofy().load().type(Vote.class)
         .filter("reportId", id)
         .list();
         numVotes = votes.size();
+  }
+
+  public void addCategoryId(Long categoryId)
+  {
+    if (categoryIds == null)
+        categoryIds = new ArrayList<Long> ();
+    categoryIds.add(categoryId);
+  }
+
+  public void delete()
+  {
+    List<Vote> votes = ofy().load().type(Vote.class).filter("reportId", id).list();
+    ofy().delete().entities(votes);
+    ofy().delete().entities(this).now();
   }
 }

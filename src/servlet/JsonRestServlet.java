@@ -38,7 +38,9 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
-//import com.google.plus.samples.photohunt.ConnectServlet.TokenData;
+
+import twitter4j.TwitterFactory;
+
 import com.observers.model.Jsonifiable;
 import com.observers.model.User;
 
@@ -88,10 +90,12 @@ public abstract class JsonRestServlet extends HttpServlet {
    */
   private static final Long HUNDRED_SECONDS_IN_MS = 100000l;
 
+  public static final TwitterFactory TWITTER_FACTORY = new TwitterFactory();
+
   protected String getConnectRedirectUri(HttpServletRequest req) 
       throws IOException {
     GenericUrl url = new GenericUrl(req.getRequestURL().toString());
-    url.setRawPath("/oauth2callback");
+    url.setRawPath("/api/oauth2callback");
     return url.build();
   }
 
@@ -224,7 +228,7 @@ public abstract class JsonRestServlet extends HttpServlet {
       throw new UserNotAuthorizedException();
     }
   }
-
+  
   /**
    * @param req Request to query for session data.
    * @return Credential representing currently connected User.

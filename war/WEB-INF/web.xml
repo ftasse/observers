@@ -6,21 +6,21 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
   
   <servlet>
-    <servlet-name>dashboard</servlet-name>
-    <servlet-class>com.observers.servlet.DashboardServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>dashboard</servlet-name>
-    <url-pattern>/dashboard</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>connect</servlet-name>
     <servlet-class>com.observers.servlet.ConnectServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>connect</servlet-name>
-    <url-pattern>/connect</url-pattern>
+    <url-pattern>/api/connect</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>disconnect</servlet-name>
+  <servlet-class>com.observers.servlet.DisconnectServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>disconnect</servlet-name>
+    <url-pattern>/api/disconnect</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -29,7 +29,70 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>oauth2callback</servlet-name>
-    <url-pattern>/oauth2callback</url-pattern>
+    <url-pattern>/api/oauth2callback</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>twitterconnect</servlet-name>
+    <servlet-class>com.observers.servlet.TwitterConnectServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>twitterconnect</servlet-name>
+    <url-pattern>/api/twitter/connect</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>twitterconnectcallback</servlet-name>
+    <servlet-class>com.observers.servlet.TwitterConnectCallbackServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>twitterconnectcallback</servlet-name>
+    <url-pattern>/api/twitter/callback</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>users</servlet-name>
+    <servlet-class>com.observers.servlet.UsersServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>users</servlet-name>
+    <url-pattern>/api/users</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>topics</servlet-name>
+    <servlet-class>com.observers.servlet.TopicsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topics</servlet-name>
+    <url-pattern>/api/topics</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>reports</servlet-name>
+    <servlet-class>com.observers.servlet.ReportsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>reports</servlet-name>
+    <url-pattern>/api/reports</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>channels</servlet-name>
+    <servlet-class>com.observers.servlet.ChannelsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>channels</servlet-name>
+    <url-pattern>/api/channels</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>twitter</servlet-name>
+    <servlet-class>com.observers.servlet.TwitterFeedServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>twitter</servlet-name>
+    <url-pattern>/api/twitter</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

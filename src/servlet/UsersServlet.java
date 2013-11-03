@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  *   GET /api/users
  *
- * @author vicfryzel@google.com (Vic Fryzel)
+ * @author 
  */
 public class UsersServlet extends JsonRestServlet {
   /**
@@ -58,8 +58,8 @@ public class UsersServlet extends JsonRestServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     try {
       checkAuthorization(req);
-      Long currentUserId = (Long) req.getSession().getAttribute(
-          CURRENT_USER_SESSION_KEY);
+      Long currentUserId = Long.parseLong(req.getSession()
+          .getAttribute(CURRENT_USER_SESSION_KEY).toString());
       User user = ofy().load().type(User.class).id(currentUserId).get();
       sendResponse(req, resp, user);
     } catch (UserNotAuthorizedException e) {

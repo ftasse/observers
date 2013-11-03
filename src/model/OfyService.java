@@ -10,7 +10,9 @@ public class OfyService {
   static {
     factory().register(Category.class);
     factory().register(Report.class);
-    factory().register(Source.class);
+    factory().register(Channel.class);
+    factory().register(TwitterAccount.class);
+    factory().register(FacebookAccount.class);
     factory().register(User.class);
     factory().register(Topic.class);
     factory().register(Vote.class);
