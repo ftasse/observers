@@ -68,11 +68,11 @@ public class Topic extends Jsonifiable {
 	private Date created;
 
     public Collection<Channel> getChannels() {
-        return ofy().load().type(Channel.class).filter("topicId", id).list();
+        return ofy().load().type(Channel.class).filter("topicId", getId()).list();
     }
 
     public Collection<Category> getCategories() {
-        return ofy().load().type(Category.class).filter("topicId", id).list();
+        return ofy().load().type(Category.class).filter("topicId", getId()).list();
     }
 
     public void delete()

@@ -30,91 +30,12 @@ import com.google.gson.JsonParser;
  * Provides an API for working with Topics. This servlet provides the
  * /api/topics endpoint, and exposes the following operations:
  *
- *   POST /api/channels?topicId=1234
  *   GET /api/channels?topicId=1234(&channelId=1234)
- *   PUT /api/channels?channelId=1234
  *   DELETE /api/channels?channelId=1234
  *
  * @author floratasse@gmail.com (Flora Tasse)
  */
 public class ChannelsServlet extends JsonRestServlet {
-
-  /**
-   * Exposed as `POST /api/channels`.
-   *
-   * Takes the following payload in the request body.
-   * {
-   *    "source":"Twitter",
-   *    "account":{...}
-   * }
-   *
-   * Returns the following JSON response representing the Topic that was
-   * created:
-   * {
-   *   "id":0,
-   *   "topicId":0,
-   *   "source":"TWITTER",
-   *   "account":{...}
-   * }
-   *
-   * Issues the following errors along with corresponding HTTP response codes:
-   *
-   * 400: "Failed to read topic data from the request body."
-   * 401: "Unauthorized request" (if certain parameters are present in the
-   *      request)
-   *
-   * @see javax.servlet.http.HttpServlet#doPost(
-   *     javax.servlet.http.HttpServletRequest,
-   *     javax.servlet.http.HttpServletResponse)
- */
- @Override
- protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-  try {
-    checkAuthorization(req);
-    Long userId = Long.parseLong(req.getSession()
-        .getAttribute(CURRENT_USER_SESSION_KEY).toString());
-    Long topicId = Long.parseLong(req.getParameter("topicId"));
-    Topic topic = ofy().load().key(Topic.key(topicId)).safeGet();
-    if (!userId.equals(topic.getOwnerUserId())) {
-      throw new NotFoundException();
-    }
-
-    Gson gsonBuilder = new Gson();
-    JsonParser jp = new JsonParser();
-    JsonElement json = jp.parse(req.getReader());
-    Channel.Source source = gsonBuilder.fromJson(json.getAsJsonObject().get("source"), Channel.Source.class);
-
-    Channel channel = new Channel ();
-    channel.setTopicId(topicId);
-    channel.setSource(source);
-
-    JsonElement accountElement = json.getAsJsonObject().get("account");
-    if (source == Channel.Source.Twitter)
-    {
-      TwitterAccount account = Jsonifiable.fromJson(accountElement.toString(), TwitterAccount.class);
-      ofy().save().entity(account).now(); 
-      channel.setAccountId(account.getId());
-      channel.setScreenName(account.getName());
-    } else if (source == Channel.Source.Twitter)
-    {
-      FacebookAccount account = Jsonifiable.fromJson(accountElement.toString(), FacebookAccount.class);
-      ofy().save().entity(account).now(); 
-      channel.setAccountId(account.getId());
-      channel.setScreenName(account.getName());
-    } else
-      throw new IOException();
-
-    ofy().save().entity(channel).now();
-    ofy().clear();
-    channel = ofy().load().type(Channel.class).id(channel.getId()).get();
-    sendResponse(req, resp, channel);
-  } catch (UserNotAuthorizedException e) {
-    sendError(resp, 401, "Unauthorized request");
-  } catch (IOException e) {
-    sendError(resp, 400, "Unable to read channel data from request body");
-  }
- }
-
 
 /**
    * Exposed as `GET /api/channels`.
@@ -165,63 +86,6 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     sendError(resp, 400, "Unable to read topic data from request body");
   }
 }
-
- /**
-   * Exposed as `PUT /api/reports`.
-   *
-   * Takes the following payload in the request body.
-   * {
-   *   "title":"",
-   *   "shortDescription":"",
-   *   "longDescription":""
-   * }
-   *
-   * Returns the following JSON response representing the Report that was
-   * created:
-   * {
-   *   "id":0,
-   *   "title":"",
-   *   "ownerUserId":0,
-   *   "shortDescription":"",
-   *   "longDescription":"",
-   *   "created":...
-   * }
-   *
-   * Issues the following errors along with corresponding HTTP response codes:
-   *
-   * 400: "Failed to read report data from the request body."
-   * 401: "Unauthorized request" (if certain parameters are present in the
-   *      request)
-   *
-   * @see javax.servlet.http.HttpServlet#doPost(
-   *     javax.servlet.http.HttpServletRequest,
-   *     javax.servlet.http.HttpServletResponse)
- */
- /*@Override
- protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
-  try {
-    checkAuthorization(req);
-    Long reportId = Long.parseLong(req.getParameter("reportId"));
-        Report report = ofy().load().key(Report.key(reportId)).safeGet();
-        Long userId = Long.parseLong(req.getSession()
-          .getAttribute(CURRENT_USER_SESSION_KEY).toString());
-        if (!userId.equals(report.getOwnerUserId())) {
-          throw new NotFoundException();
-        }
-
-    Report new_report = Jsonifiable.fromJson(req.getReader(), Report.class);
-    report.setTitle(new_report.getTitle());
-    report.setShortDescription(new_report.getShortDescription());
-    report.setLongDescription(new_report.getLongDescription());
-
-    ofy().save().entity(report).now();
-    sendResponse(req, resp, report);
-  } catch (UserNotAuthorizedException e) {
-    sendError(resp, 401, "Unauthorized request");
-  } catch (IOException e) {
-    sendError(resp, 400, "Unable to read report data from request body");
-  }
- }*/
 
  /**
    * Exposed as `DELETE /api/channels`.

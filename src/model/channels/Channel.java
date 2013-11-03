@@ -40,6 +40,7 @@ public class Channel extends Jsonifiable {
     @Expose
     protected Source source;
 
+    @Index
     @Getter
     @Setter
     @Expose
@@ -50,6 +51,7 @@ public class Channel extends Jsonifiable {
     @Expose
     private String screenName;
 
+    @Index
     @Getter
     @Setter
     private Long accountId;
