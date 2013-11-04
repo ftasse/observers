@@ -88,7 +88,7 @@
 
   <servlet>
     <servlet-name>twitter</servlet-name>
-    <servlet-class>com.observers.servlet.TwitterFeedServlet</servlet-class>
+    <servlet-class>com.observers.servlet.TwitterChannelServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>twitter</servlet-name>

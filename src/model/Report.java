@@ -63,7 +63,12 @@ public class Report extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-    private String channelReportId;
+    private Long channelReportId;
+
+    @Getter
+    @Setter
+    @Expose
+    private Long numChannelLikes;
 
 
     @Getter
@@ -74,7 +79,7 @@ public class Report extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-	private Link mediaUrl;
+	private List<Link> mediaUrls;
 
     @Index
     @Getter
@@ -98,7 +103,13 @@ public class Report extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-	private Date posted;
+	private Date created;
+
+    @Index
+    @Getter
+    @Setter
+    @Expose
+    private Date retrieved;
 
     @OnLoad
     protected void setupVoteNum() {

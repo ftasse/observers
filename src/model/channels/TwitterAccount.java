@@ -36,6 +36,12 @@ public class TwitterAccount extends Jsonifiable {
     @Getter
     @Setter
     @Expose
+    private Long topicId;
+
+    @Index
+    @Getter
+    @Setter
+    @Expose
     private String twitterUserId;
 
     @Index
@@ -48,6 +54,10 @@ public class TwitterAccount extends Jsonifiable {
     @Setter
     @Expose
     private String hashtag;
+
+    @Getter
+    @Setter
+    private Long latestTweetId;
 
 	@Getter
     @Setter

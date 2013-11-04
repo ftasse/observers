@@ -1,19 +1,3 @@
-/*
- * Copyright 2013 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.observers.model;
 
 import com.google.gson.Gson;
@@ -21,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
@@ -31,6 +16,13 @@ import lombok.NoArgsConstructor;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Date;
+
+import com.google.appengine.api.datastore.GeoPt;
+import com.google.appengine.api.datastore.Link;
+import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.datastore.Key;
+import com.observers.json.ChannelSerializer;
+import org.loom.appengine.json.*;
 
 /**
  * Adds JSON serialization and deserialization to a class.  Uses Gson as the
@@ -77,6 +69,48 @@ public abstract class Jsonifiable {
       }
     }
   };
+
+  public static final JsonSerializer<Link> LINK_SERIALIZER
+  = new JsonSerializer<Link>() {
+    @Override
+    public JsonElement serialize(Link src, Type typeOfSrc,
+        JsonSerializationContext context) {
+      try {
+        return new JsonPrimitive(src.getValue());
+      } catch (NullPointerException e) {
+        return null;
+      }
+    }
+  };
+
+  public static final JsonSerializer<Text> TEXT_SERIALIZER
+  = new JsonSerializer<Text>() {
+    @Override
+    public JsonElement serialize(Text src, Type typeOfSrc,
+        JsonSerializationContext context) {
+      try {
+        return new JsonPrimitive(src.getValue());
+      } catch (NullPointerException e) {
+        return null;
+      }
+    }
+  };
+
+  public static final JsonSerializer<GeoPt> GEOPT_SERIALIZER
+  = new JsonSerializer<GeoPt>() {
+    @Override
+    public JsonElement serialize(GeoPt src, Type typeOfSrc,
+        JsonSerializationContext context) {
+      try {
+        JsonObject json = new JsonObject();
+        json.addProperty("lat", src.getLatitude());
+        json.addProperty("lng", src.getLongitude());
+        return json;
+      } catch (NullPointerException e) {
+        return null;
+      }
+    }
+  };
   
   /**
    * Gson object to use in all serialization and deserialization.
@@ -85,8 +119,21 @@ public abstract class Jsonifiable {
       .excludeFieldsWithoutExposeAnnotation()
       .registerTypeAdapter(Date.class, Jsonifiable.DATE_SERIALIZER)
       .registerTypeAdapter(Date.class, Jsonifiable.DATE_DESERIALIZER)
-      .registerTypeAdapter(Channel.class, new ChannelJsonSerializer())
+      .registerTypeAdapter(Link.class, Jsonifiable.LINK_SERIALIZER)
+      .registerTypeAdapter(Text.class, Jsonifiable.TEXT_SERIALIZER)
+      .registerTypeAdapter(GeoPt.class, Jsonifiable.GEOPT_SERIALIZER)
+      .registerTypeAdapter(Channel.class, new ChannelSerializer())
       .create();
+
+      /*
+      .registerTypeAdapter(GeoPt.class, new GeoPtSerializer())
+      .registerTypeAdapter(GeoPt.class, new GeoPtDeserializer())
+      .registerTypeAdapter(Link.class, new LinkSerializer())
+      .registerTypeAdapter(Link.class, new LinkDeserializer())
+      .registerTypeAdapter(Text.class, new TextSerializer())
+      .registerTypeAdapter(Text.class, new TextDeserializer())
+      .registerTypeAdapter(Key.class, new KeySerializer())
+      .registerTypeAdapter(Key.class, new KeyDeserializer())*/
 
   /**
    * @param json Object to convert to instance representation.

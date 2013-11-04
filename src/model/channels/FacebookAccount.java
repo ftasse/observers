@@ -36,6 +36,12 @@ public class FacebookAccount extends Jsonifiable {
     @Getter
     @Setter
     @Expose
+    private Long topicId;
+
+    @Index
+    @Getter
+    @Setter
+    @Expose
     private String facebookId;
 
     @Index

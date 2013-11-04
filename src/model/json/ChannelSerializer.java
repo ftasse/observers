@@ -1,8 +1,12 @@
-package com.observers.model;
+package com.observers.json;
 
 import static com.observers.model.OfyService.ofy;
 
 import java.lang.reflect.Type;
+
+import com.observers.model.Channel;
+import com.observers.model.TwitterAccount;
+import com.observers.model.FacebookAccount;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -16,7 +20,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class ChannelJsonSerializer implements JsonSerializer<Channel> {
+public class ChannelSerializer implements JsonSerializer<Channel> {
 
   private static final Gson gsonWithoutChannelSerializer = new Gson();
 
@@ -48,4 +52,6 @@ public class ChannelJsonSerializer implements JsonSerializer<Channel> {
   		return null;
   	}
   }
+
+
 }

@@ -32,17 +32,18 @@ public class TwitterConnectCallbackServlet extends JsonRestServlet {
             String twitterUserId = String.valueOf(twitter.verifyCredentials().getId());
             String screenName = twitter.showUser(twitter.verifyCredentials().getId()).getScreenName();
             String token = accessToken.getToken();
-            String toKenSecret = accessToken.getTokenSecret();
+            String tokenSecret = accessToken.getTokenSecret();
 
             TwitterAccount account = ofy().load().type(TwitterAccount.class)
-            .filter("twitterUserId", twitterUserId).first().get();
+            .filter("twitterUserId", twitterUserId).filter("topicId", topicId).first().get();
             if (account == null) {
                 account = new TwitterAccount();
                 account.setTwitterUserId(twitterUserId);
                 account.setName(screenName);
+                account.setTopicId(topicId);
             }
             account.setAccessToken(token);
-            account.setAccessTokenSecret(token);
+            account.setAccessTokenSecret(tokenSecret);
             ofy().save().entity(account).now();
 
             Channel channel = ofy().load().type(Channel.class)
