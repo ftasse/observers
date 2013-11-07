@@ -113,16 +113,11 @@ public class TwitterChannelServlet extends JsonRestServlet {
                 AccessToken accessToken = new AccessToken(account.getAccessToken(), account.getAccessTokenSecret());
                 //twitter.setOAuthConsumerKey("[consumer key]", "[consumer secret]");
                 twitter.setOAuthAccessToken(accessToken);
-                Paging paging = new Paging(1, 100);
+                Paging paging = new Paging(1, 200);
                 if (account.getLatestTweetId() !=null)
                     paging.setSinceId(Long.parseLong(account.getLatestTweetId()));
                 List<Status> statuses = twitter.getUserTimeline(account.getName(), paging);
-                if (statuses.size() > 0)
-                {
-                    account.setLatestTweetId(String.valueOf(statuses.get(0).getId()));
-                    ofy().save().entity(account).now();
-                }
-
+                
                 Channel channel = ofy().load().type(Channel.class)
                     .filter("accountId", account.getId()).filter("topicId", topicId).first().get();
                 for (Status status: statuses)
@@ -133,7 +128,7 @@ public class TwitterChannelServlet extends JsonRestServlet {
                     .filter("channelReportId", tweetId)
                     .filter("topicId", topicId).first().get();
 
-                    if (report == null)
+                    if (report == null && status.getText().contains(account.getHashtag()))
                     {
                         report = new Report();
                         report.setChannelReportId(String.valueOf(tweetId));
@@ -163,8 +158,11 @@ public class TwitterChannelServlet extends JsonRestServlet {
 
                         ofy().save().entity(report).now();
                         added_reports.add(report);
+
+                        account.setLatestTweetId(String.valueOf(status.getId()));
                     }
                 }
+                ofy().save().entity(account).now();
             }
 
 

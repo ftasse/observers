@@ -90,4 +90,27 @@ public class Topic extends Jsonifiable {
 
       ofy().delete().entity(this).now();
     }
+
+
+
+    public DefaultWebAccount getDefaultAccount()
+    {
+        DefaultWebAccount account = ofy().load().type(DefaultWebAccount.class).filter("topicId", getId())
+        .first().get();
+
+        if (account == null)
+        {
+            account = new DefaultWebAccount();
+            account.setTopicId(getId()); 
+            ofy().save().entity(account).now();
+    
+            Channel channel = new Channel ();
+            channel.setSource(Channel.Source.None);
+            channel.setTopicId(getId());
+            channel.setAccountId(account.getId());
+            channel.setScreenName("web_form_channel");
+            ofy().save().entity(channel).now();
+        } 
+        return account;
+    }
 }

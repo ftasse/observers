@@ -14,6 +14,7 @@ public class OfyService {
     factory().register(TwitterAccount.class);
     factory().register(FacebookAccount.class);
     factory().register(TwilioAccount.class);
+    factory().register(DefaultWebAccount.class);
     factory().register(User.class);
     factory().register(Topic.class);
     factory().register(Vote.class);

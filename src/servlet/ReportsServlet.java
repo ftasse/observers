@@ -12,7 +12,10 @@ import com.observers.model.Jsonifiable;
 import com.observers.model.Report;
 import com.observers.model.Topic;
 import com.observers.model.User;
+import com.observers.model.DefaultWebAccount;
+import com.observers.model.Channel;
 import com.observers.model.Message;
+
 
 import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.cmd.Query;
@@ -77,18 +80,31 @@ public class ReportsServlet extends JsonRestServlet {
  		Long userId = (Long) req.getSession().getAttribute(CURRENT_USER_SESSION_KEY);
  		Report report = Jsonifiable.fromJson(req.getReader(), Report.class);
 
- 		if (report == null || req.getParameter("topicId") == null)
+ 		if (report == null || report.getContent() == null || req.getParameter("topicId") == null)
  			throw new IOException();
 
     Long topicId = Long.parseLong(req.getParameter("topicId"));
     Topic topic = ofy().load().key(Topic.key(topicId)).safeGet();
-    if (!userId.equals(topic.getOwnerUserId())) {
-      throw new NotFoundException();
-    }
+    
+    DefaultWebAccount account = topic.getDefaultAccount();
+    Channel channel = ofy().load().type(Channel.class).filter("accountId", account.getId()).first().get();
 
  		report.setTopicId(topicId);
+    report.setChannelId(channel.getId());
+    report.setAuthorId(String.valueOf(userId));
  		report.setNumVotes(0);
-    report.setMood(Report.Mood.INDIFFERENT);
+
+    if (report.getCreated() == null)
+    {
+      report.setCreated(Calendar.getInstance().getTime());
+    }
+
+    report.setRetrieved(Calendar.getInstance().getTime());
+    
+    if (report.getChannelReportId() == null)
+    {
+      report.setChannelReportId(String.valueOf(report.getRetrieved().getTime()));
+    }
 
  		ofy().save().entity(report).now();
  		ofy().clear();
@@ -140,10 +156,10 @@ public class ReportsServlet extends JsonRestServlet {
    */
 @Override
 protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-  try {
-    checkAuthorization(req);
+  //try {
+    /*checkAuthorization(req);
     Long userId = Long.parseLong(req.getSession()
-        .getAttribute(CURRENT_USER_SESSION_KEY).toString());
+        .getAttribute(CURRENT_USER_SESSION_KEY).toString());*/
 
     String reportId = req.getParameter("reportId");
     String topicId = req.getParameter("topicId");
@@ -153,27 +169,27 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         // Get the report with the given ID and return it.
       Report report = q.filter("id", Long.parseLong(reportId)).first().get();
       Topic topic = ofy().load().key(Topic.key(Long.parseLong(topicId))).safeGet();
-      if (!userId.equals(topic.getOwnerUserId())) {
+      /*if (!userId.equals(topic.getOwnerUserId())) {
         throw new UserNotAuthorizedException();
-      }
+      }*/
       sendResponse(req, resp, report);
     } else {
       if (topicId == null)
         throw new NotFoundException();
-      
+
       // Get all reports for the topic.
       Topic topic = ofy().load().key(Topic.key(Long.parseLong(topicId))).safeGet();
-      if (!userId.equals(topic.getOwnerUserId())) {
+      /*if (!userId.equals(topic.getOwnerUserId())) {
         throw new UserNotAuthorizedException();
-      }
+      }*/
       q = q.filter("topicId", topic.getId());
     }
 
-    List<Report> reports = q.list();
+    List<Report> reports = q.order("-created").list();
     sendResponse(req, resp, reports, "observers#reports");
-  } catch (UserNotAuthorizedException e) {
+  /*} catch (UserNotAuthorizedException e) {
     sendError(resp, 401, "Unauthorized request");
-  }
+  }*/
 }
 
 }

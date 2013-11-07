@@ -84,6 +84,19 @@ public abstract class Jsonifiable {
     }
   };
 
+  public static final JsonDeserializer<Link> LINK_DESERIALIZER
+  = new JsonDeserializer<Link>() {
+    @Override
+    public Link deserialize(JsonElement json, Type typeOfT,
+        JsonDeserializationContext context) throws JsonParseException {
+      try {
+        return new Link(json.getAsString());
+      } catch (NullPointerException e) {
+        return null;
+      }
+    }
+  };
+
   public static final JsonSerializer<Text> TEXT_SERIALIZER
   = new JsonSerializer<Text>() {
     @Override
@@ -97,6 +110,20 @@ public abstract class Jsonifiable {
     }
   };
 
+  public static final JsonDeserializer<Text> TEXT_DESERIALIZER
+  = new JsonDeserializer<Text>() {
+    @Override
+    public Text deserialize(JsonElement json, Type typeOfT,
+        JsonDeserializationContext context) throws JsonParseException {
+      try {
+        return new Text(json.getAsString());
+      } catch (NullPointerException e) {
+        return null;
+      }
+    }
+  };
+
+
   public static final JsonSerializer<GeoPt> GEOPT_SERIALIZER
   = new JsonSerializer<GeoPt>() {
     @Override
@@ -107,6 +134,21 @@ public abstract class Jsonifiable {
         json.addProperty("lat", src.getLatitude());
         json.addProperty("lng", src.getLongitude());
         return json;
+      } catch (NullPointerException e) {
+        return null;
+      }
+    }
+  };
+
+  public static final JsonDeserializer<GeoPt> GEOPT_DESERIALIZER
+  = new JsonDeserializer<GeoPt>() {
+    @Override
+    public GeoPt deserialize(JsonElement json, Type typeOfT,
+        JsonDeserializationContext context) throws JsonParseException {
+      try {
+        float latitude  = json.getAsJsonObject().get("lat").getAsFloat();
+        float longitude  = json.getAsJsonObject().get("lng").getAsFloat();
+        return new GeoPt(latitude, longitude);
       } catch (NullPointerException e) {
         return null;
       }
@@ -134,8 +176,11 @@ public abstract class Jsonifiable {
       .registerTypeAdapter(Date.class, Jsonifiable.DATE_SERIALIZER)
       .registerTypeAdapter(Date.class, Jsonifiable.DATE_DESERIALIZER)
       .registerTypeAdapter(Link.class, Jsonifiable.LINK_SERIALIZER)
+      .registerTypeAdapter(Link.class, Jsonifiable.LINK_DESERIALIZER)
       .registerTypeAdapter(Text.class, Jsonifiable.TEXT_SERIALIZER)
+      .registerTypeAdapter(Text.class, Jsonifiable.TEXT_DESERIALIZER)
       .registerTypeAdapter(GeoPt.class, Jsonifiable.GEOPT_SERIALIZER)
+      .registerTypeAdapter(GeoPt.class, Jsonifiable.GEOPT_DESERIALIZER)
       .registerTypeAdapter(PhoneNumber.class, Jsonifiable.PHONENUMBER_SERIALIZER)
       .registerTypeAdapter(Channel.class, new ChannelSerializer())
       .create();
