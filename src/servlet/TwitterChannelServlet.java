@@ -34,6 +34,8 @@ import com.googlecode.objectify.NotFoundException;
 
 import static com.observers.model.OfyService.ofy;
 
+import com.observers.tools.Iso2Phone;
+
 public class TwitterChannelServlet extends JsonRestServlet {
     private static final long serialVersionUID = 1657390011452788111L;
 
@@ -100,12 +102,10 @@ public class TwitterChannelServlet extends JsonRestServlet {
               throw new NotFoundException();
             }
 
-            List<String> all_statuses = new ArrayList<String>();
             List<Report> added_reports = new ArrayList<Report>();
             TwitterFactory factory = new TwitterFactory();
             Twitter twitter = factory.getInstance();
                 
-            //List<TwitterAccount> accounts = ofy().load().type(TwitterAccount.class).list();
             List<TwitterAccount> accounts = ofy().load().type(TwitterAccount.class)
             .filter("topicId", topicId).list();
             for (TwitterAccount account: accounts)
@@ -115,11 +115,11 @@ public class TwitterChannelServlet extends JsonRestServlet {
                 twitter.setOAuthAccessToken(accessToken);
                 Paging paging = new Paging(1, 100);
                 if (account.getLatestTweetId() !=null)
-                    paging.setSinceId(account.getLatestTweetId());
+                    paging.setSinceId(Long.parseLong(account.getLatestTweetId()));
                 List<Status> statuses = twitter.getUserTimeline(account.getName(), paging);
                 if (statuses.size() > 0)
                 {
-                    account.setLatestTweetId(statuses.get(0).getId());
+                    account.setLatestTweetId(String.valueOf(statuses.get(0).getId()));
                     ofy().save().entity(account).now();
                 }
 
@@ -136,11 +136,15 @@ public class TwitterChannelServlet extends JsonRestServlet {
                     if (report == null)
                     {
                         report = new Report();
-                        report.setChannelReportId(tweetId);
+                        report.setChannelReportId(String.valueOf(tweetId));
                         report.setChannelId(channel.getId());
                         report.setTopicId(topicId);
                         report.setContent(new Text(status.getText()));
                         report.setNumChannelLikes(Long.valueOf(status.getFavoriteCount()));
+
+
+                        String authorId = String.valueOf(status.getUser().getId());
+                        report.setAuthorId(authorId);
 
                         GeoLocation location = status.getGeoLocation();
                         if (location != null)
@@ -160,12 +164,10 @@ public class TwitterChannelServlet extends JsonRestServlet {
                         ofy().save().entity(report).now();
                         added_reports.add(report);
                     }
-                    //all_statuses.add(DataObjectFactory.getRawJSON(status));
                 }
             }
 
 
-            System.out.println("Stat Size: " + added_reports.size() + " " + accounts.size());
             ofy().clear();
             sendResponse(req, resp, added_reports, "observers#reports");
         } catch (TwitterException te) {

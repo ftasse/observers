@@ -95,6 +95,25 @@
     <url-pattern>/api/twitter</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>twilio</servlet-name>
+    <servlet-class>com.observers.servlet.TwilioChannelServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>twilio</servlet-name>
+    <url-pattern>/api/twilio</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>twilioreply</servlet-name>
+    <servlet-class>com.observers.servlet.TwilioReplyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>twilioreply</servlet-name>
+    <!--<url-pattern>/api/twilio/reply</url-pattern>-->
+    <url-pattern>/api/twilio/sms</url-pattern>
+  </servlet-mapping>
+
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>

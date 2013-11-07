@@ -158,6 +158,9 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
       }
       sendResponse(req, resp, report);
     } else {
+      if (topicId == null)
+        throw new NotFoundException();
+      
       // Get all reports for the topic.
       Topic topic = ofy().load().key(Topic.key(Long.parseLong(topicId))).safeGet();
       if (!userId.equals(topic.getOwnerUserId())) {

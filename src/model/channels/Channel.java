@@ -21,7 +21,7 @@ import java.util.List;
 @EqualsAndHashCode(of="id", callSuper=false)
 public class Channel extends Jsonifiable {
 
-    public enum Source { Sms, Twitter, GooglePlus, Facebook, None}
+    public enum Source { Twilio, Twitter, GooglePlus, Facebook, None}
     
     @Expose
     public static String kind = "observers#channel";
@@ -64,6 +64,8 @@ public class Channel extends Jsonifiable {
                 ofy().delete().entity(ofy().load().key(TwitterAccount.key(accountId)).safeGet()).now();
             else if (source == Source.Facebook)
                 ofy().delete().entity(ofy().load().key(FacebookAccount.key(accountId)).safeGet()).now();
+            else if (source == Source.Twilio)
+                ofy().delete().entity(ofy().load().key(TwilioAccount.key(accountId)).safeGet()).now();
         }
         ofy().delete().entity(this).now();
     }

@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import com.observers.model.Channel;
 import com.observers.model.TwitterAccount;
 import com.observers.model.FacebookAccount;
+import com.observers.model.TwilioAccount;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -44,7 +45,12 @@ public class ChannelSerializer implements JsonSerializer<Channel> {
   				FacebookAccount account = ofy().load().type(FacebookAccount.class).id(accountId).get();
   				final JsonElement accountElement = context.serialize(account);
   				json.getAsJsonObject().add("account", accountElement);
-  			}
+  			} else if (channel.getSource() == Channel.Source.Twilio)
+        {
+          TwilioAccount account = ofy().load().type(TwilioAccount.class).id(accountId).get();
+          final JsonElement accountElement = context.serialize(account);
+          json.getAsJsonObject().add("account", accountElement);
+        }
   		}
 
   		return json;

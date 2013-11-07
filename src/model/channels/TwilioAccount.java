@@ -11,20 +11,25 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import com.google.appengine.api.datastore.PhoneNumber;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.ArrayList;
+
 @Entity
 @Cache
 @EqualsAndHashCode(of="id", callSuper=false)
-public class TwitterAccount extends Jsonifiable {
+public class TwilioAccount extends Jsonifiable {
 
     @Expose
-    public static String kind = "observers#twitterchannel";
+    public static String kind = "observers#twiliochannel";
     
-    public static Key<TwitterAccount> key(long id) {
-        return Key.create(TwitterAccount.class, id);
+    public static Key<TwilioAccount> key(long id) {
+        return Key.create(TwilioAccount.class, id);
     }
 
     @Id
@@ -42,28 +47,32 @@ public class TwitterAccount extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-    private String twitterUserId;
+    private String name;
 
     @Index
     @Getter
     @Setter
     @Expose
-    private String name;	
+    private String twilioAccountId;
 
     @Getter
     @Setter
     @Expose
-    private String hashtag;
+    private List<PhoneNumber> phoneNumbers;
 
     @Getter
     @Setter
-    private String latestTweetId;
+    private String latestMessageId;
 
 	@Getter
     @Setter
- 	private String accessToken;
+    @Expose
+ 	private String authToken;
 
- 	@Getter
-    @Setter
- 	private String accessTokenSecret;
+    public void addPhoneNumber(PhoneNumber phoneNumber)
+    {
+        if (phoneNumbers == null)
+            phoneNumbers = new ArrayList<PhoneNumber>();
+        phoneNumbers.add(phoneNumber);
+    }
 }

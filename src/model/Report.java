@@ -63,7 +63,12 @@ public class Report extends Jsonifiable {
     @Getter
     @Setter
     @Expose
-    private Long channelReportId;
+    private String channelReportId;
+
+    @Getter
+    @Setter
+    @Expose
+    private String authorId;
 
     @Getter
     @Setter
@@ -124,6 +129,17 @@ public class Report extends Jsonifiable {
     if (categoryIds == null)
         categoryIds = new ArrayList<Long> ();
     categoryIds.add(categoryId);
+  }
+
+  public void addMediaUrl(Link link)
+  {
+    if (mediaUrls == null)  mediaUrls = new ArrayList<Link>();
+    mediaUrls.add(link);
+  }
+
+  public void addMediaUrl(String url)
+  {
+    addMediaUrl(new Link(url));
   }
 
   public void delete()

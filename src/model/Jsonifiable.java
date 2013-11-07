@@ -20,6 +20,7 @@ import java.util.Date;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.datastore.PhoneNumber;
 import com.google.appengine.api.datastore.Key;
 import com.observers.json.ChannelSerializer;
 import org.loom.appengine.json.*;
@@ -106,6 +107,19 @@ public abstract class Jsonifiable {
         json.addProperty("lat", src.getLatitude());
         json.addProperty("lng", src.getLongitude());
         return json;
+      } catch (NullPointerException e) {
+        return null;
+      }
+    }
+  };
+
+  public static final JsonSerializer<PhoneNumber> PHONENUMBER_SERIALIZER
+  = new JsonSerializer<PhoneNumber>() {
+    @Override
+    public JsonElement serialize(PhoneNumber src, Type typeOfSrc,
+        JsonSerializationContext context) {
+      try {
+        return new JsonPrimitive(src.getNumber());
       } catch (NullPointerException e) {
         return null;
       }
