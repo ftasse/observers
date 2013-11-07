@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.twilio.sdk.TwilioRestClient;
+import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.instance.Account;
 
 import com.twilio.sdk.TwilioRestException;
@@ -45,6 +46,7 @@ import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.PhoneNumber;
 import com.googlecode.objectify.NotFoundException;
+import com.google.gson.annotations.Expose;
 
 import static com.observers.model.OfyService.ofy;
 
@@ -70,18 +72,24 @@ public class TwilioChannelServlet extends JsonRestServlet {
               throw new NotFoundException();
             }
 
-            TwilioAccount account = Jsonifiable.fromJson(req.getReader(), TwilioAccount.class);
-
+            TwilioAccount account = null;
+            TwilioTokenData accountDetails = Jsonifiable.fromJson(req.getReader(), TwilioTokenData.class);
+            
             Channel channel = null;
 
-            if (account != null)
+            if (accountDetails != null)
             {
-                if (account.getTwilioAccountId() == null || account.getAuthToken() == null)
+
+                if (accountDetails.authToken == null || accountDetails.twilioAccountId == null)
                 {
                     throw new IOException();
                 }
                 else
                 {
+                    account = new TwilioAccount();
+                    account.setTwilioAccountId(accountDetails.twilioAccountId);
+                    account.setAuthToken(accountDetails.authToken);
+
                     //Check if Twilio account is valid
                     TwilioRestClient client = new TwilioRestClient(MY_TWILIO_ACCOUNT_ID, MY_TWILIO_AUTH_TOKEN);
                     Account twilioAccount = client.getAccount();
@@ -222,6 +230,9 @@ public class TwilioChannelServlet extends JsonRestServlet {
 
                 // Loop over messages and print out a property for each one.
                 for (Message message : messages) {
+                    if (!message.getStatus().equals("received"))
+                        continue;
+
                     //http://twilio.github.io/twilio-java/com/twilio/sdk/resource/instance/Message.html
                 
                     String messageId = message.getSid();
@@ -246,11 +257,17 @@ public class TwilioChannelServlet extends JsonRestServlet {
                         */
 
                         MediaList mediaList = message.getMedia();
-                        if (mediaList != null) {
-                            List<Media> medias = mediaList.getPageData();
-                            for(Media media : medias){
-                                report.addMediaUrl(media.getUri());
+                        try 
+                        {
+                           
+                            if (mediaList != null) {
+                                List<Media> medias = mediaList.getPageData();
+                                for(Media media : medias){
+                                    report.addMediaUrl(media.getUri());
+                                }
                             }
+                        }  catch (RuntimeException e) {
+                            //sendError(resp, 404, "Twilio Rest Exception\n" + e);
                         }
                         
                         report.setCreated(message.getDateSent());
@@ -275,7 +292,18 @@ public class TwilioChannelServlet extends JsonRestServlet {
             sendError(resp, 404, "Topic with given ID does not exists");
         } catch (UserNotAuthorizedException e) {
             sendError(resp, 401, "Unauthorized request");
-        } 
+        }
+    }
+
+
+    public static class TwilioTokenData extends Jsonifiable {
+        public static String kind = "observers#twiliotokendata";
+
+        @Expose
+        public String twilioAccountId;
+
+        @Expose
+        public String authToken;
     }
 
 }

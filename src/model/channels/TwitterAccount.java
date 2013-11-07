@@ -50,11 +50,13 @@ public class TwitterAccount extends Jsonifiable {
     @Expose
     private String name;	
 
+    @Index
     @Getter
     @Setter
     @Expose
     private String hashtag;
 
+    @Index
     @Getter
     @Setter
     private String latestTweetId;

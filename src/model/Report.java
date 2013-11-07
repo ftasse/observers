@@ -55,21 +55,25 @@ public class Report extends Jsonifiable {
     @Expose
 	private Long topicId;
 
+    @Index
     @Getter
     @Setter
     @Expose
 	private Long channelId;
 
+    @Index
     @Getter
     @Setter
     @Expose
     private String channelReportId;
 
+    @Index
     @Getter
     @Setter
     @Expose
     private String authorId;
 
+    @Index
     @Getter
     @Setter
     @Expose

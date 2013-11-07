@@ -136,6 +136,7 @@ public abstract class Jsonifiable {
       .registerTypeAdapter(Link.class, Jsonifiable.LINK_SERIALIZER)
       .registerTypeAdapter(Text.class, Jsonifiable.TEXT_SERIALIZER)
       .registerTypeAdapter(GeoPt.class, Jsonifiable.GEOPT_SERIALIZER)
+      .registerTypeAdapter(PhoneNumber.class, Jsonifiable.PHONENUMBER_SERIALIZER)
       .registerTypeAdapter(Channel.class, new ChannelSerializer())
       .create();
 

@@ -60,19 +60,18 @@ public class TwilioAccount extends Jsonifiable {
     @Expose
     private List<PhoneNumber> phoneNumbers;
 
+    @Index
     @Getter
     @Setter
     private String latestMessageId;
 
 	@Getter
     @Setter
-    @Expose
  	private String authToken;
 
     public void addPhoneNumber(PhoneNumber phoneNumber)
     {
-        if (phoneNumbers == null)
-            phoneNumbers = new ArrayList<PhoneNumber>();
+        if (phoneNumbers == null) phoneNumbers = new ArrayList<PhoneNumber>();
         phoneNumbers.add(phoneNumber);
     }
 }

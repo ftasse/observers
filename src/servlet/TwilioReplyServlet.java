@@ -48,6 +48,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import static com.observers.model.OfyService.ofy;
+import com.googlecode.objectify.NotFoundException;
 
 public class TwilioReplyServlet extends JsonRestServlet {
     private static final long serialVersionUID = 1657390011452788111L;
@@ -57,7 +58,7 @@ public class TwilioReplyServlet extends JsonRestServlet {
         TwilioAccount account = null;
 
         //https://www.twilio.com/docs/api/twiml/sms/twilio_request#request-parameters
-        try {
+        //try {
             String fromNumber = request.getParameter("From");
             String sentMessage = request.getParameter("Body");
             String sentMessageId = request.getParameter("MessageSid");
@@ -69,14 +70,16 @@ public class TwilioReplyServlet extends JsonRestServlet {
             account = ofy().load().type(TwilioAccount.class)
             .filter("twilioAccountId", twilioAccountId).first().get();
             if (account == null)
+            {
                 message = "Sorry, but you cannot send reports to this number at the moment. Try again later.";
+            }
             else
             {
                 Channel channel = ofy().load().type(Channel.class)
                 .filter("accountId", account.getId()).first().get();
                 Report old_report = ofy().load().type(Report.class)
                 .filter("channelId", channel.getId()).filter("authorId", fromNumber).first().get();
-                
+
                 if (old_report == null) {
                     // Use a generic message
                     message = "Thanks for your report! See other reports at ..." ;
@@ -122,7 +125,7 @@ public class TwilioReplyServlet extends JsonRestServlet {
                             }
                         }
                     }
-                    
+
                     report.setCreated(sentMessageDate); //Date message was sent
                     report.setRetrieved(Calendar.getInstance().getTime());
 
@@ -135,17 +138,15 @@ public class TwilioReplyServlet extends JsonRestServlet {
             TwiMLResponse twiml = new TwiMLResponse();
 
             //https://www.twilio.com/docs/api/twiml/sms/message
-            Sms sms = new Sms(message);
-        
-            twiml.append(sms);
+            /*Sms sms = new Sms(message);
+            twiml.append(sms);*/
+
             response.setContentType("application/xml");
             response.getWriter().print(twiml.toXML());
 
-        } catch (IOException e) {
+        /*} catch (TwiMLException e) {
             e.printStackTrace();
-        } catch (TwiMLException e) {
-            e.printStackTrace();
-        }
+        } */
     }
 
 }
