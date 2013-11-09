@@ -169,7 +169,8 @@ public class TwitterChannelServlet extends JsonRestServlet {
             ofy().clear();
             sendResponse(req, resp, added_reports, "observers#reports");
         } catch (TwitterException te) {
-            te.printStackTrace();
+            sendResponse(req, resp, added_reports, "observers#reports");
+            //te.printStackTrace();
             //throw new ServletException();
         } catch (NotFoundException e)
         {

@@ -1,0 +1,3 @@
+- Get Twitter user location (if tweet location) does not exists
+- Enable voting reports by authenticated users
+- Add Sentiment analysis (happy, sad, angry, indifferent)
