@@ -28,7 +28,7 @@ import com.google.appengine.api.datastore.Link;
 public class Report extends Jsonifiable {
 
     public enum Mood {
-        SAD, HAPPY, INDIFFERENT
+        Sad, Happy, Indifferent, Unknown
     }
     
     @Expose
@@ -119,6 +119,12 @@ public class Report extends Jsonifiable {
     @Setter
     @Expose
     private Date retrieved;
+
+    @OnLoad
+    protected void setupMood() {
+        if (mood == null)
+            mood = Mood.Unknown;
+    }
 
     @OnLoad
     protected void setupVoteNum() {

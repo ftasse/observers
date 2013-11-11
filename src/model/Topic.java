@@ -9,6 +9,7 @@ import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnLoad;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -51,6 +52,17 @@ public class Topic extends Jsonifiable {
     @Expose
 	private String title;
 
+    @Index
+    @Getter
+    @Setter
+    @Expose
+    private long numSmsShares;
+
+    @Getter
+    @Setter
+    @Expose
+    private boolean supportsSms;
+
     @Getter
     @Setter
     @Expose
@@ -66,6 +78,14 @@ public class Topic extends Jsonifiable {
     @Setter
     @Expose
 	private Date created;
+
+    @OnLoad
+    protected void setupSupportsSms() {
+        TwilioAccount account = ofy().load().type(TwilioAccount.class)
+        .filter("topicId", getId())
+        .first().get();
+        supportsSms = (account != null);
+  }
 
     public Collection<Channel> getChannels() {
         return ofy().load().type(Channel.class).filter("topicId", getId()).list();

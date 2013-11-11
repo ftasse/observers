@@ -151,10 +151,10 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
             	// Get all topics for the user.
 				q = q.filter("ownerUserId", userId);
 			}
-		}
 
-		List<Topic> topics = q.list();
-		sendResponse(req, resp, topics, "observers#topics");
+      List<Topic> topics = q.list();
+      sendResponse(req, resp, topics, "observers#topics");
+		}
 	} catch (UserNotAuthorizedException e) {
 		sendError(resp, 401, "Unauthorized request");
 	}

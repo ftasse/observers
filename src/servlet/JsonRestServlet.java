@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +40,16 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
+
+import com.google.code.geocoder.model.GeocodeResponse;
+import com.google.code.geocoder.model.GeocoderRequest;
+import com.google.code.geocoder.GeocoderRequestBuilder;
+import com.google.code.geocoder.Geocoder;
+import com.google.code.geocoder.model.GeocoderLocationType;
+import com.google.code.geocoder.model.GeocoderResult;
+import com.google.code.geocoder.model.GeocoderStatus;
+import com.google.code.geocoder.model.LatLng;
+import com.google.appengine.api.datastore.GeoPt;
 
 import twitter4j.TwitterFactory;
 
@@ -211,6 +223,25 @@ public abstract class JsonRestServlet extends HttpServlet {
               .append("Servlet received an IOException trying to write response ")
               .append("body to HttpServletResponse.").toString());
     }
+  }
+
+
+  protected List<GeoPt> geoLocationsFromString(String address, String lang)
+  {
+    List<GeoPt> locations = new ArrayList<GeoPt> ();
+    final Geocoder geocoder = new Geocoder();
+    GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(address).setLanguage(lang).getGeocoderRequest();
+    GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
+    if (geocoderResponse.getStatus() == GeocoderStatus.OK)
+    {
+      List<GeocoderResult> results  = geocoderResponse.getResults();
+      for (GeocoderResult result: results)
+      {
+        locations.add(new GeoPt(result.getGeometry().getLocation().getLat().floatValue(), 
+                                result.getGeometry().getLocation().getLng().floatValue()));
+      }
+    }
+    return locations;
   }
 
   /**

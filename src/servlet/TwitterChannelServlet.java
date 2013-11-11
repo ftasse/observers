@@ -144,6 +144,18 @@ public class TwitterChannelServlet extends JsonRestServlet {
                         GeoLocation location = status.getGeoLocation();
                         if (location != null)
                             report.setLocation(new GeoPt((float)location.getLatitude(), (float)location.getLongitude()));
+                        else
+                        {
+                            String userLocation = status.getUser().getLocation();
+                            if (userLocation != null)
+                            {
+                                List<GeoPt> results  = geoLocationsFromString(userLocation, "en");
+                                if (results.size() > 0)
+                                {
+                                    report.setLocation(results.get(0));
+                                }
+                            }
+                        }
 
                         List<Link> mediaUrls = new ArrayList<Link>();
                         URLEntity[] urls = status.getURLEntities();
@@ -169,7 +181,7 @@ public class TwitterChannelServlet extends JsonRestServlet {
             ofy().clear();
             sendResponse(req, resp, added_reports, "observers#reports");
         } catch (TwitterException te) {
-            sendResponse(req, resp, added_reports, "observers#reports");
+            sendError(resp, 404, "Twilio exception: " + te);
             //te.printStackTrace();
             //throw new ServletException();
         } catch (NotFoundException e)

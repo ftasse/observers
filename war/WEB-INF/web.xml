@@ -69,6 +69,24 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>topicanalysis</servlet-name>
+    <servlet-class>com.observers.servlet.TopicAnalysisServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topicanalysis</servlet-name>
+    <url-pattern>/api/topics/analysis</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>topicbuzzwords</servlet-name>
+    <servlet-class>com.observers.servlet.TopicBuzzwordsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topicbuzzwords</servlet-name>
+    <url-pattern>/api/topics/buzzwords</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>reports</servlet-name>
     <servlet-class>com.observers.servlet.ReportsServlet</servlet-class>
   </servlet>
@@ -112,6 +130,16 @@
     <servlet-name>twilioreply</servlet-name>
     <!--<url-pattern>/api/twilio/reply</url-pattern>-->
     <url-pattern>/api/twilio/sms</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>twilioshare</servlet-name>
+    <servlet-class>com.observers.servlet.TwilioShareServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>twilioshare</servlet-name>
+    <!--<url-pattern>/api/twilio/reply</url-pattern>-->
+    <url-pattern>/api/twilio/share</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

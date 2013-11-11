@@ -17,6 +17,7 @@ import com.twilio.sdk.verbs.Sms;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import com.observers.model.TwilioAccount;
 import com.observers.model.Channel;
@@ -35,15 +36,6 @@ import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
 import com.googlecode.objectify.NotFoundException;
 
-import com.google.code.geocoder.model.GeocodeResponse;
-import com.google.code.geocoder.model.GeocoderRequest;
-import com.google.code.geocoder.GeocoderRequestBuilder;
-import com.google.code.geocoder.Geocoder;
-import com.google.code.geocoder.model.GeocoderLocationType;
-import com.google.code.geocoder.model.GeocoderResult;
-import com.google.code.geocoder.model.GeocoderStatus;
-import com.google.code.geocoder.model.LatLng;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -51,7 +43,7 @@ import static com.observers.model.OfyService.ofy;
 import com.googlecode.objectify.NotFoundException;
 
 public class TwilioReplyServlet extends JsonRestServlet {
-    private static final long serialVersionUID = 1657390011452788111L;
+    private static final Logger log = Logger.getLogger(TwilioReplyServlet.class.getName());
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String message = "Invalid request to post a report!";
@@ -112,17 +104,10 @@ public class TwilioReplyServlet extends JsonRestServlet {
                     if (country != null)
                     {
                         String address = city + " " + zip + ", " + state + ", " + country;
-                        final Geocoder geocoder = new Geocoder();
-                        GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(address).setLanguage("en").getGeocoderRequest();
-                        GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
-                        if (geocoderResponse.getStatus() == GeocoderStatus.OK)
+                        List<GeoPt> results  = geoLocationsFromString(address, "en");
+                        if (results.size() > 0)
                         {
-                            List<GeocoderResult> results  = geocoderResponse.getResults();
-                            if (results.size() > 0)
-                            {
-                                GeocoderResult result = results.get(0);
-                                report.setLocation(new GeoPt(result.getGeometry().getLocation().getLat().floatValue(), result.getGeometry().getLocation().getLng().floatValue()));
-                            }
+                            report.setLocation(results.get(0));
                         }
                     }
 
@@ -140,6 +125,7 @@ public class TwilioReplyServlet extends JsonRestServlet {
             //https://www.twilio.com/docs/api/twiml/sms/message
             /*Sms sms = new Sms(message);
             twiml.append(sms);*/
+            log.info("Reply message: " + message);
 
             response.setContentType("application/xml");
             response.getWriter().print(twiml.toXML());
