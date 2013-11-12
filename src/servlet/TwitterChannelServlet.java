@@ -124,7 +124,6 @@ public class TwitterChannelServlet extends JsonRestServlet {
                 {
                     Long tweetId = status.getId();
                     Report report = ofy().load().type(Report.class)
-                    .filter("channelId", channel.getId())
                     .filter("channelReportId", tweetId)
                     .filter("topicId", topicId).first().get();
 
