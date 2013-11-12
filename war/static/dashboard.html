@@ -6,89 +6,209 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+		<!--
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+		-->
+
+		<link href="flatui/bootstrap/css/bootstrap.css" rel="stylesheet">
+		<link href="flatui/css/flat-ui.css" rel="stylesheet">
+	    <link href="css/dashboard.css" rel="stylesheet"></style>
+
+	    <link rel="shortcut icon" href="flatui/images/favicon.ico">
+
 		<!--[if lt IE 9]>
     		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     		<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     	<![endif]-->
 	</head>
 
-	<body>
-		<div id="fb-root"></div>
+	<body >
+		<span id="fb-root"></span>
+		<a href="#content" class="sr-only">Skip to main content</a>
+  
+		<div class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
+	      <div class="container">
+	        <div class="navbar-header">
+	          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
+	          <a class="navbar-brand" href="#">Observers</a>
+	        </div>
+	        <div class="collapse navbar-collapse">
+	          <ul class="nav navbar-nav  navbar-right">
+	            <li><a href="#">Start a new topic</a></li>
+	            <li data-bind="visible: isNotLoggedIn">
+	            	<span id="signinButton">
+					  <span class="g-signin"
+						data-callback="signinCallback"
+						data-accesstype="offline"
+						data-redirecturi="postmessage"
+						data-clientid="907117162790.apps.googleusercontent.com"
+						data-cookiepolicy="single_host_origin"
+						data-scope="https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me">
+					  </span>
+					</span>
+					<!--<button type="button" class="btn btn-default navbar-btn" data-bind="click: $root.login">Sign in</button>-->
+	            </li>
 
-		
-		<div id="topic-canvas">  <!-- title, summary, socialshare, send a report -->
-			<div data-bind="text: title"> </div>
-			<div data-bind="text: shortDescription"> </div>
-			<button>Send a report</button>
+	            <li class="dropdown" data-bind="visible: isLoggedIn">
+	            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+	            		<span class="glyphicon glyphicon-user"></span> 
+	            		<span data-bind="text: userName"></span>
+	            		<b class="caret"></b>
+	            	</a>
+			        <ul class="dropdown-menu">
+			          <li ><a href="#">Manage your topics</a></li>
+			          <li ><button type="button" class="btn btn-default navbar-btn" data-bind="click: $root.logout">Logout</button></li>
+			          <li class="divider"></li>
+			          <li ><button type="button" class="btn btn-default navbar-btn" data-bind="click: $root.logout">Delete account</button></li>
+			        </ul>
+	            </li>
+	          </ul>
+	        </div>
+	      </div>
+	    </div>
 
-			<div class="social-share">
-				<div class="fb-share-button" data-type="box_count" data-height="60" data-bind="data-href: url"></div>
-				<div class="g-plus" data-action="share" data-annotation="vertical-bubble" data-height="60" data-bind="data-href: url"></div>
-				<a href="https://twitter.com/share" class="twitter-share-button" data-bind="data-url: url" data-via="" data-text="" data-count="vertical">Tweet</a>
-				<a href="https://twitter.com/share" class="sms-share-button" data-bind="visible: supportsSms" data-bind="data-url: url" data-via="" data-text="" data-count="vertical">SMS</a>
+		<div class="container" id="content">
+		<div class="row">
+
+			<div class="col-md-8">
+
+				<div class="row">
+					<div class="col-md-6" class = "jumbotron">
+						<div >
+						<div id="topic-canvas">  <!-- title, summary, socialshare, send a report -->
+							<div data-bind="text: title"> </div>
+							<div data-bind="text: shortDescription"> </div>
+							<button>Submit a report</button>
+						</div>
+						</div>
+					</div>
+
+
+					<div class="col-md-6">
+						<div>
+						<div id="sentiment-canvas" > </div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-6">
+						<div id="map-canvas"> </div>
+					</div>
+
+					<div class="col-md-6">
+
+						<div class = "row">
+							<div class="col-md-12">
+								<div id="timeseries-canvas"> </div>
+							</div>
+						</div>
+
+						<div class = "row">
+							<div class="col-md-12">
+								<div class="social-share">
+									<div class="fb-share-button" data-type="box_count" data-height="60" data-bind="data-href: url"></div>
+									<div class="g-plus" data-action="share" data-annotation="vertical-bubble" data-height="60" data-bind="data-href: url"></div>
+									<a href="https://twitter.com/share" class="twitter-share-button" data-bind="data-url: url" data-via="" data-text="" data-count="vertical">Tweet</a>
+									<button type="button" class="btn btn-primary btn-xs">
+										SMS <!--<span class="badge" data-bind="text: numSmsShares">-->
+									</button>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
 			</div>
-		</div>
 
-		<div id="reports-canvas">
-			<div data-bind="visible: $root.hasBuzzwords()">
-			<ul class="folders" >
+			<div class="col-md-4">
+				<div class="panel panel-default">
+				  <div class="panel-heading">
 
-				<li data-bind="css: { selected: $root.buzzwordsDisplaySelected() },
-							   click: $root.goToBuzzwords">
-					Buzzwords
-				</li>
+				  	<!--<div data-bind="visible: $root.hasBuzzwords()">
+						<ul class="folders" >
 
-    			<li data-bind="css: { selected: $root.recentReportsDisplaySelected() },
-							   click: $root.goToRecentReports">
-					Recent reports
-				</li>
-			</ul>
+							<li data-bind="css: { selected: $root.buzzwordsDisplaySelected() },
+										   click: $root.goToBuzzwords">
+								Buzzwords
+							</li>
+
+			    			<li data-bind="css: { selected: $root.recentReportsDisplaySelected() },
+										   click: $root.goToRecentReports">
+								Recent reports
+							</li>
+						</ul>
+					</div>-->
+
+					<h3 class="panel-title" data-bind="visible: !$root.hasBuzzwords()">Latest reports</h3>
+				  </div>
+
+				  <!--<div class="panel-body"> </div>-->
+
+				  	<div id="reports-canvas">
+						<div id = "recentreports-canvas" data-bind="visible: $root.recentReportsDisplaySelected()">
+							<ul class="list-group" data-bind="template: {name: 'reports-template', foreach: reports}" >
+							</ul>
+						</div>
+						<div id = "buzzwords-canvas" data-bind="visible: $root.buzzwordsDisplaySelected()">
+							<ul class="list-group" data-bind="template: {name: 'buzzwords-template', foreach: buzzwords, as: buzzword}">
+							</ul>
+						</div>
+					</div>
+
+				  <div class="panel-footer">
+				  	<ul class="pager">
+					  <li class="previous"><a href="#">&larr; Older</a></li>
+					  <li class="next"><a href="#">Newer &rarr;</a></li>
+					</ul>
+				  </div>
+				</div>
+				
 			</div>
 
-			<div data-bind="visible: !$root.hasBuzzwords()">
-				Recent reports
-			</div>
-
-			<div id = "recentreports-canvas" data-bind="visible: $root.recentReportsDisplaySelected()">
-				<ul data-bind="template: {name: 'reports-template', foreach: reports}" >
-				</ul>
-			</div>
-			<div id = "buzzwords-canvas" data-bind="visible: $root.buzzwordsDisplaySelected()">
-				<ul data-bind="template: {name: 'buzzwords-template', foreach: buzzwords, as: buzzword}">
-				</ul>
-			</div>
 		</div>
-
-		<div id="sentiment-canvas" style="width: 900px; height: 500px;"></div>
-		</div>
-
-		<div id="timeseries-canvas" style='width: 700px; height: 240px;'> 
-		</div>
-
-		<div id="map-canvas"> 
-		</div>
-
+	</div>
 	</body>
 
 
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+	<!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>-->
+
+	<script src="flatui/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="flatui/js/jquery.ui.touch-punch.min.js"></script>
+    <script src="flatui/js/bootstrap.min.js"></script>
+    <script src="flatui/js/bootstrap-select.js"></script>
+    <script src="flatui/js/bootstrap-switch.js"></script>
+    <script src="flatui/js/flatui-checkbox.js"></script>
+    <script src="flatui/js/flatui-radio.js"></script>
+    <script src="flatui/js/jquery.tagsinput.js"></script>
+    <script src="flatui/js/jquery.placeholder.js"></script>
+
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="js/jquery.tmpl.min.js"></script>
 	<script type="text/javascript" src="js/knockout-3.0.0.js"></script>
 	<script type="text/javascript" src="js/sammy-latest.min.js"></script>
 
 	<script type="text/html" id="buzzwords-template">
-		<li> ${word} - ${frequency} </li>
+		<li class="list-group-item"> ${word} <br> ${frequency} </li>
 	</script>
 
 	<script type="text/html" id="reports-template">
-		<li> ${content} - ${created} - ${numChannelLikes} </li>
+		<li class="list-group-item"> 
+			<!-- <span class="badge">${numChannelLikes}</span> -->
+			${content} <br> Posted on:  <span data-bind="text: new Date(created)"></span> 
+			<span class="glyphicon glyphicon-minus-sign" data-bind="visible: false"></span>
+		</li>
 	</script>
 
-	<link href="css/dashboard.css" rel="stylesheet"></style>
+	<script type="text/javascript" src="js/signin.js"></script>
 	<script type="text/javascript" src="js/dashboard.js"></script>
 
 </html>

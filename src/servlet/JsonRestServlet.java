@@ -30,6 +30,9 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -109,6 +112,23 @@ public abstract class JsonRestServlet extends HttpServlet {
     GenericUrl url = new GenericUrl(req.getRequestURL().toString());
     url.setRawPath("/api/oauth2callback");
     return url.build();
+  }
+
+  protected String setSessionStateForAuth (HttpServletRequest req)
+  {
+    // Create a state token to prevent request forgery.
+    // Store it in the session for later validation.
+
+    HttpSession session = req.getSession();
+    String state = String.valueOf(session.getAttribute("state"));
+    
+    if (session.getAttribute(CURRENT_USER_SESSION_KEY) == null && state == null)
+    {
+      state = new BigInteger(130, new SecureRandom()).toString(32);
+      session.setAttribute("state", state);
+    }
+    
+    return state;
   }
 
   /**

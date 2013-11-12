@@ -45,6 +45,7 @@ function dashboardViewModel() {
 	self.shortDescription = ko.observable();
 	self.supportsSms = ko.observable();
 	self.url = ko.observable();
+	self.ownerUserId = ko.observable();
 
 	self.reportLocations =  ko.observableArray();
 	self.reportTrend = ko.observable();
@@ -56,6 +57,32 @@ function dashboardViewModel() {
 	self.buzzwordsDisplaySelected = ko.observable();
 	self.hasBuzzwords = ko.observable(false);
 
+	self.numSmsShares = ko.observable();
+
+	self.user = ko.observable({googleDisplayName: null});
+
+	this.userName = ko.computed(function() {
+		if (self.user() == null)	return null;
+        else return self.user().googleDisplayName;
+    }, this);
+
+    this.userId = ko.computed(function() {
+		if (self.user() == null)	return null;
+        else return self.user().id;
+    }, this);
+
+    this.isAdmin = ko.computed(function() {
+        return self.ownerUserId() == self.userId();
+    }, this);
+
+    this.isLoggedIn = ko.computed(function() {
+        return (self.user() != null);
+    }, this);
+
+    this.isNotLoggedIn = ko.computed(function() {
+        return !self.isLoggedIn();
+    }, this);
+
 	//Behaviour
 	self.goToRecentReports = function() {
 		location.hash = "recentreports";
@@ -63,6 +90,27 @@ function dashboardViewModel() {
 
 	self.goToBuzzwords = function() {
 		location.hash = "buzzwords";
+	}
+
+	self.getUser = function ()
+	{
+		$.get('/api/users')
+	  .done(function(userJson) {
+			self.user(userJson);
+		})
+	  .error(function () {
+	  	self.user(null);
+	  });
+	}
+
+	self.logout = function()
+	{
+		gapi.auth.signOut();
+	}
+
+	self.disconnect = function()
+	{
+		$.get('api/disconnect', function(data){ console.log(data)});
 	}
 
 	//Client-side routes
@@ -81,6 +129,25 @@ function dashboardViewModel() {
     }).run();
 };
 
+function signinCallback(authResult) {
+  if (authResult['code']) {
+    // Send the code to the server
+    $.get('api/oauth2callback', { code: authResult['code'], state: authResult['state'] }, function(result) {
+        //console.log(result);
+		topicSummary.user(result);
+		$('#signinButton').attr('style', 'display: none');
+      });
+  } else if (authResult['error']) {
+    	console.log('Sign-in state: ' + authResult['error']);
+    	//if (authResult['error'] == "user_signed_out")
+    	{
+			topicSummary.user(null);
+			$.get('api/logout', function(data){ console.log(data)});
+			$('#signinButton').attr('style', 'display: true');
+		}
+  }
+}
+
 topicSummary = new dashboardViewModel();
 ko.applyBindings(topicSummary);
 
@@ -94,11 +161,15 @@ function initializeTopicSummary()
 	} else
 		topicSummary.url(location.protocol + '//' + location.host + "/dashboard.html?topicId=" + topicSummary.id);
 
+	topicSummary.getUser();
+
 	$.get('/api/topics', {topicId: topicSummary.id()})
 	  .done(function(topic) {
 			topicSummary.title(topic.title);
 			topicSummary.shortDescription(topic.shortDescription);
 			topicSummary.supportsSms(topic.supportsSms);
+			topicSummary.ownerUserId(topic.ownerUserId);
+			topicSummary.numSmsShares(topic.numSmsShares);
 		});
 
 	/*$.get('/api/topics/buzzwords', {topicId: topicSummary.id()})
@@ -113,9 +184,10 @@ function initializeTopicSummary()
 	   			location.hash = "recentreports";
 	   		}
 	   });*/
+	topicSummary.hasBuzzwords(false);
+	location.hash = "recentreports";
 
-
-	$.get('/api/reports', {topicId: topicSummary.id}, topicSummary.reports);
+	$.get('/api/reports', {topicId: topicSummary.id, from:0, to:5}, topicSummary.reports);
 }
 
 function initializeMapChart(data) {
@@ -150,13 +222,25 @@ function initializeSentimentChart(data) {
 function initializeTimeSeriesChart(data) {
 
 	var frequencyView = new google.visualization.data.group(data, [4], 
-		[{'column': 4, 'aggregation': google.visualization.data.count, 'type': 'number', 'label': 'Posted reports'}]);
+		[{'column': 4, 'aggregation': google.visualization.data.count, 'type': 'number', 'label': 'Reports per day'}]);
 
 	var options = {
-		displayAnnotations: true
+		displayAnnotations: true,
+		wmode: 'transparent',
+
+		chartArea:{left:20,top:5,width:"75%",height:"80%"},
+		legend: {position: 'in', textStyle: {color: 'blue', fontSize: 16}},
+
+		// Allow multiple simultaneous selections.
+    selectionMode: 'multiple',
+    // Trigger tooltips on selections.
+    tooltip: { trigger: 'selection' },
+    // Group selections by x-value.
+    aggregationTarget: 'category'
+
 	};
 
-	var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('timeseries-canvas'));
+	var chart = new google.visualization.LineChart(document.getElementById('timeseries-canvas'));
 	chart.draw(frequencyView, options);
 }
 
@@ -168,8 +252,8 @@ function initializeCharts()
       // Create our data table out of JSON data loaded from server.
       var data = response.getDataTable();
 	  initializeSentimentChart(data);
-	  initializeTimeSeriesChart(data);
 	  initializeMapChart(data);
+	  initializeTimeSeriesChart(data);
 	});
 }
 
@@ -200,6 +284,7 @@ function loadTwitterScript(d,s,id){
 
 function loadScripts() {
 	initializeTopicSummary();
+	loadSigninAPI();
 
 	loadFacebookScript(document, 'script', 'facebook-jssdk');
 	loadGooglePlusScript();

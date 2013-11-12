@@ -185,6 +185,18 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
       q = q.filter("topicId", topic.getId());
     }
 
+    int from = 0;
+    if (req.getParameter("from")!=null)
+    {
+      from = Integer.valueOf(req.getParameter("from"));
+    }
+    if (req.getParameter("to")!=null)
+    {
+      int to = Integer.valueOf(req.getParameter("to"));
+      q = q.limit(to - from);
+    }
+    q = q.offset(from);
+
     List<Report> reports = q.order("-created").list();
     sendResponse(req, resp, reports, "observers#reports");
   /*} catch (UserNotAuthorizedException e) {

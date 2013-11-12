@@ -91,23 +91,38 @@ public class ConnectServletCallback extends JsonRestServlet {
    */
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-    TokenData accessToken = null;
+      TokenData accessToken = null;
     
-    // read the token
-    accessToken = new TokenData ();
-    accessToken.setCode(req.getParameter("code"));
+      accessToken = new TokenData ();
+      accessToken.setCode(req.getParameter("code"));
+      accessToken.setState(req.getParameter("state"));
+
+      System.out.println("Code: " + accessToken.code);
+      processAuthorizationCode(req, resp, accessToken);
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    try
+    {
+      TokenData accessToken = null;
+      accessToken = Jsonifiable.fromJson(req.getReader(), TokenData.class);
     
-    processAuthorizationCode(req, resp, accessToken);
+      processAuthorizationCode(req, resp, accessToken);
+    } catch (IOException e)
+    {
+      sendError(resp, 400, "Unable to read token data from request body");
+    }
   }
 
   private void processAuthorizationCode(HttpServletRequest req, HttpServletResponse resp, 
     TokenData accessToken)
   {
     HttpSession session = req.getSession();
-    if (!req.getParameter("state").equals(session.getAttribute("state"))) {
+    if (session.getAttribute("state")!=null && !accessToken.state.equals(session.getAttribute("state"))) {
       sendError(resp, 401, "Invalid state parameter.");
+      return;
     }
-    session.removeAttribute("state");
     
     // Create a credential object.
     GoogleCredential credential = new GoogleCredential.Builder()
@@ -120,25 +135,25 @@ public class ConnectServletCallback extends JsonRestServlet {
         GoogleTokenResponse tokenFromExchange = exchangeCode(req, accessToken);
         credential.setFromTokenResponse(tokenFromExchange);
       } else {
-      if (accessToken.access_token == null) {
-          sendError(resp, 400, "Missing access token in request.");
-      }
-      
-        // use the token received from the client
-        credential.setAccessToken(accessToken.access_token)
-            .setRefreshToken(accessToken.refresh_token)
-            .setExpiresInSeconds(accessToken.expires_in)
-            .setExpirationTimeMilliseconds(accessToken.expires_at);
-      }
+        if (accessToken.access_token == null) {
+            sendError(resp, 400, "Missing access token in request.");
+        }
+        
+          // use the token received from the client
+          credential.setAccessToken(accessToken.access_token)
+              .setRefreshToken(accessToken.refresh_token)
+              .setExpiresInSeconds(accessToken.expires_in)
+              .setExpirationTimeMilliseconds(accessToken.expires_at);
+        }
 
-      // ensure that we consider logged in the user that owns the access token
-      String tokenGoogleUserId = verifyToken(credential);
-      User user = saveTokenForUser(tokenGoogleUserId, credential);
-      // save the user in the session
-      //HttpSession session = req.getSession();
-      session.setAttribute(CURRENT_USER_SESSION_KEY, user.id);
-      //generateFriends(user, credential);
-      sendResponse(req, resp, user);
+        // ensure that we consider logged in the user that owns the access token
+        String tokenGoogleUserId = verifyToken(credential);
+        User user = saveTokenForUser(tokenGoogleUserId, credential);
+        
+        session.setAttribute(CURRENT_USER_SESSION_KEY, user.id);
+        session.removeAttribute("state");
+
+        sendResponse(req, resp, user);
     } catch (TokenVerificationException e) {
       sendError(resp, 401, e.getMessage());
     } catch (TokenResponseException e) {
@@ -164,9 +179,10 @@ public class ConnectServletCallback extends JsonRestServlet {
       throws TokenDataException {
     try {
       // Upgrade the authorization code into an access and refresh token.
+      System.out.println("Code: " + accessToken.code);
       GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(
           TRANSPORT, JSON_FACTORY, CLIENT_ID, CLIENT_SECRET, accessToken.code,
-          getConnectRedirectUri(req)).execute();
+          "postmessage").execute();
       return tokenResponse;
     } catch (IOException e) {
       throw new TokenDataException(e.getMessage());
@@ -329,5 +345,9 @@ public class ConnectServletCallback extends JsonRestServlet {
      */
     @Expose
     public Long expires_in;
+
+    @Expose
+    @Setter
+    public String state;
   }
 }
