@@ -61,7 +61,7 @@ function dashboardViewModel() {
 
 	self.user = ko.observable({googleDisplayName: null});
 
-	this.userName = ko.computed(function() {
+	self.userName = ko.computed(function() {
 		if (self.user() == null)	return null;
         else return self.user().googleDisplayName;
     }, this);
@@ -107,6 +107,7 @@ function dashboardViewModel() {
 
 	self.logout = function()
 	{
+		console.log("Logging out!");
 		gapi.auth.signOut();
 	}
 
@@ -209,7 +210,7 @@ function initializeTopicSummary()
 	topicSummary.hasBuzzwords(false);
 	location.hash = "recentreports";
 
-	$.get('/api/reports', {topicId: topicSummary.id, from:0, to:2}, topicSummary.reports);
+	$.get('/api/reports', {topicId: topicSummary.id, from:0, to:5}, topicSummary.reports);
 }
 
 function drawMapChart() {
@@ -300,25 +301,17 @@ function size(animate){
     clearTimeout(t);
     // This will reset the timeout right after clearing it.
     t = setTimeout(function(){
-    	console.log("Draw canvas");
-        /*$(".canvas").each(function(i,el){
-        	console.log("canvas: " + i + " " + el.id + " " + $(el).parent().width() + " " + $(el).parent().outerHeight());
-            // Set the canvas element's height and width to it's parent's height and width.
-            // The parent element is the div.canvas-container
-            $(el).attr({
-                "width":$(el).parent().width(),
-                "height":$(el).parent().outerHeight()
-            });
-        });*/
-        // kickoff the redraw function, which builds all of the charts.
-        redraw(animate);
-        // loop through the widgets and find the tallest one, and set all of them to that height.
-        var m = 0;
-        // we have to remove any inline height setting first so that we get the automatic height.
-        /*$(".canvas").height("");
-        $(".canvas").each(function(i,el){ m = Math.max(m,$(el).height()); });
-        $(".canvas").height(m);*/
-    }, 100); // the timeout should run after 100 milliseconds
+    	redraw(animate);
+    	$(".pure-g-r").each(function(i,el){
+    		var contentPieces = $(el).find(".dashboard-piece");
+    		var max = 0;
+    		contentPieces.css("min-height","");
+    		$.grep(contentPieces, function(el,i){
+    			max = Math.max($(el).outerHeight(),max);
+    		});
+    		contentPieces.css("min-height", max);
+    	});
+    }, 400); // the timeout should run after 400 milliseconds
 }
 $(window).on('resize', size);
 
@@ -363,10 +356,25 @@ function loadTwitterScript(d,s,id){
 function loadScripts() {
 	initializeTopicSummary();
 	loadSigninAPI();
-
 	loadFacebookScript(document, 'script', 'facebook-jssdk');
 	loadGooglePlusScript();
 	!loadTwitterScript(document, 'script', 'twitter-wjs');
 }
+
+YUI({
+	classNamePrefix: 'pure'
+}).use('gallery-sm-menu', function (Y) {
+
+	var horizontalMenu = new Y.Menu({
+		container         : '#horizontal-menu',
+		sourceNode        : '#std-menu-items',
+		orientation       : 'horizontal',
+		hideOnOutsideClick: false,
+		hideOnClick       : false
+	});
+
+	horizontalMenu.render();
+	horizontalMenu.show();
+});
 
 window.onload = loadScripts;

@@ -1,14 +1,127 @@
-.element { 
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
-	box-sizing: border-box;         /* Opera/IE 8+ */
+
+/*
+	http://webdesign.tutsplus.com/tutorials/complete-websites/build-a-modular-dashboard-interface-with-pure/
+    red: #E73F3F
+    orange: #F76C27
+    yellow: #E7E737
+    blue: #6D9DD1
+    purple: #7E45D3
+*/
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
 }
 
-canvas
+.pure-menu {
+    font-weight: lighter;
+}
+.pure-menu.pure-menu-fixed {
+    position: fixed;
+}
+.pure-menu.pure-menu-blackbg {
+    background: #222;
+}
+.pure-menu.pure-menu-blackbg .pure-menu-heading:hover {
+    color: #efefef;
+}
+.pure-menu.pure-menu-blackbg a {
+    color: #fff;
+}
+.pure-menu.pure-menu-blackbg a:hover {
+    background: #666;
+}
+.pure-menu.pure-menu-blackbg .pure-menu-selected a {
+    background: #7E45D3;
+}
+.pure-menu.pure-menu-blackbg .pure-menu-selected a:hover {
+    color: #efefef;
+}
+
+.dashboard-piece {
+    min-height: 300px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #fff;
+    text-align: center;
+    position: relative;
+    /*padding-bottom: 40px;*/
+}
+
+.dashboard-piece-redbg {
+    background-color: #E73F3F;
+}
+.dashboard-piece-orangebg {
+    background-color: #F76C27;
+}
+.dashboard-piece-yellowbg {
+    background-color: #E7E737;
+}
+.dashboard-piece-bluebg {
+    background-color: #6D9DD1;
+}
+.dashboard-piece-purplebg {
+    background-color: #7E45D3;
+}
+.dashboard-piece-graybg {
+    background-color: #798388;
+}
+
+.dashboard-piece h1 {
+    line-height: 300px;
+    font-size: 3.6em;
+    margin: 0;
+}
+.dashboard-content {
+    position: relative;
+    z-index: 999;
+}
+.dashboard-content p {
+    font-weight: lighter;
+}
+.dashboard-content .light {
+    opacity: 0.4;
+    display: block;
+}
+.dashboard-content h2 i {
+    font-size: 4em;
+    opacity: 0.4;
+}
+.dashboard-metric {
+    text-transform: uppercase;
+    font-size: 1.6em;
+    line-height: 1;
+}
+.dashboard-metric i {
+    margin-right: 0.6em;
+}
+
+footer {
+    background: rgb(20,20,20);
+    color: #aaa;
+    padding: 10px;
+    font-size: 0.6em;
+    font-weight: bold;
+}
+
+.l-box {
+   	padding: 0em;
+}
+
+@media only screen and (max-width:767px) {
+    .pure-g-r>[class ^="pure-u"]{width:50%; float: left;}
+}
+@media only screen and (max-width:480px) {
+    .pure-g-r>[class ^="pure-u"]{width:100%; }
+}
+
+
+/*canvas
 {
 	border-style:solid;
 	border-width:medium;
-} 
+} */
 
 /*#map-canvas {
 	height:200px;
