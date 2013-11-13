@@ -83,6 +83,8 @@ function dashboardViewModel() {
         return !self.isLoggedIn();
     }, this);
 
+    this.data = null;
+
 	//Behaviour
 	self.goToRecentReports = function() {
 		location.hash = "recentreports";
@@ -135,17 +137,36 @@ function signinCallback(authResult) {
     $.get('api/oauth2callback', { code: authResult['code'], state: authResult['state'] }, function(result) {
         //console.log(result);
 		topicSummary.user(result);
-		$('#signinButton').attr('style', 'display: none');
       });
   } else if (authResult['error']) {
     	console.log('Sign-in state: ' + authResult['error']);
-    	//if (authResult['error'] == "user_signed_out")
+    	if (authResult['error'] == "user_signed_out")
     	{
 			topicSummary.user(null);
-			$.get('api/logout', function(data){ console.log(data)});
-			$('#signinButton').attr('style', 'display: true');
+			$.get('api/logout', function(data){ 
+				console.log(data);
+				topicSummary.user(null);
+			});
 		}
   }
+}
+
+function loadSigninAPI() {
+	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	po.src = 'https://apis.google.com/js/client:plusone.js?onload=render';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+}
+
+
+function render() {
+    gapi.signin.render('signinButton', {
+    	'callback': 'signinCallback',
+		'accesstype': 'offline',
+		'redirecturi': 'postmessage',
+		'clientid': '907117162790.apps.googleusercontent.com',
+		'cookiepolicy': 'single_host_origin',
+		'scope': 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me'
+	});
 }
 
 topicSummary = new dashboardViewModel();
@@ -170,6 +191,7 @@ function initializeTopicSummary()
 			topicSummary.supportsSms(topic.supportsSms);
 			topicSummary.ownerUserId(topic.ownerUserId);
 			topicSummary.numSmsShares(topic.numSmsShares);
+			google.load("visualization", "1", {packages:["corechart", "map", "annotatedtimeline"], callback: initializeCharts}); 
 		});
 
 	/*$.get('/api/topics/buzzwords', {topicId: topicSummary.id()})
@@ -187,11 +209,11 @@ function initializeTopicSummary()
 	topicSummary.hasBuzzwords(false);
 	location.hash = "recentreports";
 
-	$.get('/api/reports', {topicId: topicSummary.id, from:0, to:5}, topicSummary.reports);
+	$.get('/api/reports', {topicId: topicSummary.id, from:0, to:2}, topicSummary.reports);
 }
 
-function initializeMapChart(data) {
-	var geoView = new google.visualization.DataView(data);
+function drawMapChart() {
+	var geoView = new google.visualization.DataView(topicSummary.data);
     geoView.setColumns([1, 2, 3]);
 
       var options = {
@@ -205,9 +227,9 @@ function initializeMapChart(data) {
       map.draw(geoView, options);
   }
 
-function initializeSentimentChart(data) {
+function drawSentimentChart() {
 
-	var sentimentView = new google.visualization.data.group(data, [5], 
+	var sentimentView = new google.visualization.data.group(topicSummary.data, [5], 
 		[{'column': 5, 'aggregation': google.visualization.data.count, 'type': 'number', 'label' : "Number of reports"}]);
 
 	var options = {
@@ -219,12 +241,12 @@ function initializeSentimentChart(data) {
 	chart.draw(sentimentView, options);
 }
 
-function initializeTimeSeriesChart(data) {
+function drawTimeSeriesChart() {
 
-	var frequencyView = new google.visualization.data.group(data, [4], 
+	var frequencyView = new google.visualization.data.group(topicSummary.data, [4], 
 		[{'column': 4, 'aggregation': google.visualization.data.count, 'type': 'number', 'label': 'Reports per day'}]);
 
-	var options = {
+	/*var options = {
 		displayAnnotations: true,
 		wmode: 'transparent',
 
@@ -241,7 +263,22 @@ function initializeTimeSeriesChart(data) {
 	};
 
 	var chart = new google.visualization.LineChart(document.getElementById('timeseries-canvas'));
-	chart.draw(frequencyView, options);
+	chart.draw(frequencyView, options);*/
+
+	g = new Dygraph(
+		document.getElementById("timeseries-canvas"),
+		function() {
+			return frequencyView;
+		},
+		{
+			strokeWidth: 2,
+			'Reports per day': {
+				strokeWidth: 1.0,
+				drawPoints: true,
+				pointSize: 1.5
+			}
+		}
+		);
 }
 
 function initializeCharts()
@@ -250,11 +287,52 @@ function initializeCharts()
     //query.setQuery('select reportId, latitude, longitude, content');
     query.send(function(response) {
       // Create our data table out of JSON data loaded from server.
-      var data = response.getDataTable();
-	  initializeSentimentChart(data);
-	  initializeMapChart(data);
-	  initializeTimeSeriesChart(data);
+      topicSummary.data = response.getDataTable();
+      size();
 	});
+}
+
+var t;
+function size(animate){
+    // If we are resizing, we don't want the charts drawing on every resize event.
+    // This clears the timeout so that we only run the sizing function
+    // when we are done resizing the window
+    clearTimeout(t);
+    // This will reset the timeout right after clearing it.
+    t = setTimeout(function(){
+    	console.log("Draw canvas");
+        /*$(".canvas").each(function(i,el){
+        	console.log("canvas: " + i + " " + el.id + " " + $(el).parent().width() + " " + $(el).parent().outerHeight());
+            // Set the canvas element's height and width to it's parent's height and width.
+            // The parent element is the div.canvas-container
+            $(el).attr({
+                "width":$(el).parent().width(),
+                "height":$(el).parent().outerHeight()
+            });
+        });*/
+        // kickoff the redraw function, which builds all of the charts.
+        redraw(animate);
+        // loop through the widgets and find the tallest one, and set all of them to that height.
+        var m = 0;
+        // we have to remove any inline height setting first so that we get the automatic height.
+        /*$(".canvas").height("");
+        $(".canvas").each(function(i,el){ m = Math.max(m,$(el).height()); });
+        $(".canvas").height(m);*/
+    }, 100); // the timeout should run after 100 milliseconds
+}
+$(window).on('resize', size);
+
+function redraw(animation){
+    var options = {};
+    if (!animation){
+        options.animation = false;
+    } else {
+        options.animation = true;
+    }
+    
+	drawSentimentChart();
+	drawTimeSeriesChart();
+	drawMapChart();
 }
 
 function loadFacebookScript(d, s, id) {
@@ -289,8 +367,6 @@ function loadScripts() {
 	loadFacebookScript(document, 'script', 'facebook-jssdk');
 	loadGooglePlusScript();
 	!loadTwitterScript(document, 'script', 'twitter-wjs');
-	
-	google.load("visualization", "1", {packages:["corechart", "map", "annotatedtimeline"], callback: initializeCharts}); 
 }
 
 window.onload = loadScripts;

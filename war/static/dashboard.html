@@ -3,6 +3,7 @@
 <html>
 	
 	<head>
+		<title data-bind="text: title"></title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,8 +12,11 @@
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 		-->
 
+		<link href="css/normalize.css" rel="stylesheet"></style>
 		<link href="flatui/bootstrap/css/bootstrap.css" rel="stylesheet">
-		<link href="flatui/css/flat-ui.css" rel="stylesheet">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+		<!--<link href="flatui/bootstrap/css/bootstrap-theme.css" rel="stylesheet">-->
+		<!--<link href="flatui/css/flat-ui.css" rel="stylesheet">-->
 	    <link href="css/dashboard.css" rel="stylesheet"></style>
 
 	    <link rel="shortcut icon" href="flatui/images/favicon.ico">
@@ -28,7 +32,7 @@
 		<a href="#content" class="sr-only">Skip to main content</a>
   
 		<div class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
-	      <div class="container">
+	      <div class="container clearfix">
 	        <div class="navbar-header">
 	          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 	            <span class="sr-only">Toggle navigation</span>
@@ -41,88 +45,76 @@
 	        <div class="collapse navbar-collapse">
 	          <ul class="nav navbar-nav  navbar-right">
 	            <li><a href="#">Start a new topic</a></li>
-	            <li data-bind="visible: isNotLoggedIn">
-	            	<span id="signinButton">
-					  <span class="g-signin"
-						data-callback="signinCallback"
-						data-accesstype="offline"
-						data-redirecturi="postmessage"
-						data-clientid="907117162790.apps.googleusercontent.com"
-						data-cookiepolicy="single_host_origin"
-						data-scope="https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me">
-					  </span>
-					</span>
-					<!--<button type="button" class="btn btn-default navbar-btn" data-bind="click: $root.login">Sign in</button>-->
-	            </li>
 
-	            <li class="dropdown" data-bind="visible: isLoggedIn">
+	            <li class="dropdown">
 	            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 	            		<span class="glyphicon glyphicon-user"></span> 
 	            		<span data-bind="text: userName"></span>
 	            		<b class="caret"></b>
 	            	</a>
 			        <ul class="dropdown-menu">
-			          <li ><a href="#">Manage your topics</a></li>
-			          <li ><button type="button" class="btn btn-default navbar-btn" data-bind="click: $root.logout">Logout</button></li>
-			          <li class="divider"></li>
-			          <li ><button type="button" class="btn btn-default navbar-btn" data-bind="click: $root.logout">Delete account</button></li>
+			          <li data-bind="visible: isLoggedIn"><a href="#">Manage my topics</a></li>
+			          <li data-bind="visible: isLoggedIn">
+			          	<a href="javascript:void(0);" data-bind="click: $root.logout">Logout</a>
+			          </li>
+			          <li data-bind="visible: isLoggedIn"class="divider"></li>
+			          <li data-bind="visible: isLoggedIn">
+			          	<a href="javascript:void(0);" data-bind="click: $root.disconnect">Delete my account</a>
+			          </li>
+
+				      <li data-bind="visible: isNotLoggedIn">
+						<span id="signinButton" class="dropdown-item">
+							<a href="javascript:void(0);">Sign in</a>
+						</span> 
+		              </li>
 			        </ul>
+
 	            </li>
 	          </ul>
 	        </div>
 	      </div>
 	    </div>
 
-		<div class="container" id="content">
+		<div class="container  clearfix" id="content">
 		<div class="row">
 
 			<div class="col-md-8">
 
 				<div class="row">
-					<div class="col-md-6" class = "jumbotron">
+					<div class="col-md-8">
 						<div >
-						<div id="topic-canvas">  <!-- title, summary, socialshare, send a report -->
+						<div class="canvas" id="topic-canvas">  <!-- title, summary, socialshare, send a report -->
 							<div data-bind="text: title"> </div>
 							<div data-bind="text: shortDescription"> </div>
 							<button>Submit a report</button>
+
+							<div class="social-share">
+									<div class="fb-share-button" data-type="box_count" data-height="60">Share on Facebook</div>
+									<div class="g-plus" data-action="share" data-annotation="vertical-bubble" data-height="60">Share on Google+</div>
+									<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-text="" data-count="vertical">Tweet</a>
+									<button type="button" class="btn btn-primary btn-xs">
+										Share by SMS <!--<span class="badge" data-bind="text: numSmsShares">-->
+									</button>
+							</div>
 						</div>
 						</div>
 					</div>
 
 
-					<div class="col-md-6">
+					<div class="col-md-4">
 						<div>
-						<div id="sentiment-canvas" > </div>
+						<div class="canvas" id="sentiment-canvas" > </div>
 						</div>
 					</div>
 				</div>
 				
 				<div class="row">
-					<div class="col-md-6">
-						<div id="map-canvas"> </div>
+					<div class="col-md-4">
+						<div class="canvas" id="map-canvas"> </div>
 					</div>
 
-					<div class="col-md-6">
-
-						<div class = "row">
-							<div class="col-md-12">
-								<div id="timeseries-canvas"> </div>
-							</div>
-						</div>
-
-						<div class = "row">
-							<div class="col-md-12">
-								<div class="social-share">
-									<div class="fb-share-button" data-type="box_count" data-height="60" data-bind="data-href: url"></div>
-									<div class="g-plus" data-action="share" data-annotation="vertical-bubble" data-height="60" data-bind="data-href: url"></div>
-									<a href="https://twitter.com/share" class="twitter-share-button" data-bind="data-url: url" data-via="" data-text="" data-count="vertical">Tweet</a>
-									<button type="button" class="btn btn-primary btn-xs">
-										SMS <!--<span class="badge" data-bind="text: numSmsShares">-->
-									</button>
-								</div>
-							</div>
-						</div>
-
+					<div class="col-md-8">
+						<div class="canvas" id="timeseries-canvas"> </div>
 					</div>
 
 				</div>
@@ -195,6 +187,7 @@
 	<script type="text/javascript" src="js/jquery.tmpl.min.js"></script>
 	<script type="text/javascript" src="js/knockout-3.0.0.js"></script>
 	<script type="text/javascript" src="js/sammy-latest.min.js"></script>
+	<script type="text/javascript" src="js/dygraph-combined.js"></script>
 
 	<script type="text/html" id="buzzwords-template">
 		<li class="list-group-item"> ${word} <br> ${frequency} </li>
@@ -208,7 +201,6 @@
 		</li>
 	</script>
 
-	<script type="text/javascript" src="js/signin.js"></script>
 	<script type="text/javascript" src="js/dashboard.js"></script>
 
 </html>

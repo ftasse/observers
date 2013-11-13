@@ -1,31 +1,28 @@
-.element {
-	-webkit-box-sizing: content-box;
-     -moz-box-sizing: content-box;
-          box-sizing: content-box;
+.element { 
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
-#map-canvas {
-}
-
-#map-canvas img { 
-  max-width: none;
-}
-
-#map-canvas label { 
-  width: auto; display:inline; 
+canvas
+{
+	border-style:solid;
+	border-width:medium;
 } 
 
+/*#map-canvas {
+	height:200px;
+}
+
 #topic-canvas {
-	
+	height:200px;
 }
 
 #timeseries-canvas {
-	max-width: none;
+	height:200px;
 }
 
 #sentiment-canvas {
+	height:200px;
 }
-
-#signinButton {
-	padding-bottom: 70px;
-}
+*/
