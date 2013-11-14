@@ -7,8 +7,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
-	<link rel="stylesheet" href="http://weloveiconfonts.com/api/?family=fontawesome">
+	<link href="css/pure-min.css" rel="stylesheet"></style>
 	<link href="css/dashboard.css" rel="stylesheet"></style>
 </head>
 
@@ -20,7 +19,7 @@
 				<li><a href="#">Start a new topic</a></li>
 				<!-- ko if: isLoggedIn -->
 				<li>
-					<a href="#"><b class="fontawesome-user" alt="My account"></b></a>
+					<a href="#"><b class="fontawesome-user" alt="My account" data-bind="if: isLoggedIn"></b></a>
 					<ul>
 						<li class="pure-menu-heading" data-bind="text: userName"></li>
 						<li class="pure-menu-separator"></li>
@@ -41,10 +40,10 @@
 	</header>
 
 	<section class="dashboard pure-g-r clearfix">
-		<div class="pure-u-3-4 dashboard-piece">
-			<div class="pure-g-r clearfix">
-				<div class="pure-u-2-3 dashboard-piece dashboard-piece-redbg dashboard-piece-logo">
-					<div class="dashboard-content l-box">
+		<div class="pure-u-3-4">
+			<div class="pure-g-r">
+				<div class="pure-u-2-3 l-box dashboard-piece dashboard-piece-redbg">
+					<div class="dashboard-content">
 						<div class="canvas" id="topic-canvas">  <!-- title, summary, socialshare, send a report -->
 							<div data-bind="text: title"> </div>
 							<div data-bind="text: shortDescription"> </div>
@@ -62,42 +61,26 @@
 					</div>
 				</div>
 
-				<div class="pure-u-1-3 dashboard-piece dashboard-piece-bluebg">
-					<div class="dashboard-content l-box">
+				<div class="pure-u-1-3 l-box dashboard-piece dashboard-piece-bluebg">
+					<div class="dashboard-content">
 						<div class="canvas" id="sentiment-canvas" > </div>
 					</div>
 				</div>
-				<div class="pure-u-2-5 dashboard-piece dashboard-piece-orangebg">
-					<div class="dashboard-content l-box">
+				<div class="pure-u-2-5 l-box dashboard-piece dashboard-piece-orangebg">
+					<div class="dashboard-content">
 						<div class="canvas" id="map-canvas" > </div>
 					</div>
 				</div>
-				<div class="pure-u-3-5 dashboard-piece dashboard-piece-yellowbg">
-					<div class="dashboard-content l-box">
+				<div class="pure-u-3-5 l-box dashboard-piece dashboard-piece-yellowbg">
+					<div class="dashboard-content">
 						<div class="canvas" id="timeseries-canvas" > </div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="pure-u-1-4 dashboard-piece dashboard-piece-graybg">
-			<div class="dashboard-content">
-			<!--<div data-bind="visible: $root.hasBuzzwords()">
-	            <ul class="folders" >
-
-	              <li data-bind="css: { selected: $root.buzzwordsDisplaySelected() },
-	                       click: $root.goToBuzzwords">
-	                Buzzwords
-	              </li>
-
-	                <li data-bind="css: { selected: $root.recentReportsDisplaySelected() },
-	                       click: $root.goToRecentReports">
-	                Recent reports
-	              </li>
-	            </ul>
-	        </div>-->
-	        <h3 class="" data-bind="visible: !$root.hasBuzzwords()">Latest reports</h3>
-
+		<div class="pure-u-1- l-box dashboard-piece dashboard-piece-graybg">
+			<h3 class="" data-bind="visible: !$root.hasBuzzwords()">Latest reports</h3>
 	        <div id="reports-canvas">
 	        	<div id = "recentreports-canvas" data-bind="visible: $root.recentReportsDisplaySelected()">
 	        		<ul class="list-group" data-bind="template: {name: 'reports-template', foreach: reports}" >
@@ -117,26 +100,31 @@
 	&copy; 2013 Flora Tasse
 </footer>
 
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src="js/jquery.tmpl.min.js"></script>
-<script type="text/javascript" src="js/knockout-3.0.0.js"></script>
-<script type="text/javascript" src="js/sammy-latest.min.js"></script>
-<script type="text/javascript" src="js/dygraph-combined.js"></script>
-<script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+<!-- //-beg- concat_js -->
+<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="js/vendor/yui-min.js"></script>
+<script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+
+<script type="text/javascript" src="js/vendor/dygraph-combined.js"></script>
+<script type="text/javascript" src="js/vendor/sammy-latest.min.js"></script>
+<script type="text/javascript" src="js/dashboard.js"></script>
+<!-- //-end- concat_js -->
 
 <script type="text/html" id="buzzwords-template">
-<li class="list-group-item"> ${word} <br> ${frequency} </li>
+	<li class="list-group-item"> ${word} <br> ${frequency} </li>
 </script>
 
 <script type="text/html" id="reports-template">
-<li class="list-group-item"> 
-<!-- <span class="badge">${numChannelLikes}</span> -->
-${content} <br> Posted on:  <span data-bind="text: new Date(created)"></span> 
-<span class="glyphicon glyphicon-minus-sign" data-bind="visible: false"></span>
-</li>
+	<li class="list-group-item">  
+		${content} <br> Posted on:  <span data-bind="text: new Date(created)"></span> 
+		<span class="glyphicon glyphicon-minus-sign" data-bind="visible: false"></span>
+	</li>
 </script>
 
-<script type="text/javascript" src="js/dashboard.js"></script>
 </body>
 </html>

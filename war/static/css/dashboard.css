@@ -104,10 +104,14 @@ footer {
     font-size: 0.6em;
     font-weight: bold;
 }
-
-.l-box {
-   	padding: 0em;
+.pure-g > div {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
 }
+/*.l-box {
+   	padding: 1em;
+}*/
 
 @media only screen and (max-width:767px) {
     .pure-g-r>[class ^="pure-u"]{width:50%; float: left;}
@@ -117,11 +121,12 @@ footer {
 }
 
 
-/*canvas
+.dashboard-content
 {
 	border-style:solid;
 	border-width:medium;
-} */
+    border-color: red;
+}
 
 /*#map-canvas {
 	height:200px;
