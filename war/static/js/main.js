@@ -1,27 +1,11 @@
-/*@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+var user = ko.observable(null);
 
-// fontawesome
-[class*="fontawesome-"]:before {
-  font-family: 'FontAwesome', sans-serif;
-}*/
-
-var user = ko.observable();
-
-YUI({
-	classNamePrefix: 'pure'
-}).use('gallery-sm-menu', function (Y) {
-
-	var horizontalMenu = new Y.Menu({
-		container         : '#horizontal-menu',
-		sourceNode        : '#std-menu-items',
-		orientation       : 'horizontal',
-		hideOnOutsideClick: false,
-		hideOnClick       : false
-	});
-
-	horizontalMenu.render();
-	horizontalMenu.show();
-});
+(function () {
+	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/client:plusone.js?onload=customSigninRender'; 
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    console.log("Loaded G+ api!");
+})();
 
 function getUser ()
 {
@@ -37,15 +21,24 @@ function getUser ()
 function userLogout()
 {
 	console.log("Logging out!");
+	if (user() != null)
+	{
+		$.get('api/logout', function(data){ 
+			user(null);
+		}).error(function() {
+			console.log("Could not log out");
+		});
+	}
 	gapi.auth.signOut();
 }
 
-function disconnect()
+function userDisconnect()
 {
 	$.get('api/disconnect', function(data){ console.log(data)});
 }
 
 function signinCallback(authResult) {
+  //console.log("Val: ", authResult["access_token"] + " "  + authResult["error"]);
   if (authResult['code']) {
     // Send the code to the server
     $.get('api/oauth2callback', { code: authResult['code'], state: authResult['state'] }, function(result) {
@@ -54,17 +47,20 @@ function signinCallback(authResult) {
       });
   } else if (authResult['error']) {
     	console.log('Sign-in state: ' + authResult['error']);
-    	if (authResult['error'] == "user_signed_out")
-    	{
-			topicSummary.user(null);
-			$.get('api/logout', function(data){ 
-				user(null);
-			});
+    	if (authResult['error'] == 'user_signed_out')
+    	{if (user() != null)
+    		{
+				$.get('api/logout', function(data){ 
+					user(null);
+				}).error(function() {
+					console.log("Could not log out");
+				});
+			}
 		}
   }
 }
 
-function render() {
+function customSigninRender() {
     gapi.signin.render('signinButton', {
     	'callback': 'signinCallback',
 		'accesstype': 'offline',

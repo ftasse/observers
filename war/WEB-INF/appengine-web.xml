@@ -5,7 +5,7 @@
   <threadsafe>true</threadsafe>
   <sessions-enabled>true</sessions-enabled>
   
-  <public-root>/static/publish</public-root>
+  <public-root>/static/</public-root>
 
   <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>

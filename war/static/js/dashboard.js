@@ -7,7 +7,6 @@
 // or a list of recent reports (scroll down to get more reports)
 
 
-
 var QueryString = getRequestParameters ();
 
 function buzzword()
@@ -40,19 +39,14 @@ function dashboardViewModel() {
 
 	self.numSmsShares = ko.observable();
 
-	self.user = ko.observable({googleDisplayName: null});
-	self.user(user);
-	if (user() == null) 
-		getUser(); 
-
 	self.userName = ko.computed(function() {
-		if (self.user() == null)	return null;
-        else return self.user().googleDisplayName;
+		if (user() == null)	return null;
+        else return user().googleDisplayName;
     }, this);
 
     this.userId = ko.computed(function() {
-		if (self.user() == null)	return null;
-        else return self.user().id;
+		if ( user() == null)	return null;
+        else return  user().id;
     }, this);
 
     this.isAdmin = ko.computed(function() {
@@ -60,11 +54,7 @@ function dashboardViewModel() {
     }, this);
 
     this.isLoggedIn = ko.computed(function() {
-        return (self.user() != null);
-    }, this);
-
-    this.isNotLoggedIn = ko.computed(function() {
-        return !self.isLoggedIn();
+        return (user() != null);
     }, this);
 
     this.data = null;
@@ -99,6 +89,9 @@ ko.applyBindings(topicSummary);
 
 function initializeTopicSummary()
 {
+	if (user() == null) 
+		getUser();
+
 	topicSummary.id(QueryString.topicId);
 
 	if (topicSummary.id() == null)
@@ -136,6 +129,16 @@ function drawMapChart() {
 
       var map = new google.visualization.Map(document.getElementById('map-canvas'));
       map.draw(geoView, options);
+
+	    function resizeHandler () {
+	        map.draw(geoView, options);
+	    }
+	    if (window.addEventListener) {
+	        window.addEventListener('resize', resizeHandler, false);
+	    }
+	    else if (window.attachEvent) {
+	        window.attachEvent('onresize', resizeHandler);
+	    }
   }
 
 function drawSentimentChart() {
@@ -150,6 +153,16 @@ function drawSentimentChart() {
 
 	var chart = new google.visualization.PieChart(document.getElementById('sentiment-canvas'));
 	chart.draw(sentimentView, options);
+
+	function resizeHandler () {
+	        chart.draw(sentimentView, options);
+	    }
+	    if (window.addEventListener) {
+	        window.addEventListener('resize', resizeHandler, false);
+	    }
+	    else if (window.attachEvent) {
+	        window.attachEvent('onresize', resizeHandler);
+	    }
 }
 
 function drawTimeSeriesChart() {
@@ -173,7 +186,7 @@ function drawTimeSeriesChart() {
 		);
 }
 
-function redraw(animation){
+/*function redraw(animation){
     var options = {};
     if (!animation){
         options.animation = false;
@@ -184,7 +197,7 @@ function redraw(animation){
 	drawSentimentChart();
 	drawTimeSeriesChart();
 	drawMapChart();
-}
+}*/
 
 function initializeCharts()
 {
@@ -193,11 +206,14 @@ function initializeCharts()
     query.send(function(response) {
       // Create our data table out of JSON data loaded from server.
       topicSummary.data = response.getDataTable();
-      size();
+        drawSentimentChart();
+		drawTimeSeriesChart();
+		drawMapChart();
+      //size();
 	});
 }
 
-var t;
+/*var t;
 function size(animate){
     // If we are resizing, we don't want the charts drawing on every resize event.
     // This clears the timeout so that we only run the sizing function
@@ -206,7 +222,7 @@ function size(animate){
     // This will reset the timeout right after clearing it.
     t = setTimeout(function(){
     	redraw(animate);
-    	$(".pure-g-r").each(function(i,el){
+    	$(".row").each(function(i,el){
     		var contentPieces = $(el).find(".dashboard-piece");
     		var max = 0;
     		contentPieces.css("min-height","");
@@ -218,6 +234,9 @@ function size(animate){
     }, 400); // the timeout should run after 400 milliseconds
 }
 $(window).on('resize', size);
+*/
 
-window.onload = initializeTopicSummary();
-window.onReady = loadSocialScripts();
+(function () {
+	initializeTopicSummary();
+	loadSocialScripts();
+})();

@@ -97,7 +97,7 @@ public class ConnectServletCallback extends JsonRestServlet {
       accessToken.setCode(req.getParameter("code"));
       accessToken.setState(req.getParameter("state"));
 
-      System.out.println("Code: " + accessToken.code);
+      //System.out.println("Code: " + accessToken.code);
       processAuthorizationCode(req, resp, accessToken);
   }
 

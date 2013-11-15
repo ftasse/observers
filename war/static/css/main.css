@@ -98,14 +98,48 @@ textarea {
    ========================================================================== */
 
 
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+// fontawesome
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
 
 
-
-
-
-
-
-
+/*Google Sign in*/
+#signinButton {
+  display: inline-block;
+  background: #dd4b39;
+  color: white;
+  /*width: 165px;*/
+  border-radius: 5px;
+  white-space: nowrap;
+}
+#signinButton:hover {
+  background: #e74b37;
+  cursor: hand;
+}
+span.label {
+  font-weight: bold;
+}
+span.icon {
+    background: url('/img/g+icon/Desktop/20dp/1x/btn_red.png') transparent 3px 50% no-repeat;
+  display: inline-block;
+  vertical-align: middle;
+  width: 23px;
+  height: 23px;
+  border-right: #bb3f30 1px solid;
+}
+span.buttonText {
+  display: inline-block;
+  vertical-align: middle;
+  padding-left: 23px;
+  padding-right: 23px;
+  font-size: 12px;
+  font-weight: bold;
+  /* Use the Roboto font that is loaded in the <head> */
+  font-family: 'Roboto',arial,sans-serif;
+}
 
 
 

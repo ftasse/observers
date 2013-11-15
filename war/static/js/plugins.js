@@ -19,18 +19,9 @@
             console[method] = noop;
         }
     }
-
-    loadGoogleSigninScript();
 }());
 
 // Place any jQuery/helper plugins in here.
-
-function loadGoogleSigninScript() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/client:plusone.js?onload=render';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-}
-
 function loadFacebookScript(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
