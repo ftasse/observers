@@ -79,6 +79,14 @@ public abstract class JsonRestServlet extends HttpServlet {
    */
   public static final String CLIENT_SECRET = "***REMOVED***";
 
+  public static final String BROWSER_API_KEY = "***REMOVED***";
+  public static final String SERVER_API_KEY = "***REMOVED***";
+
+  public static final String APP_ID = "gcdc2013-observers";
+
+  public static final String SERVICE_ACCOUNT_PKCS12_FILE_PATH = "***REMOVED***";
+  public static final String SERVICE_ACCOUNT_EMAIL = "***REMOVED***";
+
   /**
    * MIME type to use when sending responses back to PhotoHunt clients.
    */

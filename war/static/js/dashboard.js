@@ -8,6 +8,14 @@
 
 
 var QueryString = getRequestParameters ();
+var topicSummary;
+
+/*function showCreateTopic () {
+	var url = "/createtopic_form.html";
+	$("#createTopicModal").load(url, function() { // load the url into the modal
+            $(this).modal('show'); // display the modal on url load
+        });
+}*/
 
 function buzzword()
 {
@@ -39,25 +47,25 @@ function dashboardViewModel() {
 
 	self.numSmsShares = ko.observable();
 
+	self.data = ko.observable(null);
+
 	self.userName = ko.computed(function() {
 		if (user() == null)	return null;
         else return user().googleDisplayName;
     }, this);
 
-    this.userId = ko.computed(function() {
+    self.userId = ko.computed(function() {
 		if ( user() == null)	return null;
         else return  user().id;
     }, this);
 
-    this.isAdmin = ko.computed(function() {
+    self.isAdmin = ko.computed(function() {
         return self.ownerUserId() == self.userId();
     }, this);
 
-    this.isLoggedIn = ko.computed(function() {
+    self.isLoggedIn = ko.computed(function() {
         return (user() != null);
     }, this);
-
-    this.data = null;
 
 	//Behaviour
 	self.goToRecentReports = function() {
@@ -84,11 +92,11 @@ function dashboardViewModel() {
     }).run();
 };
 
-topicSummary = new dashboardViewModel();
-ko.applyBindings(topicSummary);
-
 function initializeTopicSummary()
 {
+	topicSummary = new dashboardViewModel();
+	ko.applyBindings(topicSummary);
+
 	if (user() == null) 
 		getUser();
 
@@ -117,7 +125,7 @@ function initializeTopicSummary()
 }
 
 function drawMapChart() {
-	var geoView = new google.visualization.DataView(topicSummary.data);
+	var geoView = new google.visualization.DataView(topicSummary.data());
     geoView.setColumns([1, 2, 3]);
 
       var options = {
@@ -143,12 +151,17 @@ function drawMapChart() {
 
 function drawSentimentChart() {
 
-	var sentimentView = new google.visualization.data.group(topicSummary.data, [5], 
+	var sentimentView = new google.visualization.data.group(topicSummary.data(), [5], 
 		[{'column': 5, 'aggregation': google.visualization.data.count, 'type': 'number', 'label' : "Number of reports"}]);
 
 	var options = {
-		title: 'Emotion analysis',
-		pieHole: 0.4
+		legend: 'none',
+        pieSliceText: 'label',
+		pieHole: 0.4,
+		colors: ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+		backgroundColor: {
+			fill: 'transparent'
+		}
 	};
 
 	var chart = new google.visualization.PieChart(document.getElementById('sentiment-canvas'));
@@ -167,15 +180,34 @@ function drawSentimentChart() {
 
 function drawTimeSeriesChart() {
 
-	var frequencyView = new google.visualization.data.group(topicSummary.data, [4], 
+	var frequencyView = new google.visualization.data.group(topicSummary.data(), [4], 
 		[{'column': 4, 'aggregation': google.visualization.data.count, 'type': 'number', 'label': 'Reports per day'}]);
 
-	g = new Dygraph(
-		document.getElementById("timeseries-canvas"),
-		function() {
-			return frequencyView;
-		},
-		{
+	var options = {
+		legend: 'none', 
+		backgroundColor:{
+			fill: 'transparent'
+		}/*,
+		hAxis: { gridlines: {color: 'red', count: 0} },
+		vAxis: { gridlines: {color: 'black'} }*/
+	};
+
+	var chart = new google.visualization.LineChart(document.getElementById('timeseries-canvas'));
+	chart.draw(frequencyView, options);
+
+	function resizeHandler () {
+	        chart.draw(frequencyView, options);
+	    }
+	    if (window.addEventListener) {
+	        window.addEventListener('resize', resizeHandler, false);
+	    }
+	    else if (window.attachEvent) {
+	        window.attachEvent('onresize', resizeHandler);
+	    }
+
+	/*var options = {
+			title: "Reports per day",
+			width: $('#timeseries-canvas').width(),
 			strokeWidth: 2,
 			'Reports per day': {
 				strokeWidth: 1.0,
@@ -183,7 +215,26 @@ function drawTimeSeriesChart() {
 				pointSize: 1.5
 			}
 		}
+
+	g = new Dygraph(
+		document.getElementById("timeseries-canvas"),
+		function() {
+			return frequencyView;
+		},
+		options
 		);
+
+	function timeseriesResizeHandler () {
+			options.width = $('#timeseries-canvas').width();
+			console.log("redraw!!! " + options.width);
+	        g.updateOptions(options);
+	    }
+	if (window.addEventListener) {
+	    window.addEventListener('resize', timeseriesResizeHandler, false);
+	}
+	else if (window.attachEvent) {
+	    window.attachEvent('onresize', timeseriesResizeHandler);
+	}*/
 }
 
 /*function redraw(animation){
@@ -205,15 +256,15 @@ function initializeCharts()
     //query.setQuery('select reportId, latitude, longitude, content');
     query.send(function(response) {
       // Create our data table out of JSON data loaded from server.
-      topicSummary.data = response.getDataTable();
+      topicSummary.data(response.getDataTable());
         drawSentimentChart();
 		drawTimeSeriesChart();
 		drawMapChart();
-      //size();
+       size();
 	});
 }
 
-/*var t;
+var t;
 function size(animate){
     // If we are resizing, we don't want the charts drawing on every resize event.
     // This clears the timeout so that we only run the sizing function
@@ -221,7 +272,7 @@ function size(animate){
     clearTimeout(t);
     // This will reset the timeout right after clearing it.
     t = setTimeout(function(){
-    	redraw(animate);
+    	//redraw(animate);
     	$(".row").each(function(i,el){
     		var contentPieces = $(el).find(".dashboard-piece");
     		var max = 0;
@@ -231,10 +282,17 @@ function size(animate){
     		});
     		contentPieces.css("min-height", max);
     	});
+    	$(".row").each(function(i,el){
+    		var contentPieces = $(el).find(".l-box");
+    		var max = 0;
+    		contentPieces.css("min-height","");
+    		$.grep(contentPieces, function(el,i){
+    			max = Math.max($(el).outerHeight(),max);
+    		});
+    		contentPieces.css("min-height", max);
+    	});
     }, 400); // the timeout should run after 400 milliseconds
 }
-$(window).on('resize', size);
-*/
 
 (function () {
 	initializeTopicSummary();

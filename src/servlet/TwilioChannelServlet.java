@@ -251,6 +251,8 @@ public class TwilioChannelServlet extends JsonRestServlet {
                         report.setContent(new Text(message.getBody()));
                         report.setNumChannelLikes(Long.valueOf(0));
 
+                        report.setMood(Report.computeMood(message.getBody(), topic.getTrainedSentimentModelId()));
+                        
                         /*GeoLocation location = status.getGeoLocation();
                         if (location != null)
                             report.setLocation(new GeoPt((float)location.getLatitude(), (float)location.getLongitude()));

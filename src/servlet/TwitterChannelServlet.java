@@ -134,6 +134,7 @@ public class TwitterChannelServlet extends JsonRestServlet {
                         report.setChannelId(channel.getId());
                         report.setTopicId(topicId);
                         report.setContent(new Text(status.getText()));
+                        report.setMood(Report.computeMood(status.getText(), topic.getTrainedSentimentModelId()));
                         report.setNumChannelLikes(Long.valueOf(status.getFavoriteCount()));
 
 

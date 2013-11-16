@@ -32,7 +32,10 @@
 			</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">Start a new topic</a></li>
+					<li><!--<a data-target="#createTopicModal" data-toggle="modal" >-->
+						<a id="create-topic-link">
+						Start a new topic </a>
+					</li>
 					<li data-bind="visible: isLoggedIn()" class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<span class="glyphicon glyphicon-user" alt="My account: ">
@@ -56,56 +59,66 @@
 		</nav>
 	</header>
 
-	<div class="container">
+
+	<div class="container clearfix">
+
+
+<!-- Modal -->
+<div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+</div><!-- /.modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="share-story-modal" data-remote="sharestory_form.html" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+</div><!-- /.modal -->
+
+
 	<div class="row">
 		<div class="dashboard  col-wrap ">
 		<div class="col-md-8  l-box">
 			<div class="row col-wrap">
 				<div class="col-md-8">
-					<div class="dashboard-piece dashboard-piece-redbg">
-					<div class="dashboard-content">
-						<div class="canvas" id="topic-canvas">  
-							<div data-bind="text: title"> </div>
-							<div data-bind="text: shortDescription"> </div>
-							<button>Submit a report</button>
+					<div class="jumbotron dashboard-piece ">
+						<h2 data-bind="text: title"></h2>
+						<p data-bind="text: shortDescription"></p>
 
-							<div class="social-share">
-								<!--	<span class="fb-share-button" data-type="box_count" data-height="60">Share on Facebook</span>
-									<span class="g-plus" data-action="share" data-annotation="vertical-bubble" data-height="60">Share on Google+</span>
-									<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-text="" data-count="vertical">Tweet</a>
-									<button type="button" class="btn btn-primary btn-xs">
-									Share by SMS</button> -->
-								<div class="text-center v-center" style="font-size:29pt;"> 
-									<a href="#" class=""><i class="fa fa-google-plus"></i></a>  
-									<a href="#" class=""><i class="fa fa-facebook"></i></a> 
-            						<a href="#" class=""><i class="fa fa-twitter"></i></a> 
-								</div>
-							</div>
+						<div class="text-center v-center" style="font-size:29pt;"> 
+							<a href="#" class=""><i class="fa fa-google-plus"></i></a>  
+							<a href="#" class=""><i class="fa fa-facebook"></i></a> 
+							<a href="https://twitter.com/share" class=""><i class="fa fa-twitter"></i></a>
+							<!-- <a href="#" class="" data-bind = "visible: supportsSms()"><i class="fa fa-mobile-phone"></i></a> --> 
 						</div>
-					</div>
+						<p><a data-target="#shareStoryModal" data-toggle="modal" class="btn btn-primary btn-lg" role="button">Share your story</a></p>
 					</div>
 				</div>
 
 				<div class="col-md-4">
 				<div class="dashboard-piece dashboard-piece-bluebg">
+					<div style="height: 18px; font-size:32; font-family: 'serif';">
+						<b data-bind="{text: 'Sentiment', visible: data}"></b>
+					</div>
 					<div class="dashboard-content">
 						<div class="canvas" id="sentiment-canvas" > </div>
 					</div>
 				</div>
 				</div>
 			</div>
-			<br>
+			
 			<div class="row  col-wrap">
 				<div class="col-md-4">
 					<div class="dashboard-piece  dashboard-piece-orangebg">
-					<div class="dashboard-content map-content">
+					<div class="dashboard-content">
 						<div class="canvas" id="map-canvas" > </div>
 					</div>
 					</div>
 				</div>
 				<div class="col-md-8">
-				<div class="dashboard-piece dashboard-piece-yellowbg">
-					<div class="dashboard-content map-content">
+				<div class="dashboard-piece dashboard-piece-yellowbg" id="timeseries-dashboard-piece">
+					<div style="height: 18px; font-size:32; font-family: 'serif';">
+						<b data-bind="{text: 'Reports per day', visible: data}"></b>
+					</div>
+					
+					<div class="dashboard-content">
 						<div class="canvas" id="timeseries-canvas" > </div>
 					</div>
 				</div>
@@ -113,19 +126,21 @@
 			</div>
 		</div>
 
-		<div class="col-md-4 l-box">
-			<div class="dashboard-piece dashboard-piece-graybg">
-			<h3 class="" data-bind="visible: !$root.hasBuzzwords()">Latest reports</h3>
-	        <div id="reports-canvas">
-	        	<div id = "recentreports-canvas" data-bind="visible: $root.recentReportsDisplaySelected()">
-	        		<ul class="list-group" data-bind="template: {name: 'reports-template', foreach: reports}" >
-	        		</ul>
+		<div class="col-md-4 l-box dashboard-piece-graybg">
+			<div class="dashboard-piece dashboard-content">
+				<div style="height: 18px; font-size:32; font-family: 'serif';">
+							<b data-bind="{visible: !$root.hasBuzzwords(), text: 'Latest reports'}"></b>
+				</div>
+		        <div id="reports-canvas" style="margin-top: 18px">
+		        	<div id = "recentreports-canvas" class="panel panel-default" data-bind="visible: $root.recentReportsDisplaySelected()">
+		        		<ul class="list-group" data-bind="template: {name: 'reports-template', foreach: reports}" >
+		        		</ul>
+		        	</div>
+		        	<div id = "buzzwords-canvas" data-bind="visible: $root.buzzwordsDisplaySelected()">
+		        		<ul class="list-group" data-bind="template: {name: 'buzzwords-template', foreach: buzzwords, as: buzzword}">
+		        		</ul>
+		        	</div>
 	        	</div>
-	        	<div id = "buzzwords-canvas" data-bind="visible: $root.buzzwordsDisplaySelected()">
-	        		<ul class="list-group" data-bind="template: {name: 'buzzwords-template', foreach: buzzwords, as: buzzword}">
-	        		</ul>
-	        	</div>
-	        </div>
 	    	</div>
 	    </div>
 	</div>
@@ -153,6 +168,12 @@
 <script type="text/javascript" src="js/dashboard.js"></script>
 <!-- //-end- concat_js -->
 
+	<!--	<span class="fb-share-button" data-type="box_count" data-height="60">Share on Facebook</span>
+	<span class="g-plus" data-action="share" data-annotation="vertical-bubble" data-height="60">Share on Google+</span>
+	<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-text="" data-count="vertical">Tweet</a>
+	<button type="button" class="btn btn-primary btn-xs">
+	Share by SMS</button> -->
+
 <script type="text/html" id="buzzwords-template">
 	<li class="list-group-item"> ${word} <br> ${frequency} </li>
 </script>
@@ -160,7 +181,7 @@
 <script type="text/html" id="reports-template">
 	<li class="list-group-item">  
 		${content} <br> Posted on:  <span data-bind="text: new Date(created)"></span> 
-		<span class="glyphicon glyphicon-minus-sign" data-bind="visible: false"></span>
+		<span class="glyphicon glyphicon-minus-sign" data-bind="visible: $root.isAdmin"></span>
 	</li>
 </script>
 

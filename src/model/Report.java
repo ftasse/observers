@@ -10,6 +10,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnLoad;
+import com.googlecode.objectify.annotation.OnSave;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,17 +19,53 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.logging.Logger;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Link;
+
+import com.observers.servlet.PredictServlet;
 
 @Entity
 @Cache
 @EqualsAndHashCode(of="id", callSuper=false)
 public class Report extends Jsonifiable {
 
+    private static final Logger log = Logger.getLogger(Report.class.getName());
+    private static final String MODEL_ID = "sentiment_identifier";
+
+
     public enum Mood {
-        Sad, Happy, Indifferent, Unknown
+        Negative, Positive, Neutral, Unknown
+    }
+
+    public static Mood computeMood(String text, String modelId)
+    {
+        if (modelId == null)
+            modelId = MODEL_ID;
+
+        try
+            {
+                Mood mood;
+                String label = PredictServlet.getPredictionOutputLabel(text, modelId);
+                if (label.equals("positive") || label.equals("1"))
+                {
+                    mood = Mood.Positive;
+                } else if (label.equals("negative") || label.equals("0"))
+                {
+                    mood = Mood.Negative;
+                } else if (label.equals("neutral"))
+                {
+                    mood = Mood.Neutral;
+                }
+                else
+                    mood = Mood.Unknown;
+                return mood;
+            } catch (Exception e)
+            {
+                log.warning("An error occured:" + e);
+            }
+            return null;
     }
     
     @Expose
@@ -120,10 +157,21 @@ public class Report extends Jsonifiable {
     @Expose
     private Date retrieved;
 
-    @OnLoad
+    @OnSave
     protected void setupMood() {
-        if (mood == null)
-            mood = Mood.Unknown;
+        if (content.getValue() != null && (mood == null || mood == Mood.Unknown))
+        {
+            Topic topic = ofy().load().type(Topic.class).id(topicId).get();
+            String modelId = topic.getTrainedSentimentModelId();
+
+            Mood computedMood = computeMood(content.getValue(), modelId);
+            if (computedMood == null)
+            {
+                computedMood = Mood.Unknown;
+            }
+            mood = computedMood;
+            ofy().save().entity(this).now();
+        }            
     }
 
     @OnLoad

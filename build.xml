@@ -1,5 +1,6 @@
 <project>
   <property name="sdk.dir" location="../appengine-java-sdk" />
+  <!--<property name="OAUTH_ACCESS_TOKEN" value="" />-->
 
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
 

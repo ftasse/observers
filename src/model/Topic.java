@@ -58,6 +58,11 @@ public class Topic extends Jsonifiable {
     @Expose
     private long numSmsShares;
 
+    @Index
+    @Getter
+    @Setter
+    private String trainedSentimentModelId;
+
     @Getter
     @Setter
     @Expose

@@ -5,7 +5,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.lang.reflect.Type;
 
 import static com.observers.model.OfyService.ofy;
 import com.observers.model.Jsonifiable;
@@ -15,7 +19,9 @@ import com.observers.model.User;
 import com.observers.model.DefaultWebAccount;
 import com.observers.model.Channel;
 import com.observers.model.Message;
-
+import com.googlecode.objectify.VoidWork;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.cmd.Query;
@@ -77,44 +83,65 @@ public class ReportsServlet extends JsonRestServlet {
  protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
  	try {
  		checkAuthorization(req);
- 		Long userId = (Long) req.getSession().getAttribute(CURRENT_USER_SESSION_KEY);
- 		Report report = Jsonifiable.fromJson(req.getReader(), Report.class);
+ 		final Long userId = (Long) req.getSession().getAttribute(CURRENT_USER_SESSION_KEY);
+    if (req.getParameter("topicId") == null)
+      throw new IOException();
+    final Long topicId = Long.parseLong(req.getParameter("topicId"));
 
- 		if (report == null || report.getContent() == null || req.getParameter("topicId") == null)
- 			throw new IOException();
+ 		List<Report> reports = new ArrayList<Report> ();
+    Date currentDate = Calendar.getInstance().getTime();
 
-    Long topicId = Long.parseLong(req.getParameter("topicId"));
-    Topic topic = ofy().load().key(Topic.key(topicId)).safeGet();
-    
-    DefaultWebAccount account = topic.getDefaultAccount();
-    Channel channel = ofy().load().type(Channel.class).filter("accountId", account.getId()).first().get();
-
- 		report.setTopicId(topicId);
-    report.setChannelId(channel.getId());
-    report.setAuthorId(String.valueOf(userId));
- 		report.setNumVotes(0);
-
-    if (report.getCreated() == null)
+    if (req.getParameter("many") == null)
     {
-      report.setCreated(Calendar.getInstance().getTime());
+      reports.add(Jsonifiable.fromJson(req.getReader(), Report.class));
+    } else
+    {
+       Gson gson = new Gson();
+       Type listType = new TypeToken<ArrayList<Report>>() { }.getType();
+       reports = Jsonifiable.GSON.fromJson(req.getReader(), listType);
     }
 
-    report.setRetrieved(Calendar.getInstance().getTime());
-    
-    if (report.getChannelReportId() == null)
-    {
-      report.setChannelReportId(String.valueOf(report.getRetrieved().getTime()));
-    }
+    final List<Report> reportsToAdd = reports;
 
- 		ofy().save().entity(report).now();
- 		ofy().clear();
- 		report = ofy().load().type(Report.class).id(report.getId()).get();
- 		sendResponse(req, resp, report);
- 	} catch (UserNotAuthorizedException e) {
- 		sendError(resp, 401, "Unauthorized request");
- 	} catch (IOException e) {
- 		sendError(resp, 400, "Unable to read report data from request body");
- 	}
+    //ofy().transact(new VoidWork() {
+    //public void vrun() {
+       Topic topic = ofy().load().key(Topic.key(topicId)).safeGet();
+
+        DefaultWebAccount account = topic.getDefaultAccount();
+        Channel channel = ofy().load().type(Channel.class).filter("accountId", account.getId()).first().get();
+
+        for (Report report: reportsToAdd)
+        {
+          report.setTopicId(topicId);
+          report.setChannelId(channel.getId());
+          report.setAuthorId(String.valueOf(userId));
+          report.setNumVotes(0);
+
+          if (report.getCreated() == null)
+          {
+            report.setCreated(Calendar.getInstance().getTime());
+          }
+
+          report.setRetrieved(Calendar.getInstance().getTime());
+          
+          if (report.getChannelReportId() == null)
+          {
+            report.setChannelReportId(String.valueOf(report.getRetrieved().getTime()));
+          }
+
+          ofy().save().entity(report).now();
+        }
+    //}
+  //});
+ 		
+   		ofy().clear();
+   		reports = ofy().load().type(Report.class).filter("retrieved >", currentDate).list();
+   		sendResponse(req, resp, reports, "observers#addedreports");
+   	} catch (UserNotAuthorizedException e) {
+   		sendError(resp, 401, "Unauthorized request");
+   	} catch (IOException e) {
+   		sendError(resp, 400, "Unable to read report data from request body");
+   	}
  }
 
 
@@ -168,7 +195,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     if (reportId != null) {
         // Get the report with the given ID and return it.
       Report report = q.filter("id", Long.parseLong(reportId)).first().get();
-      Topic topic = ofy().load().key(Topic.key(Long.parseLong(topicId))).safeGet();
+      //Topic topic = ofy().load().key(Topic.key(Long.parseLong(topicId))).safeGet();
       /*if (!userId.equals(topic.getOwnerUserId())) {
         throw new UserNotAuthorizedException();
       }*/

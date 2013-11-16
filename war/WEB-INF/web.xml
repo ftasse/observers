@@ -15,6 +15,15 @@
 </security-constraint>
 
   <servlet>
+    <servlet-name>predict</servlet-name>
+    <servlet-class>com.observers.servlet.PredictServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>predict</servlet-name>
+    <url-pattern>/api/predict</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>connect</servlet-name>
     <servlet-class>com.observers.servlet.ConnectServlet</servlet-class>
   </servlet>

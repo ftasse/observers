@@ -34,7 +34,7 @@ function userLogout()
 
 function userDisconnect()
 {
-	$.get('api/disconnect', function(data){ console.log(data)});
+	$.post('api/disconnect', function(data){ console.log(data)});
 }
 
 function signinCallback(authResult) {
@@ -67,7 +67,7 @@ function customSigninRender() {
 		'redirecturi': 'postmessage',
 		'clientid': '907117162790.apps.googleusercontent.com',
 		'cookiepolicy': 'single_host_origin',
-		'scope': 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me'
+		'scope': 'https://www.googleapis.com/auth/plus.login'
 	});
 }
 
@@ -92,6 +92,74 @@ function getRequestParameters() {
     }
   } 
     return query_string;
-};
+}
+
+function createEditTopic () {
+    this.title = ko.observable("Elections au Cameroun");
+    this.shortDescription = ko.observable("Suivi des elections municipales");
+    this.id = ko.observable();
+
+    this.channels = ko.observableArray([]);
+
+    this.channelTypes = ["Web forms", "Tweets", "SmS"];
+    this.channelTypeTips = ["Users can submit their reports from the topic dashboard", 
+                "Users can submit their reports via tweets", 
+                "Users can submit their reports via sms"];
+    this.chosenChannelType = ko.observable(this.channelTypes[1]);
+
+    this.channelTypeTip = ko.computed(function() {
+          return this.channelTypeTips[this.channelTypes.indexOf(this.chosenChannelType())];
+      }, this);
+
+      this.alertText = ko.computed(function() {
+        if (user()) return "";
+        else return "Note that to save this topic, you will be asked to login.";
+      }, this);
 
 
+    this.addWebChannel = function () {
+      this.channels.push({
+        type: "Web", 
+        id: null
+      });
+    };
+
+    this.addTwitterChannel = function (username, hashtag) {
+      this.channels.add( {
+        type: "Twitter",
+        username: username,
+        hashtag: hashtag,
+        id: null
+      });
+    };
+
+    this.addTwilioChannel  = function(accountId, authToken, phoneNumber) {
+      this.channels.add ( {
+        type: "Twilio",
+        accountId: accountId,
+        authToken: authToken,
+        phoneNumber: phoneNumber,
+        id: null
+      });
+    };
+
+    this.populateFromJsonData = function (jsonData) {
+
+    };
+
+    this.saveChanges = function () {
+
+    };
+
+    this.addWebChannel();
+}
+
+$('#create-topic-link').on('click', function (e) {
+  e.defaultPrevented = true;
+  $( "#create-topic-modal" ).load( "createtopic_form.html", function() {
+    var editTopic = createEditTopic();
+    ko.applyBindings(editTopic, document.getElementById("createtopic-dialog"));
+    $('#create-topic-modal').modal();
+  });
+
+});
