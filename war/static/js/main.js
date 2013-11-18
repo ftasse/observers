@@ -1,19 +1,17 @@
 var user = ko.observable(null);
+var QueryString = getRequestParameters ();
 
 (function () {
 	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
     po.src = 'https://apis.google.com/js/client:plusone.js?onload=customSigninRender'; 
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
     console.log("Loaded G+ api!");
-})();
+}());
 
-function getUser ()
-{
-	$.get('/api/users')
-	.done(function(userJson) {
+function getUser () {
+	$.get('/api/users').done(function(userJson) {
 		user(userJson);
-	})
-	.error(function () {
+	}).error(function () {
 		user(null);
 	});
 }
@@ -21,9 +19,9 @@ function getUser ()
 function userLogout()
 {
 	console.log("Logging out!");
-	if (user() != null)
+	if (user() !== null)
 	{
-		$.get('api/logout', function(data){ 
+		$.get('api/logout', function(data) { 
 			user(null);
 		}).error(function() {
 			console.log("Could not log out");
@@ -34,7 +32,7 @@ function userLogout()
 
 function userDisconnect()
 {
-	$.post('api/disconnect', function(data){ console.log(data)});
+	$.post('api/disconnect', function(data){ console.log(data); });
 }
 
 function signinCallback(authResult) {
@@ -48,7 +46,7 @@ function signinCallback(authResult) {
   } else if (authResult['error']) {
     	console.log('Sign-in state: ' + authResult['error']);
     	if (authResult['error'] == 'user_signed_out')
-    	{if (user() != null)
+    	{if (user() !== null)
     		{
 				$.get('api/logout', function(data){ 
 					user(null);
@@ -60,15 +58,59 @@ function signinCallback(authResult) {
   }
 }
 
+function runOnceAuthenticated(callback, errorDiv) {
+  if (user()) {
+    callback();
+  }
+  else {
+    var options = {
+          client_id: clientId,
+          accesstype: 'offline',
+          redirecturi: 'postmessage',
+          cookiepolicy: 'single_host_origin',
+          scope: scopes
+        };
+        gapi.client.setApiKey("***REMOVED***");
+        gapi.auth.authorize(options, function (authResult) {
+          var token = gapi.auth.getToken();
+          if (token['access_token']) {
+            $.ajax({
+              url: 'api/oauth2callback',
+              type: 'POST',
+              data: JSON.stringify(token),
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              async: false,
+              success: function(result) {
+                user(result);
+                callback();
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                var msg = "We were unable to sign you in: " + textStatus + ". Please try again later";
+                errorDiv.html("<div class='alert alert-danger'>"+msg +"</div>");
+                console.log("some error occured: ", errorThrown);
+              }
+            });
+          } else if (authResult['error']) {
+              console.log('Sign-in state: ' + authResult['error']);
+          } 
+        });
+  }
+}
+
+var clientId = '907117162790.apps.googleusercontent.com';
+var scopes = 'https://www.googleapis.com/auth/plus.me';
+
 function customSigninRender() {
-    gapi.signin.render('signinButton', {
-    	'callback': 'signinCallback',
-		'accesstype': 'offline',
-		'redirecturi': 'postmessage',
-		'clientid': '907117162790.apps.googleusercontent.com',
-		'cookiepolicy': 'single_host_origin',
-		'scope': 'https://www.googleapis.com/auth/plus.login'
-	});
+    var options = {
+    clientid: clientId,
+    accesstype: 'offline',
+    redirecturi: 'postmessage',
+    cookiepolicy: 'single_host_origin',
+    scope: scopes
+   };
+    options['callback'] = 'signinCallback';
+    gapi.signin.render('signinButton', options);
 }
 
 function getRequestParameters() {
@@ -94,72 +136,10 @@ function getRequestParameters() {
     return query_string;
 }
 
-function createEditTopic () {
-    this.title = ko.observable("Elections au Cameroun");
-    this.shortDescription = ko.observable("Suivi des elections municipales");
-    this.id = ko.observable();
-
-    this.channels = ko.observableArray([]);
-
-    this.channelTypes = ["Web forms", "Tweets", "SmS"];
-    this.channelTypeTips = ["Users can submit their reports from the topic dashboard", 
-                "Users can submit their reports via tweets", 
-                "Users can submit their reports via sms"];
-    this.chosenChannelType = ko.observable(this.channelTypes[1]);
-
-    this.channelTypeTip = ko.computed(function() {
-          return this.channelTypeTips[this.channelTypes.indexOf(this.chosenChannelType())];
-      }, this);
-
-      this.alertText = ko.computed(function() {
-        if (user()) return "";
-        else return "Note that to save this topic, you will be asked to login.";
-      }, this);
-
-
-    this.addWebChannel = function () {
-      this.channels.push({
-        type: "Web", 
-        id: null
-      });
-    };
-
-    this.addTwitterChannel = function (username, hashtag) {
-      this.channels.add( {
-        type: "Twitter",
-        username: username,
-        hashtag: hashtag,
-        id: null
-      });
-    };
-
-    this.addTwilioChannel  = function(accountId, authToken, phoneNumber) {
-      this.channels.add ( {
-        type: "Twilio",
-        accountId: accountId,
-        authToken: authToken,
-        phoneNumber: phoneNumber,
-        id: null
-      });
-    };
-
-    this.populateFromJsonData = function (jsonData) {
-
-    };
-
-    this.saveChanges = function () {
-
-    };
-
-    this.addWebChannel();
-}
-
 $('#create-topic-link').on('click', function (e) {
   e.defaultPrevented = true;
   $( "#create-topic-modal" ).load( "createtopic_form.html", function() {
-    var editTopic = createEditTopic();
-    ko.applyBindings(editTopic, document.getElementById("createtopic-dialog"));
-    $('#create-topic-modal').modal();
+    $('#create-topic-modal').modal( {backdrop:'static'} );
   });
 
 });

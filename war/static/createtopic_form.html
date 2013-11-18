@@ -1,0 +1,131 @@
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <!--<link href="css/vendor/bootstrap.min.css" rel="stylesheet"/>
+  <link href="css/vendor/bootstrap-theme.min.css" rel="stylesheet"/>
+  
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+  <script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>-->
+</head>
+
+<body>
+<div class="modal-dialog" id="createtopic-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel" data-bind="{text: mode}"></h4>
+      </div>
+
+      <div class="modal-body">
+      <div id="loginMessage"> </div>
+      <div id ="successStatus"> </div>
+
+      <form class="form" role="form" id="createtopic-form" method = "post" action="">
+        <fieldset>
+  		  <div class="form-group">
+  		    <label for="title" class="sr-only  control-label">Title</label>
+  		      <input type="text" class="form-control" id="title" name="title" placeholder="Title" data-bind="value: title">
+  		  </div>
+
+  		  <div class="form-group">
+  		  	 <label for="description" class="sr-only  control-label">Description</label> <div class="">
+  		     	<textarea class="form-control" rows="2" id="description" name="description" placeholder="Short description" data-bind="value: shortDescription"></textarea>
+  		     </div>
+  		  </div>
+
+  		<div class="form-group">
+  			<p class="help-block"  data-bind="visible: channels().length>0">
+          You can accept reports through: the web form, tweets on a given account or SMS.</p>
+  			<div class="panel-group" id="accordion" data-bind="template: {name: templateToUse, foreach: channels}">
+  		  </div>
+  		</div>
+
+  		<!--<div class="form-group ">
+  		  	 <label for="selected-channel" class="sr-only  control-label">Select a channel for report submissions</label> <div class="input-group">
+  		      <select class="form-control" data-bind="{options: channelTypes, value: chosenChannelType}">
+  			  </select>
+                <div class="input-group-btn"> <input type="submit" class="btn btn-default" value="Add Channel"></input></div>
+  			 </div>
+  			 <p class="help-block">Choose to accept reports through: the web form, tweets on a given account or SMS.</p>
+  		  </div>-->
+      </fieldset>
+		</form>	  
+    </div>
+
+    <div class="modal-footer form-actions">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary" id="create-topic-submit">Save</button>
+    </div>
+
+   </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+
+<script type="text/html" id="channel-header-template">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" data-bind="{text: type, attr: {href: attr.href}}">
+        </a>
+      </h4>
+</script>
+
+<script type="text/html" id="web-channel-template">
+  <div class="panel panel-default">
+    <div class="panel-heading" data-bind="template: 'channel-header-template'"></div>
+    <div class="panel-collapse collapse out" data-bind="attr: {id: attr.idt}">
+      <div class="panel-body">
+
+        <p class="help-block">Users can submit reports online by clicking on "Share your story".</p>
+
+      </div>
+    </div> 
+  </div>
+</script>
+
+<script type="text/html" id="twitter-channel-template">
+    <div class="panel panel-default">
+    <div class="panel-heading" data-bind="template: 'channel-header-template'"></div>
+    <div class="panel-collapse collapse out" data-bind="attr: {id: attr.idt}">
+      <div class="panel-body">
+
+      <p class="help-block">Users can submit reports by tweeting on this user timeline. Add more restrictions with the hashtag.</p>
+      <div class="form-group">
+        <label class="sr-only" for="twitterName">Username</label>
+        <input type="text" class="form-control" id="twitterName" name="twitterName" placeholder="@name" data-bind="value: name"/> 
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="twitterHashtag">Hashtag</label>
+        <input type="text" class="form-control" id="twitterHashtag" name="twitterHashtag" placeholder="#hashtag" data-bind="value: hashtag"/>
+      </div>
+
+      <button type="button" name="refreshTweets" class="btn btn-default" data-bind="{click: $root.refreshTweets, visible: (name() && $data.id())}"> Fetch recent tweets </button>
+    
+    </div>
+  </div> 
+  </div>
+</script>
+
+<script type="text/html" id="sms-channel-template">
+   <div class="panel panel-default">
+    <div class="panel-heading" data-bind="template: 'channel-header-template'"></div>
+    <div class="panel-collapse collapse out" data-bind="attr: {id: attr.idt}">
+      <div class="panel-body">
+
+      <p class="help-block">Users can submit reports by sending an SMS to <a href="tel:+44 1274 451680">+44 1274 451680</a>. A hashtag is required to link messages to your topic. It may slightly change if it is no longer available. </p>
+      <div class="form-group">
+        <label class="sr-only" for="smsHashtag">Hashtag</label>
+        <input type="text" class="form-control" id="smsHashtag" name="smsHashtag" placeholder="#hashtag" data-bind="value: hashtag"/>
+      </div>
+
+      <button type="button" name="refreshSMS" class="btn btn-default" data-bind="{click: $root.refreshSMS, visible: (hashtag() && $data.id())}"> Fetch recent SMS </button>
+
+    </div>
+  </div> 
+  </div>
+</script>
+
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/createtopic_form.js"></script>
+
+</body>
+</html>

@@ -96,7 +96,6 @@ public class ReportsServlet extends JsonRestServlet {
       reports.add(Jsonifiable.fromJson(req.getReader(), Report.class));
     } else
     {
-       Gson gson = new Gson();
        Type listType = new TypeToken<ArrayList<Report>>() { }.getType();
        reports = Jsonifiable.GSON.fromJson(req.getReader(), listType);
     }

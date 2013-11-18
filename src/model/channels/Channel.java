@@ -46,6 +46,12 @@ public class Channel extends Jsonifiable {
     @Expose
     private Long topicId;
 
+    @Index
+    @Getter
+    @Setter
+    @Expose
+    private boolean active;
+
     @Getter
     @Setter
     @Expose

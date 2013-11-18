@@ -116,8 +116,6 @@ public class Topic extends Jsonifiable {
       ofy().delete().entity(this).now();
     }
 
-
-
     public DefaultWebAccount getDefaultAccount()
     {
         DefaultWebAccount account = ofy().load().type(DefaultWebAccount.class).filter("topicId", getId())

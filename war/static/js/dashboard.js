@@ -7,7 +7,6 @@
 // or a list of recent reports (scroll down to get more reports)
 
 
-var QueryString = getRequestParameters ();
 var topicSummary;
 
 /*function showCreateTopic () {
@@ -22,7 +21,7 @@ function buzzword()
 	return {
 		word: "word",
 		frequency: 0
-	}
+	};
 }
 
 function dashboardViewModel() {
@@ -50,13 +49,21 @@ function dashboardViewModel() {
 	self.data = ko.observable(null);
 
 	self.userName = ko.computed(function() {
-		if (user() == null)	return null;
-        else return user().googleDisplayName;
+		if (user() === null) {
+			return null;
+		}
+        else { 
+        	return user().googleDisplayName;
+        }
     }, this);
 
     self.userId = ko.computed(function() {
-		if ( user() == null)	return null;
-        else return  user().id;
+		if ( user() === null) { 
+			return null;
+		}
+        else { 
+        	return  user().id;
+        }
     }, this);
 
     self.isAdmin = ko.computed(function() {
@@ -64,11 +71,11 @@ function dashboardViewModel() {
     }, this);
 
     self.isLoggedIn = ko.computed(function() {
-        return (user() != null);
+        return (user() !== null);
     }, this);
 
 	//Behaviour
-	self.goToRecentReports = function() {
+	/*self.goToRecentReports = function() {
 		location.hash = "recentreports";
 	}
 
@@ -89,34 +96,36 @@ function dashboardViewModel() {
         });
 
         this.get('', function() { this.app.runRoute('get', '#buzzwords') });
-    }).run();
-};
+    }).run();*/
+}
 
 function initializeTopicSummary()
 {
 	topicSummary = new dashboardViewModel();
 	ko.applyBindings(topicSummary);
 
-	if (user() == null) 
+	if (user() === null) {
 		getUser();
+	}
 
 	topicSummary.id(QueryString.topicId);
 
-	if (topicSummary.id() == null)
+	if (topicSummary.id() === null)
 	{
 		console.log("A topic id was not specified in the query");
 	} else
+	{
 		topicSummary.url(location.protocol + '//' + location.host + "/dashboard.html?topicId=" + topicSummary.id);
+	}
 
-	$.get('/api/topics', {topicId: topicSummary.id()})
-	  .done(function(topic) {
+	$.get('/api/topics', {topicId: topicSummary.id()}).done(function(topic) {
 			topicSummary.title(topic.title);
 			topicSummary.shortDescription(topic.shortDescription);
 			topicSummary.supportsSms(topic.supportsSms);
 			topicSummary.ownerUserId(topic.ownerUserId);
 			topicSummary.numSmsShares(topic.numSmsShares);
 			google.load("visualization", "1", {packages:["corechart", "map", "annotatedtimeline"], callback: initializeCharts}); 
-		});
+		}); 
 
 	topicSummary.hasBuzzwords(false);
 	location.hash = "recentreports";
@@ -133,7 +142,7 @@ function drawMapChart() {
       	mapType: "normal",
       	//enableScrollWheel: true,
       	useMapTypeControl: true
-      }
+      };
 
       var map = new google.visualization.Map(document.getElementById('map-canvas'));
       map.draw(geoView, options);
@@ -297,4 +306,4 @@ function size(animate){
 (function () {
 	initializeTopicSummary();
 	loadSocialScripts();
-})();
+}) ();

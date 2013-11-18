@@ -58,9 +58,12 @@ public class TwilioReplyServlet extends JsonRestServlet {
             Date sentMessageDate = Calendar.getInstance().getTime();
 
             String twilioAccountId = request.getParameter("AccountSid");
+            String hashtag = account.getHashtag();
             
             account = ofy().load().type(TwilioAccount.class)
-            .filter("twilioAccountId", twilioAccountId).first().get();
+            .filter("twilioAccountId", twilioAccountId)
+            .filter("hashtag in", hashtag)
+            .first().get();
             if (account == null)
             {
                 message = "Sorry, but you cannot send reports to this number at the moment. Try again later.";

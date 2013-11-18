@@ -107,11 +107,12 @@ public class TwilioChannelServlet extends JsonRestServlet {
                 {
                     channel = ofy().load().type(Channel.class).filter("accountId", account.getId()).first().get();
                     sendResponse(req, resp, channel);
-                } else
+                } else if (req.getParameter("hashtag") != null)
                 {
+
                     //Create a Twilio subaccount
                     TwilioRestClient client = new TwilioRestClient(MY_TWILIO_ACCOUNT_ID, MY_TWILIO_AUTH_TOKEN);
-                    User user = ofy().load().type(User.class).id(userId).get();
+                    /*User user = ofy().load().type(User.class).id(userId).get();
                     String friendlyName = user.getGoogleDisplayName()+"|"+topic.getId();
 
                     // Build a filter for the AccountList
@@ -128,13 +129,15 @@ public class TwilioChannelServlet extends JsonRestServlet {
                     if (subaccountList != null && (subaccounts = subaccountList.getPageData()).size()>0 )
                         subaccount = subaccounts.get(0);
                     else
-                        subaccount = accountFactory.create(params);
+                        subaccount = accountFactory.create(params);*/
+                    Account subaccount = client.getAccount();
 
 
                     account = new TwilioAccount();
                     account.setName(subaccount.getFriendlyName());
                     account.setTwilioAccountId(subaccount.getSid());
                     account.setAuthToken(subaccount.getAuthToken());
+                    account.setHashtag(req.getParameter("hashtag"));
 
                     Locale locale = req.getLocale();
                     String countryPhoneCode = Iso2Phone.getPhone(locale.getISO3Country());
@@ -164,6 +167,9 @@ public class TwilioChannelServlet extends JsonRestServlet {
                     
                 }
             }
+
+            if (account == null)
+                throw new IOException();
 
             if (channel == null)
             {
@@ -231,6 +237,9 @@ public class TwilioChannelServlet extends JsonRestServlet {
                 // Loop over messages and print out a property for each one.
                 for (Message message : messages) {
                     if (!message.getStatus().equals("received"))
+                        continue;
+
+                    if (!message.getBody().contains(account.getHashtag()))
                         continue;
 
                     //http://twilio.github.io/twilio-java/com/twilio/sdk/resource/instance/Message.html

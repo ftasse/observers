@@ -20,6 +20,10 @@ import lombok.Setter;
 import java.util.List;
 import java.util.ArrayList;
 
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 @Entity
 @Cache
 @EqualsAndHashCode(of="id", callSuper=false)
@@ -53,6 +57,12 @@ public class TwilioAccount extends Jsonifiable {
     @Getter
     @Setter
     @Expose
+    private String hashtag;
+
+    @Index
+    @Getter
+    @Setter
+    @Expose
     private String twilioAccountId;
 
     @Getter
@@ -73,5 +83,21 @@ public class TwilioAccount extends Jsonifiable {
     {
         if (phoneNumbers == null) phoneNumbers = new ArrayList<PhoneNumber>();
         phoneNumbers.add(phoneNumber);
+    }
+
+    public static String getValidHashtag(String new_hashtag)
+    {
+        if (!(new_hashtag.length()==0) && new_hashtag.charAt(0) != '#')  new_hashtag = "#" + new_hashtag;
+
+        while ((new_hashtag.length()==0) || ofy().load().type(TwilioAccount.class).filter("hashtag", new_hashtag).list().size() > 0 )
+        {
+          new_hashtag = '#' + (new BigInteger(16, new SecureRandom()).toString(32));
+        }
+        return new_hashtag;
+    }
+
+    public void setValidHashtag(String new_hashtag) {
+        
+        hashtag = TwilioAccount.getValidHashtag(new_hashtag);
     }
 }

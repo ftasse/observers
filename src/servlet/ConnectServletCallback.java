@@ -137,6 +137,7 @@ public class ConnectServletCallback extends JsonRestServlet {
       } else {
         if (accessToken.access_token == null) {
             sendError(resp, 400, "Missing access token in request.");
+            return;
         }
         
           // use the token received from the client
