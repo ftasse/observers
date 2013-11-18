@@ -313,13 +313,6 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     return connection;
   }
 
-  protected String getHostURL(HttpServletRequest req) {
-    String scheme = req.getScheme();             // http
-    String serverName = req.getServerName();
-    String host_url = scheme + "://" + serverName;
-    return host_url;
-  }
-
   public static class AccountData extends Jsonifiable {
     public static String kind = "observers#channelaccountdata";
 

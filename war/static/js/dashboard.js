@@ -40,7 +40,7 @@ function dashboardViewModel() {
 	self.buzzwords = ko.observableArray();
 	self.reports = ko.observableArray();
 
-	self.recentReportsDisplaySelected = ko.observable();
+	self.recentReportsDisplaySelected = ko.observable(true);
 	self.buzzwordsDisplaySelected = ko.observable();
 	self.hasBuzzwords = ko.observable(false);
 
@@ -73,6 +73,54 @@ function dashboardViewModel() {
     self.isLoggedIn = ko.computed(function() {
         return (user() !== null);
     }, this);
+
+    self.reportHasMedia = function(report) {
+    	if (report['mediaUrls'] == null || report['mediaUrls'] == undefined || report['mediaUrls'].length == 0)
+    		return false;
+    	return true;
+    };
+
+    self.removeReport = function(report) { 
+    	self.reports.remove(report) ;
+    	$.ajax({
+              url: 'api/reports?reportId='+report.id,
+              type: 'DELETE',
+              async: true,
+              success: function(result) {
+                $("#dashboardStatus").html("<div class='alert alert-success'> The report was successfully deleted. </div>");
+              	window.setTimeout(function() {$("#dashboardStatus").html(""); }, 2000);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                var msg = "An error occured: " + textStatus + ". Please try again later";
+                $("#dashboardStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                console.log("some error occured: ", errorThrown);
+              }
+            });
+        };
+
+    self.showMedia = function(report) { 
+    	for (var i in report.mediaUrls)
+    	{
+    		media = report.mediaUrls[i];
+    		openInNewTab(media);
+    		return;
+    	}	
+    };
+
+    self.facebookShareUrl = function() {
+    	var link = "http://www.facebook.com/sharer/sharer.php?s=100&p[url]=" + window.location ;
+    	link += "&p[images][0]=" + "&p[title]=" + self.title() + "&p[summary]=" + self.shortDescription();
+    	return link;
+    };
+
+    self.googleplusShareUrl = function() {
+    	var link = "https://plus.google.com/share?url=" + window.location ;
+    	return link;
+    };
+
+    self.shareWithSMS = function() {
+    	alert("Coming soon!");
+    }
 
 	//Behaviour
 	/*self.goToRecentReports = function() {
@@ -125,6 +173,9 @@ function initializeTopicSummary()
 			topicSummary.ownerUserId(topic.ownerUserId);
 			topicSummary.numSmsShares(topic.numSmsShares);
 			google.load("visualization", "1", {packages:["corechart", "map", "annotatedtimeline"], callback: initializeCharts}); 
+		
+			//$('title').text(self.title());
+   			$('meta[name=description]').attr('content', self.shortDescription);
 		}); 
 
 	topicSummary.hasBuzzwords(false);

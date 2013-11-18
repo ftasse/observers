@@ -50,7 +50,7 @@ public class TwilioReplyServlet extends JsonRestServlet {
         TwilioAccount account = null;
 
         //https://www.twilio.com/docs/api/twiml/sms/twilio_request#request-parameters
-        //try {
+        try {
             String fromNumber = request.getParameter("From");
             String sentMessage = request.getParameter("Body");
             String sentMessageId = request.getParameter("MessageSid");
@@ -58,15 +58,27 @@ public class TwilioReplyServlet extends JsonRestServlet {
             Date sentMessageDate = Calendar.getInstance().getTime();
 
             String twilioAccountId = request.getParameter("AccountSid");
-            String hashtag = account.getHashtag();
-            
-            account = ofy().load().type(TwilioAccount.class)
-            .filter("twilioAccountId", twilioAccountId)
-            .filter("hashtag in", hashtag)
-            .first().get();
+
+            int msgTagIndex = sentMessage.lastIndexOf('#');
+            if (msgTagIndex >= 0 && msgTagIndex < sentMessage.length()-1)
+            {
+                String msgHashtag = "";
+                while ( msgTagIndex < sentMessage.length() && !isPunctuation(sentMessage.charAt(msgTagIndex)) )  
+                {  
+                    msgHashtag += sentMessage.charAt(msgTagIndex);  
+                    msgTagIndex++;  
+                }  
+                msgHashtag = msgHashtag.toLowerCase();
+                System.out.println("Hashtag: " + msgHashtag);
+
+                account = ofy().load().type(TwilioAccount.class)
+                .filter("twilioAccountId", twilioAccountId)
+                .filter("hashtag", msgHashtag)
+                .first().get();
+            }
             if (account == null)
             {
-                message = "Sorry, but you cannot send reports to this number at the moment. Try again later.";
+                message = "Sorry, but you cannot send reports to this number, with the given hashtag at the moment. Try again later.";
             }
             else
             {
@@ -75,12 +87,13 @@ public class TwilioReplyServlet extends JsonRestServlet {
                 Report old_report = ofy().load().type(Report.class)
                 .filter("channelId", channel.getId()).filter("authorId", fromNumber).first().get();
 
+                String topic_dashboard = getHostURL(request) + "/dashboard.html?topicId=" + channel.getTopicId();
                 if (old_report == null) {
                     // Use a generic message
-                    message = "Thanks for your report! See other reports at ..." ;
+                    message = "Thanks for your report! See other reports at " + topic_dashboard ;
                 } else {
                     // Use the caller's name
-                    message = "Thanks for another report! See other reports at ...";
+                    message = "Thanks for another report! See other reports at " + topic_dashboard;
                 }
                 Report report = new Report ();
                 report.setAuthorId(fromNumber);
@@ -126,16 +139,26 @@ public class TwilioReplyServlet extends JsonRestServlet {
             TwiMLResponse twiml = new TwiMLResponse();
 
             //https://www.twilio.com/docs/api/twiml/sms/message
-            /*Sms sms = new Sms(message);
-            twiml.append(sms);*/
-            log.info("Reply message: " + message);
+            Sms sms = new Sms(message);
+            twiml.append(sms);
+            //log.info("Reply message: " + message);
 
             response.setContentType("application/xml");
             response.getWriter().print(twiml.toXML());
 
-        /*} catch (TwiMLException e) {
+        } catch (TwiMLException e) {
             e.printStackTrace();
-        } */
+        } 
+    }
+
+    public static boolean isPunctuation(char c) {
+        return c == ','
+            || c == '.'
+            || c == '!'
+            || c == '?'
+            || c == ':'
+            || c == ';'
+            ;
     }
 
 }

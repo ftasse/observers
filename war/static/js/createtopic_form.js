@@ -1,3 +1,5 @@
+var currentModel = null;
+
 (function () {
     /*if (typeof user === 'undefined') {
       user = ko.observable();
@@ -5,9 +7,6 @@
     {
       getUser();
     }
-
-    var editTopic = new EditTopicModel(QueryString.topicId);
-    ko.applyBindings(editTopic, document.getElementById("createtopic-dialog"));
 
     $('#create-topic-submit').on('click', function(e){
       // We don't want self to act as a link so cancel the link action
@@ -65,7 +64,7 @@
         validClass: "help-block",
         submitHandler: function (form) {
             console.log("Submit");
-            editTopic.saveChanges();
+            currentModel.saveChanges();
             return false; // ajax used, block the normal submit
         }
     });
@@ -74,6 +73,7 @@
 
 function EditTopicModel (topicId) {
     var self = this;
+    currentModel = self;
 
     self.title = ko.observable();
     self.shortDescription = ko.observable();
@@ -234,6 +234,12 @@ function EditTopicModel (topicId) {
               success: function(result) {
                 self.populateChannelsFromJson(result);
                 $("#successStatus").html("<div class='alert alert-success'> Successfully saved channels details. </div>");
+                if (! /^\s*$/.test($("#twitterName").value)) self.refreshTweets();
+                if (! /^\s*$/.test($("#smsHashtag").value)) self.refreshSMS();
+                if (topicId == undefined && self.id() !== null)
+                {
+                  window.location.href = 'dashboard.html?topicId=' + self.id();
+                }
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
                 var msg = "An error occured: " + textStatus + ". Please try again later";
@@ -338,7 +344,7 @@ function EditTopicModel (topicId) {
               type: 'GET',
               data: {topicId: topicId},
               contentType: 'application/json; charset=utf-8',
-              async: false,
+              async: true,
               success: function(result) {
                 self.populateTopicFromJson(result);
                 $.ajax({

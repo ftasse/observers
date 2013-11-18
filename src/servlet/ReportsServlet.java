@@ -230,4 +230,38 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
   }*/
 }
 
+  @Override
+  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+    final String doesNotExist = "Report with given ID does not exist.";
+    try {
+      checkAuthorization(req);
+      if (req.getParameter("reportId") == null)
+        throw new NotFoundException();
+
+      Long reportId = Long.parseLong(req.getParameter("reportId"));
+      Report report = ofy().load().key(Report.key(reportId)).safeGet();
+      if (report == null)
+        throw new NotFoundException();
+
+      Topic topic = ofy().load().key(Topic.key(report.getTopicId())).safeGet();
+      Long userId = Long.parseLong(req.getSession()
+          .getAttribute(CURRENT_USER_SESSION_KEY).toString());
+      if (!userId.equals(topic.getOwnerUserId())) {
+        throw new NotFoundException();
+      }
+
+      report.delete();
+
+      sendResponse(req, resp, new Message("Report successfully deleted"),
+          "observers#message");
+    } catch (NotFoundException nfe) {
+      sendError(resp, 404, doesNotExist);
+    } catch (NumberFormatException e) {
+      sendError(resp, 404, doesNotExist);
+    } catch (UserNotAuthorizedException e) {
+      sendError(resp, 401,
+          "Unauthorized request");
+    }
+  }
+
 }

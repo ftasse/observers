@@ -94,15 +94,15 @@ public class TwilioShareServlet extends JsonRestServlet {
  
                 // send an sms a call  
                 // ( This makes a POST request to the SMS/Messages resource)
-                //try
+                try
                 {
-                    //Sms sms = smsFactory.create(params);
-                    //sent_messages.add(sms);
-                    log.info("Sent Sms: " + params);
+                    Sms sms = smsFactory.create(params);
+                    sent_messages.add(sms);
+                    //log.info("Sent Sms: " + params);
                     numSmsShares++;
-                } /*catch (TwilioRestException e) {
+                } catch (TwilioRestException e) {
                     log.severe("Failed to send sms: " + e);
-                }*/
+                }
             }
 
             topic.setNumSmsShares(numSmsShares);

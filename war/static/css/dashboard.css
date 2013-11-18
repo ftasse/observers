@@ -103,7 +103,12 @@ html, body {
     width: 100%;
 }
 
-
+#reports-canvas {
+    top: 18px;
+    height: 100%;
+    width: 100%;
+    clear: both;
+}
 
 #timeseries-canvas {
     max-height: 300px;

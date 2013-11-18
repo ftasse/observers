@@ -139,7 +139,50 @@ function getRequestParameters() {
 $('#create-topic-link').on('click', function (e) {
   e.defaultPrevented = true;
   $( "#create-topic-modal" ).load( "createtopic_form.html", function() {
+    var editTopic = new EditTopicModel();
+    editTopic.id(null);
+    ko.applyBindings(editTopic, document.getElementById("createtopic-dialog"));
     $('#create-topic-modal').modal( {backdrop:'static'} );
   });
-
 });
+
+$('#edit-topic-link').on('click', function (e) {
+  e.defaultPrevented = true;
+  $( "#create-topic-modal" ).load( "createtopic_form.html", function() {
+    var editTopic = new EditTopicModel(QueryString.topicId);
+    ko.applyBindings(editTopic, document.getElementById("createtopic-dialog"));
+    $('#create-topic-modal').modal( {backdrop:'static'} );
+  });
+});
+
+$('#share-story-link').on('click', function (e) {
+  e.defaultPrevented = true;
+  alert("Coming very soon!");
+});
+
+function pad(n, width, z) {
+  z = z || '0';
+  n = n + '';
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
+var mthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+Date.prototype.formatMMMDDYYYY = function(){
+    var str = pad(this.getDate(), 2)  + '-' + mthNames[this.getMonth()] +  "-" +  this.getFullYear() + " " + pad(this.getHours(), 2)+":"+ pad(this.getMinutes(), 2);
+    str += " GMT"; 
+    var offset = this.getTimezoneOffset()/60
+    if (offset < 0)
+    {
+      str += "-" + pad(-offset, 2);
+    } else if (offset > 0)
+    {
+      str += "+" + pad(offset, 2);
+    }
+    return str;
+}
+
+function openInNewTab(url )
+{
+  var win=window.open(url, '_blank');
+  win.focus();
+}

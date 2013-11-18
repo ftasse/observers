@@ -93,7 +93,7 @@ public class TwilioAccount extends Jsonifiable {
         {
           new_hashtag = '#' + (new BigInteger(16, new SecureRandom()).toString(32));
         }
-        return new_hashtag;
+        return new_hashtag.toLowerCase();
     }
 
     public void setValidHashtag(String new_hashtag) {

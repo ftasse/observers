@@ -272,6 +272,13 @@ public abstract class JsonRestServlet extends HttpServlet {
     return locations;
   }
 
+  protected String getHostURL(HttpServletRequest req) {
+    String scheme = req.getScheme();             // http
+    String serverName = req.getServerName();
+    String host_url = scheme + "://" + serverName;
+    return host_url;
+  }
+
   /**
    * Ensure that there is a user connected before honoring the given request.
    *

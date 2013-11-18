@@ -6,6 +6,9 @@
 	<title data-bind="text: title"></title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta itemprop="name" content="Observers">
+	<meta itemprop="description" content="Discover, create and contribute to new topics!">
 	
 	<link rel="stylesheet" href="css/normalize.css">
 	<link href="css/vendor/bootstrap.min.css" rel="stylesheet"/>
@@ -28,13 +31,17 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Observers</a>
+				<a class="navbar-brand" href="/">Observers</a>
 			</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
 					<li><!--<a data-target="#createTopicModal" data-toggle="modal" >-->
-						<a id="create-topic-link">
-						Start a new topic </a>
+						<a id="create-topic-link" style="cursor: pointer; cursor: hand;">
+						Start new topic </a>
+					</li>
+					<li><!--<a data-target="#createTopicModal" data-toggle="modal" >-->
+						<a id="edit-topic-link" style="cursor: pointer; cursor: hand;" data-bind="{text: 'Edit topic', visible: (id && isAdmin)}">
+						</a>
 					</li>
 					<li data-bind="visible: isLoggedIn()" class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -44,7 +51,7 @@
 							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a href="#">Manage my topics</a></li>
+							<!--<li><a href="#">Manage my topics</a></li>-->
 							<li><a href="javascript:void(0);" onclick="userLogout()">Logout</a></li>
 							<li class="divider"></li>
 							<li><a href="javascript:void(0);" onclick="userDisconnect()">Delete my account</a></li>
@@ -62,7 +69,7 @@
 
 	<div class="container clearfix">
 
-
+<div id="dashboardStatus"></div>
 <!-- Modal -->
 <div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 </div><!-- /.modal -->
@@ -83,12 +90,12 @@
 						<p data-bind="text: shortDescription"></p>
 
 						<div class="text-center v-center" style="font-size:29pt;"> 
-							<a href="#" class=""><i class="fa fa-google-plus"></i></a>  
-							<a href="#" class=""><i class="fa fa-facebook"></i></a> 
-							<a href="https://twitter.com/share" class=""><i class="fa fa-twitter"></i></a>
-							<!-- <a href="#" class="" data-bind = "visible: supportsSms()"><i class="fa fa-mobile-phone"></i></a> --> 
+							<a class="" data-bind="{attr: {href: googleplusShareUrl()}}"><i class="fa fa-google-plus"></i></a>  
+							<a class="" data-bind="{attr: {href: facebookShareUrl()}}"><i class="fa fa-facebook"></i></a> 
+							<a href="https://twitter.com/share" class="" data-text="Check out reports on this topic!" data-hashtags="#observersreports"><i class="fa fa-twitter"></i></a>
+							<a href="#" class="" data-bind = "{visible: supportsSms(), click: shareWithSMS}"><i class="fa fa-mobile-phone"></i></a> 
 						</div>
-						<p><a data-target="#shareStoryModal" data-toggle="modal" class="btn btn-primary btn-lg" role="button">Share your story</a></p>
+						<p><a id="share-story-link" data-toggle="modal" class="btn btn-primary btn-lg" role="button">Share your story</a></p>
 					</div>
 				</div>
 
@@ -158,7 +165,7 @@
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- //-beg- concat_js -->
-<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>
+<!--<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>-->
 <script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
 <script type="text/javascript" src="js/plugins.js"></script>
@@ -169,20 +176,15 @@
 <script type="text/javascript" src="js/dashboard.js"></script>
 <!-- //-end- concat_js -->
 
-	<!--	<span class="fb-share-button" data-type="box_count" data-height="60">Share on Facebook</span>
-	<span class="g-plus" data-action="share" data-annotation="vertical-bubble" data-height="60">Share on Google+</span>
-	<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-text="" data-count="vertical">Tweet</a>
-	<button type="button" class="btn btn-primary btn-xs">
-	Share by SMS</button> -->
-
 <script type="text/html" id="buzzwords-template">
 	<li class="list-group-item"> ${word} <br> ${frequency} </li>
 </script>
 
 <script type="text/html" id="reports-template">
-	<li class="list-group-item">  
-		${content} <br> Posted on:  <span data-bind="text: new Date(created)"></span> 
-		<span class="glyphicon glyphicon-minus-sign" data-bind="visible: $root.isAdmin"></span>
+	<li class="list-group-item" style="text-align: left">  
+		<a href="#" class="glyphicon glyphicon-minus-sign" data-bind="{visible: $root.isAdmin, click: $root.removeReport}" style="color:  #b94a48;"></a>
+		<span data-bind="text: content"></span> <br> <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span> 
+		<a href="#" class="pull-right glyphicon glyphicon-eye-open" data-bind="{visible: $root.reportHasMedia($data), click: $root.showMedia}"></a>
 	</li>
 </script>
 
