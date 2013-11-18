@@ -1,58 +1,183 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE HTML>
 
-        <!--
-        <meta name="application-name" content="Sample Title">
-        <meta name="msapplication-tooltip" content="A description of what this site does.">
-        <meta name="msapplication-starturl" content="http://www.example.com/index.html?pinned=true">
-        <meta name="msapplication-task" content="name=Task 1;action-uri=http://host/Page1.html;icon-uri=http://host/icon1.ico">
-        <meta name="msapplication-task" content="name=Task 2;action-uri=http://microsoft.com/Page2.html;icon-uri=http://host/icon2.ico">
-        <meta name="msapplication-badge" value="frequency=NUMBER_IN_MINUTES;polling-uri=http://www.example.com/path/to/file.xml">
-        <meta http-equiv="imagetoolbar" content="false">
-        -->
+<html>
 
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+<head>
+    <title data-bind="text: title"></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
-        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
-    </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+    <meta itemprop="name" content="Observers">
+    <meta itemprop="description" content="Discover, create and contribute to new topics!">
+    
+    <link rel="stylesheet" href="css/normalize.css">
+    <link href="css/vendor/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/vendor/bootstrap-theme.min.css" rel="stylesheet"/>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
 
-        <!-- Add your site or application content here -->
-        <p>Hello world! This is HTML5 Boilerplate.</p>
+    <link rel="stylesheet" href="css/main.css"/>
+    <link  rel="stylesheet" href="css/dashboard.css"/>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <!-- //-beg- concat_js -->
-        <script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>
-        <script type="text/javascript" src="js/vendor/yui-min.js"></script>
-        <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
-        <!-- //-end- concat_js -->
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+</head>
 
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X');ga('send','pageview');
-        </script>
-    </body>
+<body > 
+    <header> <span id="fb-root"></span>
+        <nav class="navbar navbar-default navbar-static-top" id="horizontal-menu" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Observers</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><!--<a data-target="#createTopicModal" data-toggle="modal" >-->
+                        <a id="create-topic-link" style="cursor: pointer; cursor: hand;">
+                        Start new topic </a>
+                    </li>
+                    <!--<li>
+                        <a id="edit-topic-link" style="cursor: pointer; cursor: hand;" data-bind="{text: 'Edit topic', visible: (id && isAdmin)}">
+                        </a>
+                    </li>-->
+                    <li data-bind="visible: isLoggedIn()" class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-user" alt="My account: ">
+                                <span data-bind="text: userName"></span>
+                            </span> 
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!--<li><a href="#">Manage my topics</a></li>-->
+                            <li><a href="javascript:void(0);" onclick="userLogout()">Logout</a></li>
+                            <li class="divider"></li>
+                            <li><a href="javascript:void(0);" onclick="userDisconnect()">Delete my account</a></li>
+                        </ul>
+                    </li>
+                    <li data-bind="visible: !isLoggedIn()"> <a> <span  id="signinButton">
+                        <span class="icon"></span>
+                        <span class="buttonText">Sign in</span>                 
+                    </span></a> </li>           
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+
+<div class="container clearfix">
+
+<div id="homeStatus"></div>
+<!-- Modal -->
+<div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+</div><!-- /.modal -->
+
+    <div class="row">
+        <div class="dashboard  col-wrap ">
+        <div class="col-md-12">
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">All Topics</h3>
+                  </div>
+                <!--<div class="panel-body"> </div>-->
+                <div class="list-group" data-bind="template: {name: 'topics-template', foreach: topics} ">
+                    </div>
+
+               <!-- <div class="panel-footer"></div>-->
+            </div>
+            
+        </div>
+    </div>
+    </div>
+    </div>
+
+</div>
+
+<footer>
+    &copy; 2013 Flora Tasse
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<!-- //-beg- concat_js -->
+<!--<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>-->
+<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
+<script type="text/javascript" src="js/plugins.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<!-- //-end- concat_js -->
+
+<script type="text/html" id="topics-template">
+    <a class="list-group-item" data-bind="{ attr: {href: 'dashboard.html?topicId='+id} }">
+        <h4 class="list-group-item-heading" data-bind="{text: title}"> </h4> 
+        <p data-bind="{text: shortDescription}"></p>
+        <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span>
+                <span  href="#" class="glyphicon glyphicon-user pull-right" data-bind="visible: (ownerUserId == $root.userId())" ></span>
+    </a>
+</script>
+
+<script type="text/javascript">
+
+    function TopicListModel () {
+        var self = this;
+
+        self.topics = ko.observableArray([]);
+
+        self.isLoggedIn = ko.computed(function() {
+          return (user() !== null);
+        }, this);
+
+        self.userName = ko.computed(function() {
+        if (user() === null) {
+            return null;
+        }
+        else { 
+            return user().googleDisplayName;
+        }
+    }, this);
+
+    self.userId = ko.computed(function() {
+        if ( user() === null) { 
+            return null;
+        }
+        else { 
+            return  user().id;
+        }
+    }, this);
+    }
+
+    (function () {
+        if (user() == null)
+        {
+            getUser();
+        }
+        var viewModel = new TopicListModel ();
+        ko.applyBindings(viewModel);
+
+        $.ajax({
+              url: 'api/topics',
+              type: 'GET',
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              async: true,
+              success: function(result) {
+                viewModel.topics(result);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                var msg = "An error occured: " + textStatus + ". Please try again later";
+                $("#homeStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                console.log("some error occured: ", errorThrown);
+              }
+            });
+
+    }());
+
+</script>
+
+</body>
 </html>

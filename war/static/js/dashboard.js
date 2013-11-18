@@ -189,7 +189,7 @@ function drawMapChart() {
     geoView.setColumns([1, 2, 3]);
 
       var options = {
-      	showTip: true,
+      	//showTip: true,
       	mapType: "normal",
       	//enableScrollWheel: true,
       	useMapTypeControl: true

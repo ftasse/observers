@@ -1,47 +1,152 @@
-<div class="modal-dialog">
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <!--<link href="css/vendor/bootstrap.min.css" rel="stylesheet"/>
+  <link href="css/vendor/bootstrap-theme.min.css" rel="stylesheet"/>
+  
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+  <script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>-->
+</head>
+
+<body>
+<div class="modal-dialog" id="sharestory-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        <h4 class="modal-title" id="myModalLabel">Submit a report</h4>
       </div>
       <div class="modal-body">
 
-      <form class="form" role="form" accept-charset="UTF-8" action="/tagging" data-remote="true" method="post">
-      
-      <div class="form-group">
-         <label for="report" class="sr-only  control-label">Report/label> <div class="">
-          <textarea class="form-control" rows="3" id="report">Your report</textarea>
-         </div>
-      </div>
+      <div id ="successStatus"> </div>
+
+      <form class="form" role="form"  id="sharestory-form" method = "post" action="">
+        <fieldset>
 
       <div class="form-group">
-        <label for="mediaFile" class="sr-only  control-label">Media input</label>
-        <div class="">
-          <input type="file" id="mediaFile">
-          <p class="help-block">Attach an audio, image or video supporting your story. (Optional)</p>
-        </div>
+        <p class="help-block" >
+          You can share the story through: the web form below, tweets on a given account or SMS. More info about the other methods is coming soon.</p>
+        <!-- <div class="panel-group" id="accordion" data-bind="template: {name: templateToUse, foreach: channels}"> -->
       </div>
+
+        <div class="form-group">
+          <label for="name" class="sr-only  control-label">Screen name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Screen name" data-bind="value: name">
+        </div>
+
+        <div class="form-group">
+           <label for="report" class="sr-only  control-label">Report</label> 
+            <textarea class="form-control" rows="2" id="report" name="report" placeholder="Your report" data-bind="value: report"></textarea>
+        </div>
+
+        <div class="form-group ">
+           <label for="selectedOpinion" class="control-label">Please tell us what is the sentiment of your report. (Optional)</label> 
+            <select class="form-control" id="selectedOpinion" name="opinion" data-bind="options: opinionList, value: selectedOpinion, optionsCaption: 'Choose...'"></select>
+        </div>
+
+      </fieldset>
     </form>
 
-      </div>
+  </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button id="share-story-submit" type="button" class="btn btn-primary">Submit report</button>
       </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+
 <script type="text/javascript">
+  var currentReportModel = null;
 
-  var newReport = {
-    this.content = ko.observable()
-    this.opinion = ko.observable()
-    this.media = ko.observable()
+  function SendReportModel (topicId) {
+    var self = this;
 
-    var loadMedia() = {
-      
-    }
+    self.name = ko.observable();
+    self.report = ko.observable();
+    self.mediaUrls = ko.observableArray([]);
 
+    self.opinionList = ko.observableArray(['Unknown',  'Neutral', 'Positive', 'Negative']);
+    self.selectedOpinion = ko.observable();
+
+    self.saveChanges = function() {
+      $.ajax({
+              url: 'api/reports?topicId=' + topicId,
+              type: 'POST',
+              data: JSON.stringify({
+                authorId: self.name(), 
+                content: self.report(), 
+                mood: self.selectedOpinion(), 
+                mediaUrls:self.mediaUrls(),
+              }),
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              async: false,
+              success: function(result) {
+                $("#successStatus").html("<div class='alert alert-success'>"+"Thank you " + name() + ", your report was submitted" +"</div>");
+                self.name(null);
+                self.report(null);
+                self.mediaUrls([]);
+                self.selectedOpinion(null);
+                //window.setTimeout(function() { $('#sharestory-dialog').modal('hide') }, 1000);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                var msg = "We were unable to sign you in: " + textStatus + ". Please try again later";
+                $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                console.log("some error occured: ", errorThrown);
+              }
+        });
+    };
+
+    currentReportModel = self;
   }
-  
+
+  (function () {
+    $('#share-story-submit').on('click', function(e){
+      // We don't want self to act as a link so cancel the link action
+      e.preventDefault();
+      $('#sharestory-form').submit();
+    });
+
+    $('#sharestory-form').validate({
+        debug: true,
+        rules: {
+            name: {
+                minlength: 2,
+                maxlength: 30,
+                required: false
+            },
+            report: {
+                minlength: 30,
+                maxlength: 300,
+                required: true
+            },
+            opinion: {
+              required: false
+            }
+        },
+        highlight: function (element) {
+            $(element).closest('.form-group')
+                .removeClass('has-success').addClass('has-error');
+        },
+        success: function (element) {
+            element.addClass('valid').closest('.form-group')
+                .removeClass('has-error').addClass('has-success');
+        },
+        errorClass: "help-block",
+        validClass: "help-block",
+        submitHandler: function (form) {
+            console.log("Submit");
+            currentReportModel.saveChanges();
+            return false; // ajax used, block the normal submit
+        }
+    });
+
+}());
+
 </script>
+</body>
+</html>

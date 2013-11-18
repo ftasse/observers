@@ -1,4 +1,5 @@
 var user = ko.observable(null);
+
 var QueryString = getRequestParameters ();
 
 (function () {
@@ -157,7 +158,14 @@ $('#edit-topic-link').on('click', function (e) {
 
 $('#share-story-link').on('click', function (e) {
   e.defaultPrevented = true;
-  alert("Coming very soon!");
+  $( "#create-topic-modal" ).html("");
+
+   $("#share-story-modal" ).load("sharestory_form.html", function() {
+    var sendReport = new SendReportModel(QueryString.topicId);
+    //alert(ko.toJS(sendReport.opinionList));
+    ko.applyBindings(sendReport, document.getElementById("sharestory-dialog"));
+    $('#share-story-modal').modal( {backdrop:'static'} );
+  });
 });
 
 function pad(n, width, z) {
