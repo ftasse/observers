@@ -1,13 +1,26 @@
 var user = ko.observable(null);
 var QueryString = getRequestParameters ();
 
+
+var clientId = '907117162790.apps.googleusercontent.com';
+var scopes = 'https://www.googleapis.com/auth/plus.me';
+
+
 (function () {
   $.getScript("/js/vendor/bootbox.min.js", function(){});
 
-	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	/*var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
     po.src = 'https://apis.google.com/js/client:plusone.js?onload=customSigninRender'; 
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-    console.log("Loaded G+ api!");
+    console.log("Loaded G+ api!");*/
+
+    $.getScript("https://apis.google.com/js/client:plusone.js", function() { 
+          console.log('Login api loaded.'); 
+          //gapi.client.setApiKey("***REMOVED***");
+          $("#signinButton").on('click', function(e) {
+            runOnceAuthenticated();
+          });
+    });
 }());
 
 function showConfirmDialog(text, ok_callback, cancel_callback)
@@ -47,29 +60,6 @@ function userDisconnect(complete_callback)
                    });
 }
 
-function signinCallback(authResult) {
-  //console.log("Val: ", authResult["access_token"] + " "  + authResult["error"]);
-  if (authResult['code']) {
-    // Send the code to the server
-    $.get('api/oauth2callback', { code: authResult['code'], state: authResult['state'] }, function(result) {
-        //console.log(result);
-		user(result);
-      });
-  } else if (authResult['error']) {
-    	console.log('Sign-in state: ' + authResult['error']);
-    	if (authResult['error'] == 'user_signed_out')
-    	{if (user() !== null)
-    		{
-				$.get('api/logout', function(data){ 
-					user(null);
-				}).error(function() {
-					console.log("Could not log out");
-				});
-			}
-		}
-  }
-}
-
 function runOnceAuthenticated(callback, errorDiv) {
   if (user()) {
     callback();
@@ -77,13 +67,11 @@ function runOnceAuthenticated(callback, errorDiv) {
   else {
     var options = {
           client_id: clientId,
-          accesstype: 'offline',
-          redirecturi: 'postmessage',
-          cookiepolicy: 'single_host_origin',
+          immediate: false,
           scope: scopes
         };
-        gapi.client.setApiKey("***REMOVED***");
         gapi.auth.authorize(options, function (token) {
+          //alert("Token " + token["access_token"]);
           if (token['access_token']) {
             $.ajax({
               url: 'api/oauth2callback',
@@ -94,11 +82,15 @@ function runOnceAuthenticated(callback, errorDiv) {
               async: false,
               success: function(result) {
                 user(result);
-                callback();
+                if (callback != undefined)
+                  callback();
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
-                var msg = "We were unable to sign you in: " + textStatus + ". Please try again later";
-                errorDiv.html("<div class='alert alert-danger'>"+msg +"</div>");
+                if (errorDiv != undefined && errorDiv != null)
+                {
+                  var msg = "We were unable to sign you in: " + textStatus + ". Please try again later";
+                  errorDiv.html("<div class='alert alert-danger'>"+msg +"</div>");
+                }
                 console.log("some error occured: ", errorThrown);
               }
             });
@@ -107,21 +99,6 @@ function runOnceAuthenticated(callback, errorDiv) {
           } 
         });
   }
-}
-
-var clientId = '907117162790.apps.googleusercontent.com';
-var scopes = 'https://www.googleapis.com/auth/plus.me';
-
-function customSigninRender() {
-    var options = {
-    clientid: clientId,
-    accesstype: 'offline',
-    redirecturi: 'postmessage',
-    cookiepolicy: 'single_host_origin',
-    scope: scopes
-   };
-    options['callback'] = 'signinCallback';
-    gapi.signin.render('signinButton', options);
 }
 
 function getRequestParameters() {
@@ -188,27 +165,6 @@ $('#share-story-link').on('click', function (e) {
     $('#share-story-modal').modal( {backdrop:'static'} );
   });
 });
-
-function pad(n, width, z) {
-  z = z || '0';
-  n = n + '';
-  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-}
-
-var mthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-Date.prototype.formatMMMDDYYYY = function(){
-    var str = pad(this.getDate(), 2)  + '-' + mthNames[this.getMonth()] +  "-" +  this.getFullYear() + " " + pad(this.getHours(), 2)+":"+ pad(this.getMinutes(), 2);
-    str += " GMT"; 
-    var offset = this.getTimezoneOffset()/60
-    if (offset < 0)
-    {
-      str += "-" + pad(-offset, 2);
-    } else if (offset > 0)
-    {
-      str += "+" + pad(offset, 2);
-    }
-    return str;
-}
 
 function openInNewTab(url )
 {
