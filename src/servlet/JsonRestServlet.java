@@ -257,10 +257,13 @@ public abstract class JsonRestServlet extends HttpServlet {
   protected List<GeoPt> geoLocationsFromString(String address, String lang)
   {
     List<GeoPt> locations = new ArrayList<GeoPt> ();
+    if (address.length() == 0)
+      return locations;
+    
     final Geocoder geocoder = new Geocoder();
     GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(address).setLanguage(lang).getGeocoderRequest();
     GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
-    if (geocoderResponse.getStatus() == GeocoderStatus.OK)
+    if (geocoderResponse != null && geocoderResponse.getStatus() == GeocoderStatus.OK)
     {
       List<GeocoderResult> results  = geocoderResponse.getResults();
       for (GeocoderResult result: results)

@@ -113,7 +113,7 @@ public class TwitterChannelServlet extends JsonRestServlet {
                 AccessToken accessToken = new AccessToken(account.getAccessToken(), account.getAccessTokenSecret());
                 //twitter.setOAuthConsumerKey("[consumer key]", "[consumer secret]");
                 twitter.setOAuthAccessToken(accessToken);
-                Paging paging = new Paging(1, 200);
+                Paging paging = new Paging(1, 50);
                 if (account.getLatestTweetId() !=null)
                     paging.setSinceId(Long.parseLong(account.getLatestTweetId()));
                 List<Status> statuses = twitter.getUserTimeline(account.getName(), paging);

@@ -181,16 +181,25 @@ function initializeTopicSummary()
 			
 				//$('title').text(self.title());
 	   			$('meta[name=description]').attr('content', self.shortDescription);
-			}); 
+			}).complete(function() {jQuery('.container').hideLoading();}); 
 
 		topicSummary.hasBuzzwords(false);
 		location.hash = "recentreports";
 
-		$.get('/api/reports', {topicId: topicSummary.id, from:0, to:5}, topicSummary.reports).complete(function()
-			{
-				jQuery('.container').hideLoading();
-			});
-	})
+		jQuery('#reports-canvas').showLoading();
+         $.ajax({
+              url: 'api/reports',
+              type: 'GET',
+              data: {topicId: topicSummary.id, from:0},
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              async: true,
+              success: function(result) {
+                topicSummary.reports(result)
+              },
+              complete: function() { jQuery('#reports-canvas').hideLoading(); }
+            });
+	});
 }
 
 function drawMapChart() {

@@ -267,7 +267,7 @@ function EditTopicModel (topicId) {
               }, 
               complete: function() { jQuery('#successStatus').hideLoading(); }
             });
-    }
+    };
 
     self.saveAuthenticatedTopic = function() {
         //alert(JSON.stringify(getTopicJsonData()));
@@ -294,14 +294,14 @@ function EditTopicModel (topicId) {
               },
               complete: function() { jQuery('#successStatus').hideLoading(); }
             });
-    }
+    };
 
     self.saveChanges = function () {
       //alert(JSON.stringify(ko.toJS(self.channels)));
       runOnceAuthenticated(function() {
         self.saveAuthenticatedTopic();
       }, $("#successStatus"));
-    }
+    };
 
     self.deleteTopic = function () {
       function run () {

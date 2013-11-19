@@ -50,10 +50,10 @@ public class Report extends Jsonifiable {
                 String label = PredictServlet.getPredictionOutputLabel(text, modelId);
                 if (label.equals("positive") || label.equals("1"))
                 {
-                    mood = Mood.Positive;
+                    mood = Mood.Negative; //Mood.Positive;
                 } else if (label.equals("negative") || label.equals("0"))
                 {
-                    mood = Mood.Negative;
+                    mood = Mood.Positive; //Mood.Negative;
                 } else if (label.equals("neutral"))
                 {
                     mood = Mood.Neutral;

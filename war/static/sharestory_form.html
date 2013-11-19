@@ -32,7 +32,7 @@
 
         <div class="form-group">
           <label for="name" class="sr-only  control-label">Screen name</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="Screen name" data-bind="value: name">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Screen name" data-bind="value: authorName">
         </div>
 
         <div class="form-group">
@@ -65,7 +65,9 @@
   function SendReportModel (topicId) {
     var self = this;
 
-    self.name = ko.observable();
+    self.topicId = topicId;
+
+    self.authorName = ko.observable();
     self.report = ko.observable();
     self.mediaUrls = ko.observableArray([]);
 
@@ -73,36 +75,65 @@
     self.selectedOpinion = ko.observable();
 
     self.saveChanges = function() {
-      $.ajax({
-              url: 'api/reports?topicId=' + topicId,
+        if (navigator.geolocation) {
+          jQuery('#successStatus').showLoading();
+          var location_timeout = setTimeout("sendReport(null)",  10000);
+
+          navigator.geolocation.getCurrentPosition(function(position) {
+             sendReport(position)
+          }, function(error) {
+              clearTimeout(location_timeout);
+              sendReport(null);
+          });
+      } else {
+          // Fallback for no geolocation
+          jQuery('#successStatus').showLoading();
+          sendReport(null);
+      }
+      
+    };
+
+    currentReportModel = self;
+  }
+
+   function sendReport (position)
+      {
+
+        function run () {
+        $.ajax({
+              url: 'api/reports?topicId=' +  currentReportModel.topicId,
               type: 'POST',
               data: JSON.stringify({
-                authorId: self.name(), 
-                content: self.report(), 
-                mood: self.selectedOpinion(), 
-                mediaUrls:self.mediaUrls(),
+                content: currentReportModel.report(), 
+                authorId: currentReportModel.authorName(), 
+                mood: currentReportModel.selectedOpinion(), 
+                mediaUrls:currentReportModel.mediaUrls(),
+                location: (position == undefined || position == null)?null:{lat: position.coords.latitude, lng: position.coords.longitude}
               }),
               contentType: 'application/json; charset=utf-8',
               dataType: 'json',
               async: false,
               success: function(result) {
-                $("#successStatus").html("<div class='alert alert-success'>"+"Thank you " + name() + ", your report was submitted" +"</div>");
-                self.name(null);
-                self.report(null);
-                self.mediaUrls([]);
-                self.selectedOpinion(null);
+                $("#successStatus").html("<div class='alert alert-success'>"+"Thank you " + currentReportModel.authorName() + ", your report was submitted" +"</div>");
+                currentReportModel.authorName(null);
+                currentReportModel.report(null);
+                currentReportModel.mediaUrls([]);
+                currentReportModel.selectedOpinion(null);
                 //window.setTimeout(function() { $('#sharestory-dialog').modal('hide') }, 1000);
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
                 var msg = "We were unable to sign you in: " + textStatus + ". Please try again later";
                 $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
                 console.log("some error occured: ", errorThrown);
+              }, complete: function() {
+                jQuery('#successStatus').hideLoading();
               }
         });
-    };
+      }
 
-    currentReportModel = self;
-  }
+        runOnceAuthenticated(run, $("#successStatus"));
+      };
+
 
   (function () {
     $('#share-story-submit').on('click', function(e){
@@ -120,7 +151,7 @@
                 required: false
             },
             report: {
-                minlength: 30,
+                minlength: 10,
                 maxlength: 300,
                 required: true
             },

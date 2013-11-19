@@ -154,6 +154,12 @@ div.container {
   padding-top:20px;
 } 
 
+body.modal-open,
+ .modal-open .navbar-fixed-top,
+ .modal-open .navbar-fixed-bottom {
+   margin-right: 15px;
+ }
+
 .loading-indicator {
   height: 80px;
   width: 80px;
