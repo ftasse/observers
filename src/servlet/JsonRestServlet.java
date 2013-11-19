@@ -90,7 +90,7 @@ public abstract class JsonRestServlet extends HttpServlet {
   /**
    * MIME type to use when sending responses back to PhotoHunt clients.
    */
-  public static final String JSON_MIMETYPE = "application/json";
+  public static final String JSON_MIMETYPE = "application/json; charset=utf-8";
 
   /**
    * Key name in the session referring to the Google user ID of the current

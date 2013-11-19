@@ -43,13 +43,13 @@
 						<a id="edit-topic-link" style="cursor: pointer; cursor: hand;" data-bind="{text: 'Edit topic', visible: (id && isAdmin)}">
 						</a>
 					</li>
-					<li data-bind="visible: isLoggedIn()" class="dropdown">
+					<li data-bind="if: isLoggedIn()" class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<span class="glyphicon glyphicon-user" alt="My account: ">
-								<span data-bind="text: userName"></span>
-							</span> 
-							<b class="caret"></b>
-						</a>
+                            <span><img class="img-responsive img-circle pull-left"  alt="Google profile image" data-bind="attr: {src: user().googlePublicProfilePhotoUrl, width:30, height:30}"/>
+                            <span data-bind="text: userName"></span></span>
+                            <b class="caret"></b>
+                        </a>
+
 						<ul class="dropdown-menu">
 							<!--<li><a href="#">Manage my topics</a></li>-->
 							<li><a href="javascript:void(0);" onclick="userLogout()">Logout</a></li>

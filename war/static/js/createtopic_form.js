@@ -104,11 +104,16 @@ function EditTopicModel (topicId) {
     self.isAdmin = ko.computed(function() {
         if (user() === null)
           return true;
-        else if (self.ownerUserId() !== user().id) {
-          return  false;
-        }
-        else {
-          return true;
+        else 
+        {
+          //console.log("Val " + user());
+          //console.log("Val " + user().id);
+          if (self.ownerUserId() !== user().id) {
+            return  false;
+          }
+          else {
+            return true;
+          }
         }
       }, self);
 
@@ -191,14 +196,14 @@ function EditTopicModel (topicId) {
 
    self.getTopicJsonData = function() {
       return {
-          id: ko.toJS(self.id),
-          title: ko.toJS(self.title),
-          shortDescription: ko.toJS(self.shortDescription)
+          'id': ko.toJS(self.id),
+          'title': ko.toJS(self.title),
+          'shortDescription': ko.toJS(self.shortDescription)
         };
     };
 
     self.getChannelsJsonData = function() {
-      jsonChannelData = []
+        jsonChannelData = [];
         for (var i in self.channels()) {
           var channel = self.channels()[i];
           var channelData = null;
@@ -299,8 +304,8 @@ function EditTopicModel (topicId) {
     }
 
     self.deleteTopic = function () {
-      jQuery('#successStatus').showLoading();
       function run () {
+          jQuery('#successStatus').showLoading();
          $.ajax({
               url: 'api/topics?topicId=' + self.id(),
               type: 'DELETE',
@@ -308,25 +313,27 @@ function EditTopicModel (topicId) {
               dataType: 'json',
               async: true,
               success: function(result) {
+                jQuery('#successStatus').hideLoading();
                 window.location.href = "/";
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
                 var msg = "An error occured: " + textStatus + ". Please try again later";
                 if (button != undefined) $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
                 console.log("some error occured: ", errorThrown);
-              }, 
-              complete: function() { jQuery('#successStatus').hideLoading(); }
+                jQuery('#successStatus').hideLoading();
+              }
             });
         }
 
       runOnceAuthenticated(function() {
-        run();
+        showConfirmDialog("Are you sure you want to delete this topic? All the topic data will be deleted from our server.",
+                          run);
       }, $("#successStatus"));
     };
 
     self.refreshTweets = function(button) {
-      if (button != undefined) jQuery('#successStatus').showLoading();
       function run () {
+         if (button != undefined) jQuery('#successStatus').showLoading();
          $.ajax({
               url: 'api/twitter',
               type: 'GET',
@@ -349,11 +356,11 @@ function EditTopicModel (topicId) {
       runOnceAuthenticated(function() {
         run();
       }, $("#successStatus"));
-    }
+    };
 
     self.refreshSMS = function(button) {
-        if (button != undefined) jQuery('#successStatus').showLoading();
         function run () {
+         if (button != undefined) jQuery('#successStatus').showLoading();
          $.ajax({
               url: 'api/twilio',
               type: 'GET',
@@ -376,7 +383,7 @@ function EditTopicModel (topicId) {
         runOnceAuthenticated(function() {
           run();
         }, $("#successStatus"));
-    }
+    };
 
     if (topicId == undefined)
     { 

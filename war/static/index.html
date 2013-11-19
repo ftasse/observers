@@ -44,13 +44,13 @@
                         <a id="edit-topic-link" style="cursor: pointer; cursor: hand;" data-bind="{text: 'Edit topic', visible: (id && isAdmin)}">
                         </a>
                     </li>-->
-                    <li data-bind="visible: isLoggedIn()" class="dropdown">
+                    <li data-bind="if: isLoggedIn()" class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-user" alt="My account: ">
-                                <span data-bind="text: userName"></span>
-                            </span> 
+                            <span><img class="img-responsive img-circle pull-left"  alt="Google profile image" data-bind="attr: {src: user().googlePublicProfilePhotoUrl, width:30, height:30}"/>
+                            <span data-bind="text: userName"></span></span>
                             <b class="caret"></b>
                         </a>
+
                         <ul class="dropdown-menu">
                             <!--<li><a href="#">Manage my topics</a></li>-->
                             <li><a href="javascript:void(0);" onclick="userLogout()">Logout</a></li>
@@ -119,19 +119,6 @@
 <script type="text/javascript" src="js/plugins.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 <!-- //-end- concat_js -->
-
-<script type="text/html" id="topics-table-template">
-    <tr>
-    <td  class="" data-bind="{ click: $root.goToTopic}">
-        <h4 class="list-group-item-heading" data-bind="{text: title}"> </h4> 
-        <p data-bind="{text: shortDescription}"></p>
-        <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span>
-    </td>
-    <td style="text-align:center;">
-    <a style="text-align:center;" href="#" data-bind="click: $root.removeTopic, visible: (ownerUserId == $root.userId())" ><b  class="glyphicon glyphicon-trash" ></b></a>
-    </td>
-    </tr>
-</script>
     
 <script type="text/html" id="topics-list-template">
     <a  class="list-group-item" data-bind="{click: $root.goToTopic, attr: {href: 'dashboard.html?topicId='+id}}">

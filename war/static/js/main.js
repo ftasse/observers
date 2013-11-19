@@ -2,6 +2,8 @@ var user = ko.observable(null);
 var QueryString = getRequestParameters ();
 
 (function () {
+  $.getScript("/js/vendor/bootbox.min.js", function(){});
+
 	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
     po.src = 'https://apis.google.com/js/client:plusone.js?onload=customSigninRender'; 
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
@@ -10,8 +12,10 @@ var QueryString = getRequestParameters ();
 
 function showConfirmDialog(text, ok_callback, cancel_callback)
 {
-
-}
+  bootbox.confirm(text, function(result) {
+    if (result == true) ok_callback();
+  }); 
+} 
 
 function getUser (complete_callback) {
 	$.get('/api/users').done(function(userJson) {
@@ -37,7 +41,10 @@ function userLogout(complete_callback)
 
 function userDisconnect(complete_callback)
 {
-	$.post('api/disconnect', function(data){ console.log(data); }).complete(complete_callback);
+  showConfirmDialog("Are you sure you want to delete your account? All your data will be deleted from our server. ",
+	                 function(){
+                    $.post('api/disconnect', function(data){ console.log(data); user(null); }).complete(complete_callback)
+                   });
 }
 
 function signinCallback(authResult) {

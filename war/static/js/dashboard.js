@@ -80,22 +80,25 @@ function dashboardViewModel() {
     	return true;
     };
 
-    self.removeReport = function(report) { 
-    	self.reports.remove(report) ;
-    	$.ajax({
-              url: 'api/reports?reportId='+report.id,
-              type: 'DELETE',
-              async: true,
-              success: function(result) {
-                $("#dashboardStatus").html("<div class='alert alert-success'> The report was successfully deleted. </div>");
-              	window.setTimeout(function() {$("#dashboardStatus").html(""); }, 2000);
-              },
-              error: function(XMLHttpRequest, textStatus, errorThrown) {
-                var msg = "An error occured: " + textStatus + ". Please try again later";
-                $("#dashboardStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
-                console.log("some error occured: ", errorThrown);
-              }
-            });
+    self.removeReport = function(report) {
+    	showConfirmDialog("Are you sure you want to delete this report? All the report details will be deleted from our server.",
+                          function() {
+                          	self.reports.remove(report) ;
+					    	$.ajax({
+					              url: 'api/reports?reportId='+report.id,
+					              type: 'DELETE',
+					              async: true,
+					              success: function(result) {
+					                $("#dashboardStatus").html("<div class='alert alert-success'> The report was successfully deleted. </div>");
+					              	window.setTimeout(function() {$("#dashboardStatus").html(""); }, 2000);
+					              },
+					              error: function(XMLHttpRequest, textStatus, errorThrown) {
+					                var msg = "An error occured: " + textStatus + ". Please try again later";
+					                $("#dashboardStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+					                console.log("some error occured: ", errorThrown);
+					              }
+					            });
+                          });
         };
 
     self.showMedia = function(report) { 
