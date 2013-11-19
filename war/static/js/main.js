@@ -1,5 +1,4 @@
 var user = ko.observable(null);
-
 var QueryString = getRequestParameters ();
 
 (function () {
@@ -9,15 +8,20 @@ var QueryString = getRequestParameters ();
     console.log("Loaded G+ api!");
 }());
 
-function getUser () {
+function showConfirmDialog(text, ok_callback, cancel_callback)
+{
+
+}
+
+function getUser (complete_callback) {
 	$.get('/api/users').done(function(userJson) {
 		user(userJson);
 	}).error(function () {
 		user(null);
-	});
+	}).complete(complete_callback);
 }
 
-function userLogout()
+function userLogout(complete_callback)
 {
 	console.log("Logging out!");
 	if (user() !== null)
@@ -26,14 +30,14 @@ function userLogout()
 			user(null);
 		}).error(function() {
 			console.log("Could not log out");
-		});
+		}).complete(complete_callback);
 	}
 	gapi.auth.signOut();
 }
 
-function userDisconnect()
+function userDisconnect(complete_callback)
 {
-	$.post('api/disconnect', function(data){ console.log(data); });
+	$.post('api/disconnect', function(data){ console.log(data); }).complete(complete_callback);
 }
 
 function signinCallback(authResult) {
@@ -72,8 +76,7 @@ function runOnceAuthenticated(callback, errorDiv) {
           scope: scopes
         };
         gapi.client.setApiKey("***REMOVED***");
-        gapi.auth.authorize(options, function (authResult) {
-          var token = gapi.auth.getToken();
+        gapi.auth.authorize(options, function (token) {
           if (token['access_token']) {
             $.ajax({
               url: 'api/oauth2callback',
@@ -139,7 +142,11 @@ function getRequestParameters() {
 
 $('#create-topic-link').on('click', function (e) {
   e.defaultPrevented = true;
+  jQuery('.container').showLoading();
+  
   $( "#create-topic-modal" ).load( "createtopic_form.html", function() {
+    jQuery('.container').hideLoading();
+
     var editTopic = new EditTopicModel();
     editTopic.id(null);
     ko.applyBindings(editTopic, document.getElementById("createtopic-dialog"));
@@ -149,7 +156,11 @@ $('#create-topic-link').on('click', function (e) {
 
 $('#edit-topic-link').on('click', function (e) {
   e.defaultPrevented = true;
+  jQuery('.container').showLoading();
+
   $( "#create-topic-modal" ).load( "createtopic_form.html", function() {
+    jQuery('.container').hideLoading();
+
     var editTopic = new EditTopicModel(QueryString.topicId);
     ko.applyBindings(editTopic, document.getElementById("createtopic-dialog"));
     $('#create-topic-modal').modal( {backdrop:'static'} );
@@ -159,8 +170,11 @@ $('#edit-topic-link').on('click', function (e) {
 $('#share-story-link').on('click', function (e) {
   e.defaultPrevented = true;
   $( "#create-topic-modal" ).html("");
+  jQuery('.container').showLoading();
 
    $("#share-story-modal" ).load("sharestory_form.html", function() {
+    jQuery('.container').hideLoading();
+
     var sendReport = new SendReportModel(QueryString.topicId);
     //alert(ko.toJS(sendReport.opinionList));
     ko.applyBindings(sendReport, document.getElementById("sharestory-dialog"));

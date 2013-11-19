@@ -22,6 +22,7 @@
 </head>
 
 <body > 
+
     <header> <span id="fb-root"></span>
         <nav class="navbar navbar-default navbar-static-top" id="horizontal-menu" role="navigation">
             <div class="navbar-header">
@@ -70,6 +71,9 @@
 <div class="container clearfix">
 
 <div id="homeStatus"></div>
+<img src="/img/ajax-loader.gif" style="display: none" />
+<!--<button class="btn" id="loading-indicator">"loading stuff..."</button>-->
+
 <!-- Modal -->
 <div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 </div><!-- /.modal -->
@@ -82,8 +86,13 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">All Topics</h3>
                   </div>
+                <!-- <div class="table-responsive">
+                <table class="table table-hover table-striped" >
+                    <tbody data-bind="template: {name: 'topics-template', foreach: topics}"></tbody>
+                </table>
+                </div>-->
                 <!--<div class="panel-body"> </div>-->
-                <div class="list-group" data-bind="template: {name: 'topics-template', foreach: topics} ">
+                <div id="topic-list" class="list-group" data-bind="template: {name: 'topics-list-template', foreach: topics} ">
                     </div>
 
                <!-- <div class="panel-footer"></div>-->
@@ -94,10 +103,9 @@
     </div>
     </div>
 
-</div>
 
 <footer>
-    &copy; 2013 Flora Tasse
+    &copy; 2013 F. Tasse
 </footer>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -112,12 +120,25 @@
 <script type="text/javascript" src="js/main.js"></script>
 <!-- //-end- concat_js -->
 
-<script type="text/html" id="topics-template">
-    <a class="list-group-item" data-bind="{ attr: {href: 'dashboard.html?topicId='+id} }">
+<script type="text/html" id="topics-table-template">
+    <tr>
+    <td  class="" data-bind="{ click: $root.goToTopic}">
         <h4 class="list-group-item-heading" data-bind="{text: title}"> </h4> 
         <p data-bind="{text: shortDescription}"></p>
         <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span>
-                <span  href="#" class="glyphicon glyphicon-user pull-right" data-bind="visible: (ownerUserId == $root.userId())" ></span>
+    </td>
+    <td style="text-align:center;">
+    <a style="text-align:center;" href="#" data-bind="click: $root.removeTopic, visible: (ownerUserId == $root.userId())" ><b  class="glyphicon glyphicon-trash" ></b></a>
+    </td>
+    </tr>
+</script>
+    
+<script type="text/html" id="topics-list-template">
+    <a  class="list-group-item" data-bind="{click: $root.goToTopic, attr: {href: 'dashboard.html?topicId='+id}}">
+        <h4 class="list-group-item-heading" data-bind="{text: title}"> </h4> 
+        <p data-bind="{text: shortDescription}"></p>
+        <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span>
+        <span style="text-align:center;" href="#" data-bind="visible: (ownerUserId == $root.userId())" ><b  class="glyphicon glyphicon-user  pull-right" ></b></span>
     </a>
 </script>
 
@@ -139,16 +160,44 @@
         else { 
             return user().googleDisplayName;
         }
-    }, this);
+        }, this);
 
-    self.userId = ko.computed(function() {
-        if ( user() === null) { 
-            return null;
-        }
-        else { 
-            return  user().id;
-        }
-    }, this);
+        self.userId = ko.computed(function() {
+            if ( user() === null) { 
+                return null;
+            }
+            else { 
+                return  user().id;
+            }
+        }, this);
+
+        self.goToTopic = function(topic) {
+            window.location.href = "/dashboard.html?topicId=" + topic.id;
+        };  
+
+        self.removeTopic = function(topic) {
+            self.topics.remove(topic);
+            //jQuery('.container').showLoading();
+            $.ajax({
+                  url: 'api/topics?topicId=' + topic.id,
+                  type: 'DELETE',
+                  contentType: 'application/json; charset=utf-8',
+                  dataType: 'json',
+                  async: true,
+                  success: function(result) {
+                    
+                    $("#homeStatus").html("<div class='alert alert-success'>"+"The topic titled \"" + topic.title + "\" was successfully deleted." +"</div>");
+                  },
+                  error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    var msg = "An error occured: " + textStatus + ". Please try again later";
+                    $("#homeStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                    console.log("some error occured: ", errorThrown);
+                  },
+                  complete: function() {
+                    //jQuery('.container').hideLoading();
+                  }
+                });
+        };
     }
 
     (function () {
@@ -159,21 +208,38 @@
         var viewModel = new TopicListModel ();
         ko.applyBindings(viewModel);
 
-        $.ajax({
-              url: 'api/topics',
-              type: 'GET',
-              contentType: 'application/json; charset=utf-8',
-              dataType: 'json',
-              async: true,
-              success: function(result) {
-                viewModel.topics(result);
-              },
-              error: function(XMLHttpRequest, textStatus, errorThrown) {
-                var msg = "An error occured: " + textStatus + ". Please try again later";
-                $("#homeStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
-                console.log("some error occured: ", errorThrown);
-              }
-            });
+        $.getScript("/js/jquery.showLoading.js", function(){
+
+            jQuery('.container').showLoading();
+            $.ajax({
+                  url: 'api/topics',
+                  type: 'GET',
+                  contentType: 'application/json; charset=utf-8',
+                  dataType: 'json',
+                  async: true,
+                  success: function(result) {
+                    result.sort(function(a,b){
+                        if (a.ownerUserId == b.ownerUserId) {
+                            return a.created < b.created;
+                        } else
+                        {
+                            if (a.ownerUserId  == viewModel.userId()) return  false;
+                            if (b.ownerUserId == viewModel.userId)  return true;
+                            else return a.created < b.created;
+                        }
+                    });
+                    viewModel.topics(result);
+                  },
+                  error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    var msg = "An error occured: " + textStatus + ". Please try again later";
+                    $("#homeStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                    console.log("some error occured: ", errorThrown);
+                  },
+                  complete: function() {
+                    jQuery('.container').hideLoading();
+                  }
+                });
+         });
 
     }());
 

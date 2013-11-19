@@ -164,11 +164,11 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
           {
             String name = data.account.name;
             String hashtag = data.account.hashtag;
-            channel = createNewTwitterChannel(topicId, name, hashtag, getHostURL(req), req.getRequestedSessionId());
+            if (name.length() > 0)  channel = createNewTwitterChannel(topicId, name, hashtag, getHostURL(req), req.getRequestedSessionId());
           } else if (data.source == Channel.Source.Twilio)
           {
             String hashtag = data.account.hashtag;
-            channel = createNewTwilioChannel(topicId, hashtag, getHostURL(req), req.getRequestedSessionId());
+            if (hashtag.length() > 0)  channel = createNewTwilioChannel(topicId, hashtag, getHostURL(req), req.getRequestedSessionId());
           }
         }
       }

@@ -19,12 +19,12 @@ var currentModel = null;
         rules: {
             title: {
                 minlength: 2,
-                maxlength: 30,
+                maxlength: 100,
                 required: true
             },
             description: {
                 minlength: 30,
-                maxlength: 100,
+                maxlength: 300,
                 required: true
             },
             twitterName: {
@@ -78,6 +78,7 @@ function EditTopicModel (topicId) {
     self.title = ko.observable();
     self.shortDescription = ko.observable();
     self.id = ko.observable();
+    self.ownerUserId = ko.observable();
 
     self.channels = ko.observableArray([]);
 
@@ -97,6 +98,17 @@ function EditTopicModel (topicId) {
         }
         else {
           return "New Topic";
+        }
+      }, self);
+
+    self.isAdmin = ko.computed(function() {
+        if (user() === null)
+          return true;
+        else if (self.ownerUserId() !== user().id) {
+          return  false;
+        }
+        else {
+          return true;
         }
       }, self);
 
@@ -138,6 +150,7 @@ function EditTopicModel (topicId) {
     self.populateTopicFromJson = function (jsonData) {
       self.title(jsonData.title);
       self.id(jsonData.id);
+      self.ownerUserId(jsonData.ownerUserId);
       self.shortDescription(jsonData.shortDescription);
     };
 
@@ -224,6 +237,7 @@ function EditTopicModel (topicId) {
       };
 
     self.saveAuthenticatedChannels = function () {
+      jQuery('#successStatus').showLoading();
       $.ajax({
               url: 'api/channels?topicId='+self.id(),
               type: 'POST',
@@ -245,7 +259,8 @@ function EditTopicModel (topicId) {
                 var msg = "An error occured: " + textStatus + ". Please try again later";
                 $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
                 console.log("some error occured: ", errorThrown);
-              }
+              }, 
+              complete: function() { jQuery('#successStatus').hideLoading(); }
             });
     }
 
@@ -254,6 +269,7 @@ function EditTopicModel (topicId) {
        // alert(JSON.stringify(getChannelsJsonData()));
         //$("#successStatus").html("<div class='alert alert-success'> Successfully saved topic details. </div>");
         //saveAuthenticatedChannels();
+          jQuery('#successStatus').showLoading();
           $.ajax({
               url: 'api/topics',
               type: 'POST',
@@ -270,7 +286,8 @@ function EditTopicModel (topicId) {
                 var msg = "An error occured: " + textStatus + ". Please try again later";
                 $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
                 console.log("some error occured: ", errorThrown);
-              }
+              },
+              complete: function() { jQuery('#successStatus').hideLoading(); }
             });
     }
 
@@ -281,7 +298,34 @@ function EditTopicModel (topicId) {
       }, $("#successStatus"));
     }
 
-    self.refreshTweets = function() {
+    self.deleteTopic = function () {
+      jQuery('#successStatus').showLoading();
+      function run () {
+         $.ajax({
+              url: 'api/topics?topicId=' + self.id(),
+              type: 'DELETE',
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              async: true,
+              success: function(result) {
+                window.location.href = "/";
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                var msg = "An error occured: " + textStatus + ". Please try again later";
+                if (button != undefined) $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                console.log("some error occured: ", errorThrown);
+              }, 
+              complete: function() { jQuery('#successStatus').hideLoading(); }
+            });
+        }
+
+      runOnceAuthenticated(function() {
+        run();
+      }, $("#successStatus"));
+    };
+
+    self.refreshTweets = function(button) {
+      if (button != undefined) jQuery('#successStatus').showLoading();
       function run () {
          $.ajax({
               url: 'api/twitter',
@@ -291,13 +335,14 @@ function EditTopicModel (topicId) {
               dataType: 'json',
               async: true,
               success: function(result) {
-                $("#successStatus").html("<div class='alert alert-success'> Successfully fectched new tweets. </div>");
+                if (button != undefined) $("#successStatus").html("<div class='alert alert-success'> Successfully fectched new tweets. </div>");
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
                 var msg = "An error occured: " + textStatus + ". Please try again later";
-                $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                if (button != undefined) $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
                 console.log("some error occured: ", errorThrown);
-              }
+              }, 
+              complete: function() { jQuery('#successStatus').hideLoading(); }
             });
         }
 
@@ -306,7 +351,8 @@ function EditTopicModel (topicId) {
       }, $("#successStatus"));
     }
 
-    self.refreshSMS = function() {
+    self.refreshSMS = function(button) {
+        if (button != undefined) jQuery('#successStatus').showLoading();
         function run () {
          $.ajax({
               url: 'api/twilio',
@@ -316,13 +362,14 @@ function EditTopicModel (topicId) {
               dataType: 'json',
               async: true,
               success: function(result) {
-                $("#successStatus").html("<div class='alert alert-success'> Successfully fetched outstanding SMS. </div>");
+                if (button != undefined) $("#successStatus").html("<div class='alert alert-success'> Successfully fetched outstanding SMS. </div>");
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
                 var msg = "An error occured: " + textStatus + ". Please try again later";
-                $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                if (button != undefined) $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
                 console.log("some error occured: ", errorThrown);
-              }
+              },
+              complete: function() { jQuery('#successStatus').hideLoading(); }
             });
         }
 

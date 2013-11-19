@@ -141,11 +141,32 @@ span.buttonText {
   font-family: 'Roboto',arial,sans-serif;
 }
 
+div.container {
+  overflow:auto;
+  padding-bottom:150px; /* this needs to be bigger than footer height*/
+}
 
+.footer {
+  position: relative;
+  margin-top: -150px; /* negative value of footer height */
+  height: 150px;
+  clear:both;
+  padding-top:20px;
+} 
 
+.loading-indicator {
+  height: 80px;
+  width: 80px;
+  background: url( '../img/ajax-loader.gif' );
+  background-repeat: no-repeat;
+  background-position: center center;
+}
 
-
-
+.loading-indicator-overlay {
+  background-color: #FFFFFF;
+  opacity: 0.6;
+  filter: alpha(opacity = 60);
+}
 
 /* ==========================================================================
    Helper classes

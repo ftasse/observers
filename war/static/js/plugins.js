@@ -19,6 +19,27 @@
             console[method] = noop;
         }
     }
+
+    //$.getScript("/js/jquery.showLoading.js", function(){
+
+       //alert("Script loaded and executed.");
+       // Here you can use anything you defined in the loaded script
+
+       /*$(document).ajaxSend(function(event, request, settings) {
+        //alert("Loading");
+        //$('#loading-indicator').show();
+        console.log("show loading");
+        jQuery('#activity_pane').showLoading();
+      });
+
+      $(document).ajaxComplete(function(event, request, settings) {
+          //$('#loading-indicator').hide();
+          console.log("hide loading");
+          jQuery('#activity_pane').hideLoading();
+      });*/
+
+    //});
+
 }());
 
 // Place any jQuery/helper plugins in here.

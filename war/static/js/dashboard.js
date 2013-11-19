@@ -166,22 +166,28 @@ function initializeTopicSummary()
 		topicSummary.url(location.protocol + '//' + location.host + "/dashboard.html?topicId=" + topicSummary.id);
 	}
 
-	$.get('/api/topics', {topicId: topicSummary.id()}).done(function(topic) {
-			topicSummary.title(topic.title);
-			topicSummary.shortDescription(topic.shortDescription);
-			topicSummary.supportsSms(topic.supportsSms);
-			topicSummary.ownerUserId(topic.ownerUserId);
-			topicSummary.numSmsShares(topic.numSmsShares);
-			google.load("visualization", "1", {packages:["corechart", "map", "annotatedtimeline"], callback: initializeCharts}); 
-		
-			//$('title').text(self.title());
-   			$('meta[name=description]').attr('content', self.shortDescription);
-		}); 
+	$.getScript("/js/jquery.showLoading.js", function(){
+		jQuery('.container').showLoading();
+		$.get('/api/topics', {topicId: topicSummary.id()}).done(function(topic) {
+				topicSummary.title(topic.title);
+				topicSummary.shortDescription(topic.shortDescription);
+				topicSummary.supportsSms(topic.supportsSms);
+				topicSummary.ownerUserId(topic.ownerUserId);
+				topicSummary.numSmsShares(topic.numSmsShares);
+				google.load("visualization", "1", {packages:["corechart", "map", "annotatedtimeline"], callback: initializeCharts}); 
+			
+				//$('title').text(self.title());
+	   			$('meta[name=description]').attr('content', self.shortDescription);
+			}); 
 
-	topicSummary.hasBuzzwords(false);
-	location.hash = "recentreports";
+		topicSummary.hasBuzzwords(false);
+		location.hash = "recentreports";
 
-	$.get('/api/reports', {topicId: topicSummary.id, from:0, to:5}, topicSummary.reports);
+		$.get('/api/reports', {topicId: topicSummary.id, from:0, to:5}, topicSummary.reports).complete(function()
+			{
+				jQuery('.container').hideLoading();
+			});
+	})
 }
 
 function drawMapChart() {
