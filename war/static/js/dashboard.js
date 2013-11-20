@@ -9,6 +9,10 @@
 
 var topicSummary;
 
+$.fn.max = function(selector) { 
+    return Math.max.apply(null, this.map(function(index, el) { return selector.apply(el); }).get() ); 
+}
+
 /*function showCreateTopic () {
 	var url = "/createtopic_form.html";
 	$("#createTopicModal").load(url, function() { // load the url into the modal
@@ -44,7 +48,47 @@ function dashboardViewModel() {
 	self.buzzwordsDisplaySelected = ko.observable();
 	self.hasBuzzwords = ko.observable(false);
 
-	self.numSmsShares = ko.observable();
+	self.numSmsShares = ko.observable(0);
+	self.numReports = ko.observable(0);
+
+	self.reportMethods = ko.observable();
+
+	self.currentPageIndex = ko.observable(0);
+
+	self.pageSize = ko.observable(5);
+	self.maxNumDisplayPageIndices = ko.observable(5);
+
+	self.maxPageIndex = ko.computed(function () {
+	    return (Math.ceil(self.numReports() / self.pageSize())) - 1;
+	}, this);
+
+	self.displayedPageindicesCompute = ko.computed(function () {
+		var maxPageId = self.maxPageIndex();
+		var mid = Math.floor(self.maxNumDisplayPageIndices()/2);
+		var mid2 = Math.ceil(self.maxNumDisplayPageIndices()/2);
+		var pageIndices = [];
+		if (self.currentPageIndex() > mid)
+		{
+			var minPg = self.currentPageIndex()-mid;
+			var maxPg = Math.min(self.maxPageIndex() + 1, self.currentPageIndex()+mid2);
+			minPg = minPg - (self.currentPageIndex()+mid2 - maxPg);
+
+			for (var i=minPg; i<maxPg; i++) {
+			  pageIndices.push(i);
+			}
+		} else
+		{
+			var len = Math.min(self.maxPageIndex()+1, self.maxNumDisplayPageIndices());
+			for (var i=0; i<len; i++) {
+			  pageIndices.push(i);
+			}
+			//console.log(self.maxPageIndex() + " " + self.maxNumDisplayPageIndices());
+		}
+	    return pageIndices;
+	}, this);
+
+	self.displayedPageindices = ko.observableArray(ko.utils.unwrapObservable(self.displayedPageindicesCompute));
+    self.displayedPageindicesCompute.subscribe(function (newValue) { self.displayedPageindices(newValue); });
 
 	self.data = ko.observable(null);
 
@@ -74,6 +118,48 @@ function dashboardViewModel() {
         return (user() !== null);
     }, this);
 
+    self.goToPage = function(pageIndex) {
+
+    	if (pageIndex < 0 || pageIndex > self.maxPageIndex())
+    		return;
+
+    	self.currentPageIndex(pageIndex);
+    	//console.log(self.displayedPageindices());
+    	jQuery('#reports-canvas').parent().showLoading();
+			$.ajax({
+					url: 'api/reports',
+					type: 'GET',
+					data: {
+						topicId: topicSummary.id, 
+						from:self.currentPageIndex()*self.pageSize(), 
+						to: (self.currentPageIndex()+1)*self.pageSize()
+					},
+					contentType: 'application/json; charset=utf-8',
+					dataType: 'json',
+					async: true,
+					success: function(result) {
+						topicSummary.reports(result)
+					},
+					complete: function() { jQuery('#reports-canvas').parent().hideLoading(); }
+			});
+	};
+
+	self.goToPrevPage = function() {
+		self.goToPage(self.currentPageIndex()-1);
+	}
+
+	self.goToNextPage = function() {
+		self.goToPage(self.currentPageIndex()+1);
+	}
+
+	self.goToFirstPage = function() {
+		self.goToPage(0);
+	}
+
+	self.goToLastPage = function() {
+		self.goToPage(self.maxPageIndex());
+	}
+
     self.reportHasMedia = function(report) {
     	if (report['mediaUrls'] == null || report['mediaUrls'] == undefined || report['mediaUrls'].length == 0)
     		return false;
@@ -89,8 +175,9 @@ function dashboardViewModel() {
 					              type: 'DELETE',
 					              async: true,
 					              success: function(result) {
-					                $("#dashboardStatus").html("<div class='alert alert-success'> The report was successfully deleted. </div>");
-					              	window.setTimeout(function() {$("#dashboardStatus").html(""); }, 2000);
+					              	var msg = "The report posted on " + new Date (report.created) + " was successfully deleted."
+					                $("#dashboardStatus").html("<div class='alert alert-success'>" + msg + "  </div>");
+					              	//window.setTimeout(function() {$("#dashboardStatus").html(""); }, 2000);
 					              },
 					              error: function(XMLHttpRequest, textStatus, errorThrown) {
 					                var msg = "An error occured: " + textStatus + ". Please try again later";
@@ -169,45 +256,74 @@ function initializeTopicSummary()
 		topicSummary.url(location.protocol + '//' + location.host + "/dashboard.html?topicId=" + topicSummary.id);
 	}
 
-	$.getScript("/js/jquery.showLoading.js", function(){
-		jQuery('.container').showLoading();
+		jQuery('#summary-canvas').showLoading();
 		$.ajax({
               url: 'api/topics',
               type: 'GET',
               data: {topicId: topicSummary.id()},
               contentType: 'application/json; charset=utf-8',
               dataType: 'json',
-              async: false,
+              async: true,
               success: function(topic) {
                 topicSummary.title(topic.title);
 				topicSummary.shortDescription(topic.shortDescription);
 				topicSummary.supportsSms(topic.supportsSms);
 				topicSummary.ownerUserId(topic.ownerUserId);
 				topicSummary.numSmsShares(topic.numSmsShares);
+				topicSummary.numReports(topic.numReports);
+
+				$.ajax({
+		              url: 'api/channels?topicId='+topicSummary.id(),
+		              type: 'GET',
+		              async: false,
+		              success: function(jsonData) {
+		              	var msg = ""
+		                for (var i in jsonData)
+		                {
+		                	var channelData = jsonData[i];
+					        if (channelData.source == "None") {
+					          msg += "<li>" + "Using the form below" + "</li>\n"
+					        } else if (channelData.source == "Twitter") {
+					          msg += "<li>" + "Tweeting by mentionning " + channelData.account.name + " and using the hashtag " + channelData.account.hashtag + "</li>\n"
+					        } else if (channelData.source == "Twilio" && channelData.account.hashtag != "") {
+					          msg += "<li>" + "Sending an SMS ending with " + channelData.account.hashtag + " to the phone number: " + channelData.account.phoneNumbers[0] + "</li>\n"
+					        }
+		                }
+		               	topicSummary.reportMethods( "You can submit a report via the following channels: " + "<ul>" + msg + "</ul>");
+		              },
+		              error: function(XMLHttpRequest, textStatus, errorThrown) {
+		                console.log("some error occured: ", errorThrown);
+		              }, 
+		              complete: function() { }
+			          });
+
+				topicSummary.goToPage(0);
+
 				google.load("visualization", "1", {packages:["corechart", "map", "annotatedtimeline"], callback: initializeCharts}); 
-			
+				
 				//$('title').text(self.title());
-	   			$('meta[name=description]').attr('content', self.shortDescription);
+				$('meta[name=description]').attr('content', self.shortDescription);
               },
-              complete: function() { jQuery('.container').hideLoading(); }
+              complete: function() { jQuery('#summary-canvas').hideLoading(); }
             });
 		
 		topicSummary.hasBuzzwords(false);
 		location.hash = "recentreports";
 
-		/*jQuery('#reports-canvas').showLoading();*/
-         $.ajax({
-              url: 'api/reports',
-              type: 'GET',
-              data: {topicId: topicSummary.id, from:0},
-              contentType: 'application/json; charset=utf-8',
-              dataType: 'json',
-              async: true,
-              success: function(result) {
-                topicSummary.reports(result)
-              },
-              complete: function() { /*jQuery('#reports-canvas').hideLoading(); */}
-            });
+	$('#share-story-link').on('click', function (e) {
+	  e.defaultPrevented = true;
+	  $( "#create-topic-modal" ).html("");
+	  jQuery('#share-story-link').showLoading();
+
+	   $("#share-story-modal" ).load("sharestory_form.html", function() {
+	    jQuery('#share-story-link').hideLoading();
+
+	    var sendReport = new SendReportModel(topicSummary.id());
+	    sendReport.helpMessage(topicSummary.reportMethods());
+	    //alert(ko.toJS(sendReport.opinionList));
+	    ko.applyBindings(sendReport, document.getElementById("sharestory-dialog"));
+	    $('#share-story-modal').modal( {backdrop:'static'} );
+	  });
 	});
 }
 
@@ -216,7 +332,7 @@ function drawMapChart() {
     geoView.setColumns([1, 2, 3]);
 
       var options = {
-      	//showTip: true,
+      	showTip: true,
       	mapType: "normal",
       	//enableScrollWheel: true,
       	useMapTypeControl: true
@@ -244,6 +360,7 @@ function drawSentimentChart() {
 	var options = {
 		legend: 'none',
         pieSliceText: 'label',
+        pieSliceTextStyle: {color: 'black'},
 		pieHole: 0.4,
 		colors: ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'],
 		backgroundColor: {
@@ -339,15 +456,30 @@ function drawTimeSeriesChart() {
 
 function initializeCharts()
 {
+
 	var query = new google.visualization.Query('/api/topics/analysis?topicId='+topicSummary.id());
     //query.setQuery('select reportId, latitude, longitude, content');
+
+    jQuery('#sentiment-canvas').parent().parent().showLoading();
+    jQuery('#map-canvas').parent().parent().showLoading();
+    jQuery('#timeseries-canvas').parent().parent().showLoading();
     query.send(function(response) {
+    	jQuery('#sentiment-canvas').parent().parent().hideLoading();
+    	jQuery('#timeseries-canvas').parent().parent().hideLoading();
+    	jQuery('#map-canvas').parent().parent().hideLoading();
       // Create our data table out of JSON data loaded from server.
       topicSummary.data(response.getDataTable());
         drawSentimentChart();
 		drawTimeSeriesChart();
 		drawMapChart();
-       size();
+       
+       	/*$('.l-box').height(function () {
+  			var maxHeight = $(this).closest('.dashboard.col-wrap').find('.l-box')
+            .max( function () {
+            	return $(this).height();
+        	});
+			return maxHeight;
+		});*/
 	});
 }
 
@@ -356,29 +488,18 @@ function size(animate){
     // If we are resizing, we don't want the charts drawing on every resize event.
     // This clears the timeout so that we only run the sizing function
     // when we are done resizing the window
-    clearTimeout(t);
+    /*clearTimeout(t);
     // This will reset the timeout right after clearing it.
     t = setTimeout(function(){
     	//redraw(animate);
-    	$(".row").each(function(i,el){
-    		var contentPieces = $(el).find(".dashboard-piece");
-    		var max = 0;
-    		contentPieces.css("min-height","");
-    		$.grep(contentPieces, function(el,i){
-    			max = Math.max($(el).outerHeight(),max);
-    		});
-    		contentPieces.css("min-height", max);
-    	});
-    	$(".row").each(function(i,el){
-    		var contentPieces = $(el).find(".l-box");
-    		var max = 0;
-    		contentPieces.css("min-height","");
-    		$.grep(contentPieces, function(el,i){
-    			max = Math.max($(el).outerHeight(),max);
-    		});
-    		contentPieces.css("min-height", max);
-    	});
-    }, 400); // the timeout should run after 400 milliseconds
+    	$('.l-box').height(function () {
+  			var maxHeight = $(this).closest('.row').find('.l-box')
+            .max( function () {
+            	return $(this).height();
+        	});
+			return maxHeight;
+		});
+    }, 400); // the timeout should run after 400 milliseconds*/
 }
 
 (function () {

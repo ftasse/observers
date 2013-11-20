@@ -50,10 +50,10 @@ public class Report extends Jsonifiable {
                 String label = PredictServlet.getPredictionOutputLabel(text, modelId);
                 if (label.equals("positive") || label.equals("1"))
                 {
-                    mood = Mood.Negative; //Mood.Positive;
+                    mood = Mood.Positive;
                 } else if (label.equals("negative") || label.equals("0"))
                 {
-                    mood = Mood.Positive; //Mood.Negative;
+                    mood = Mood.Negative;
                 } else if (label.equals("neutral"))
                 {
                     mood = Mood.Neutral;
@@ -182,6 +182,17 @@ public class Report extends Jsonifiable {
         numVotes = votes.size();
   }
 
+  @OnSave
+  protected void updateTopicReportCount()
+  {
+    if (id == null)
+    {
+        Topic topic = ofy().load().key(Topic.key(topicId)).safeGet();
+        topic.setNumReports(topic.getNumReports() + 1);
+        ofy().save().entity(topic).now();
+    }
+  }
+
   public void addCategoryId(Long categoryId)
   {
     if (categoryIds == null)
@@ -202,6 +213,10 @@ public class Report extends Jsonifiable {
 
   public void delete()
   {
+    Topic topic = ofy().load().key(Topic.key(topicId)).safeGet();
+    topic.setNumReports(topic.getNumReports() - 1);
+    ofy().save().entity(topic).now();
+
     List<Vote> votes = ofy().load().type(Vote.class).filter("reportId", id).list();
     ofy().delete().entities(votes);
     ofy().delete().entities(this).now();

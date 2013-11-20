@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Date;
+import java.lang.Iterable;
 import com.google.appengine.api.datastore.Text;
 
 @Entity
@@ -61,6 +62,12 @@ public class Topic extends Jsonifiable {
     @Index
     @Getter
     @Setter
+    @Expose
+    private long numReports;
+
+    @Index
+    @Getter
+    @Setter
     private String trainedSentimentModelId;
 
     @Getter
@@ -90,6 +97,15 @@ public class Topic extends Jsonifiable {
         .filter("topicId", getId())
         .first().get();
         supportsSms = (account != null);
+  }
+
+    @OnLoad
+    protected void setupNumReports() {
+        if (numReports == 0)
+        {
+            numReports = ofy().load().type(Report.class).filter("topicId", id).count();
+            if (numReports > 0) ofy().save().entity(this).now();
+        }
   }
 
     public Collection<Channel> getChannels() {

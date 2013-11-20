@@ -82,15 +82,7 @@ function EditTopicModel (topicId) {
 
     self.channels = ko.observableArray([]);
 
-    ko.computed(function() {
-        if (user() === null) {
-          var msg = "To save this topic, we will ask you to login with your Google account.";
-          $("#loginMessage").html("<div class='alert alert-warning'>" + msg + "</div>");
-        }
-        else {
-          $("#loginMessage").html("");
-        }
-    }, self);
+    signInMessage($('#loginMessage'));
 
     self.mode = ko.computed(function() {
         if (self.id() !== null) {
@@ -232,12 +224,12 @@ function EditTopicModel (topicId) {
               account: {} 
             };
           }
-          console.log(JSON.stringify(channelData));
           if (channelData !== null)
           {
             jsonChannelData.push(channelData);
           }
         }
+        console.log(JSON.stringify(jsonChannelData));
         return jsonChannelData;
       };
 
@@ -298,9 +290,10 @@ function EditTopicModel (topicId) {
 
     self.saveChanges = function () {
       //alert(JSON.stringify(ko.toJS(self.channels)));
-      runOnceAuthenticated(function() {
+      /*runOnceAuthenticated(function() {
         self.saveAuthenticatedTopic();
-      }, $("#successStatus"));
+      }, $("#successStatus"));*/
+      self.saveAuthenticatedTopic();
     };
 
     self.deleteTopic = function () {
@@ -325,10 +318,12 @@ function EditTopicModel (topicId) {
             });
         }
 
-      runOnceAuthenticated(function() {
+      /*runOnceAuthenticated(function() {
         showConfirmDialog("Are you sure you want to delete this topic? All the topic data will be deleted from our server.",
                           run);
-      }, $("#successStatus"));
+      }, $("#successStatus"));*/
+      showConfirmDialog("Are you sure you want to delete this topic? All the topic data will be deleted from our server.",
+                          run);
     };
 
     self.refreshTweets = function(button) {
@@ -353,9 +348,10 @@ function EditTopicModel (topicId) {
             });
         }
 
-      runOnceAuthenticated(function() {
+      /*runOnceAuthenticated(function() {
         run();
-      }, $("#successStatus"));
+      }, $("#successStatus"));*/
+      run();
     };
 
     self.refreshSMS = function(button) {
@@ -380,9 +376,10 @@ function EditTopicModel (topicId) {
             });
         }
 
-        runOnceAuthenticated(function() {
+        /*runOnceAuthenticated(function() {
           run();
-        }, $("#successStatus"));
+        }, $("#successStatus"));*/
+        run();
     };
 
     if (topicId == undefined)

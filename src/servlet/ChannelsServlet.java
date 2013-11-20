@@ -168,7 +168,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
           } else if (data.source == Channel.Source.Twilio)
           {
             String hashtag = data.account.hashtag;
-            if (hashtag.length() > 0)  channel = createNewTwilioChannel(topicId, hashtag, getHostURL(req), req.getRequestedSessionId());
+            if (hashtag.length() > 0 && !hashtag.equals(""))  channel = createNewTwilioChannel(topicId, hashtag, getHostURL(req), req.getRequestedSessionId());
           }
         }
       }
@@ -185,7 +185,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
           "Unauthorized request");
     } catch (IOException e)
     {
-      sendError(resp, 404, "Could not process your request body");
+      sendError(resp, 404, "Could not process your request body " + e);
     }
   }
 
@@ -245,6 +245,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     Channel channel = null;
 
     try {
+      hashtag = hashtag.replaceAll("#", "%23");
       URL url = new URL(host_url + "/api/twitter?topicId=" + topicId);    
       String payload = String.format("{\"name\":\"%1$s\",\"hashtag\":\"%2$s\"}", name, hashtag);
       HttpURLConnection connection = createURLConnection(url, "POST", payload, sessionid);
@@ -270,11 +271,11 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
   protected Channel createNewTwilioChannel(Long topicId, String hashtag, String host_url, String sessionid) 
       throws IOException
   {
-
     hashtag = TwilioAccount.getValidHashtag(hashtag);
     Channel channel = null;
 
     try {
+      hashtag = hashtag.replaceAll("#", "%23");
       URL url = new URL(host_url + "/api/twilio?topicId=" + topicId + "&hashtag=" + hashtag);
       HttpURLConnection connection = createURLConnection(url, "POST", "", sessionid);
       

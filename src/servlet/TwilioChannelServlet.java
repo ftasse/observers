@@ -105,8 +105,18 @@ public class TwilioChannelServlet extends JsonRestServlet {
                 account = ofy().load().type(TwilioAccount.class).filter("topicId", topicId).first().get();
                 if (account != null)
                 {
+                    if (req.getParameter("hashtag") != null) {
+                        String new_hashtag = req.getParameter("hashtag");
+                        if (!new_hashtag.equals(account.getHashtag()))
+                        {
+                            account.setHashtag(new_hashtag);
+                            ofy().save().entity(account).now();
+                            ofy().clear();
+                        }
+                    }
                     channel = ofy().load().type(Channel.class).filter("accountId", account.getId()).first().get();
                     sendResponse(req, resp, channel);
+                    return;
                 } else if (req.getParameter("hashtag") != null)
                 {
 

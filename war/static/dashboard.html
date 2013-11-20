@@ -85,7 +85,7 @@
 		<div class="col-md-8  l-box">
 			<div class="row col-wrap">
 				<div class="col-md-8">
-					<div class="jumbotron dashboard-piece ">
+					<div class="jumbotron dashboard-piece dashboard-piece-redbg " id="summary-canvas"> <!-- jumbotron  -->
 						<h2 data-bind="text: title"></h2>
 						<p data-bind="text: shortDescription"></p>
 
@@ -101,8 +101,8 @@
 
 				<div class="col-md-4">
 				<div class="dashboard-piece dashboard-piece-bluebg">
-					<div style="height: 18px; font-size:32; font-family: 'serif';">
-						<b data-bind="{text: 'Sentiment', visible: data}"></b>
+					<div class="canvas-title">
+						<b  data-bind="{text: 'Sentiment', visible: data}"></b>
 					</div>
 					<div class="dashboard-content">
 						<div class="canvas" id="sentiment-canvas" > </div>
@@ -111,17 +111,22 @@
 				</div>
 			</div>
 			
-			<div class="row  col-wrap">
-				<div class="col-md-4">
+			<div class="row  col-wrap" >
+				<div class="col-md-12">
 					<div class="dashboard-piece  dashboard-piece-orangebg">
 					<div class="dashboard-content">
 						<div class="canvas" id="map-canvas" > </div>
 					</div>
 					</div>
 				</div>
-				<div class="col-md-8">
+				
+			</div>
+
+			<div class="row  col-wrap">
+				
+			<div class="col-md-12">
 				<div class="dashboard-piece dashboard-piece-yellowbg" id="timeseries-dashboard-piece">
-					<div style="height: 18px; font-size:32; font-family: 'serif';">
+					<div class="canvas-title">
 						<b data-bind="{text: 'Reports per day', visible: data}"></b>
 					</div>
 					
@@ -129,16 +134,26 @@
 						<div class="canvas" id="timeseries-canvas" > </div>
 					</div>
 				</div>
-				</div>
 			</div>
+			</div>
+
 		</div>
 
-		<div class="col-md-4 l-box dashboard-piece-graybg">
-			<div class="dashboard-piece dashboard-content">
-				<div style="height: 18px; font-size:32; font-family: 'serif';">
+		<div class="col-md-4 l-box"> <!--  dashboard-piece-graybg -->
+			<div class="panel panel-primary"> <!-- dashboard-piece dashboard-content -->
+				<div class="panel-heading">
+				<h3 class="panel-title pull-left">
+					<div class="">
 							<b data-bind="{visible: !$root.hasBuzzwords(), text: 'Latest reports'}"></b>
+					</div> </h3>
+				    <div class="clearfix"></div>
 				</div>
-		        <div id="reports-canvas" style="margin-top: 18px">
+				<!--<div class=" panel-body ">-->
+				<div class="panel-body" style="padding:0px; text-align: center"  >
+	       		<ul class="pagination pagination-panel pagination-sm " data-bind="visible: displayedPageindices().length>1, template: {name: 'pager-template', foreach: displayedPageindices}"> </ul>
+				</div>
+
+		        <div id="reports-canvas">
 		        	<div id = "recentreports-canvas" class="panel panel-default" data-bind="visible: $root.recentReportsDisplaySelected()">
 		        		<ul class="list-group" data-bind="template: {name: 'reports-template', foreach: reports}" >
 		        		</ul>
@@ -148,6 +163,10 @@
 		        		</ul>
 		        	</div>
 	        	</div>
+	       		<!--</div>-->
+	       		<div class="panel-body" style="padding:0px; text-align: center"  >
+	       		<ul class="pagination pagination-panel pagination-sm " data-bind="visible: displayedPageindices().length>3, template: {name: 'pager-template', foreach: displayedPageindices}"> </ul>
+				</div>
 	    	</div>
 	    </div>
 	</div>
@@ -160,6 +179,10 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+
+<script type="text/javascript" src="/js/jquery.showLoading.js"> </script>
+<script type="text/javascript"> jQuery(".container").showLoading() </script>
+
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- //-beg- concat_js -->
 <!--<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>-->
@@ -173,6 +196,7 @@
 <script type="text/javascript" src="js/vendor/sammy-latest.min.js"></script>
 <script type="text/javascript" src="js/dashboard.js"></script>
 <!-- //-end- concat_js -->
+<script type="text/javascript"> jQuery(".container").hideLoading() </script>
 
 <script type="text/html" id="buzzwords-template">
 	<li class="list-group-item"> ${word} <br> ${frequency} </li>
@@ -183,6 +207,24 @@
 		<a href="#" class="glyphicon glyphicon-minus-sign" data-bind="{visible: $root.isAdmin, click: $root.removeReport}" style="color:  #b94a48;"></a>
 		<span data-bind="text: content"></span> <br> <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span> 
 		<a href="#" class="pull-right glyphicon glyphicon-eye-open" data-bind="{visible: $root.reportHasMedia($data), click: $root.showMedia}"></a>
+	</li>
+</script>
+
+<script type="text/html" id="pager-template">
+	<li data-bind="if: $data==$root.displayedPageindices()[0], click: $root.goToFirstPage, attr: {class: ($root.currentPageIndex()==0 )?'disabled':'' }"><a href="#">&laquo;&laquo;</a></li>
+	
+	<li data-bind="if: $data==$root.displayedPageindices()[0], click: $root.goToPrevPage, attr: {class: ($root.currentPageIndex()==0)?'disabled':''} "><a href="#">&laquo;</a></li>
+
+	<li class="active" data-bind="attr: { class: ($root.currentPageIndex()==$data)?'active':'' } ">
+		<a href="#" data-bind="text: $data+1, click: $root.goToPage"> </a>
+	</li>
+
+	<li data-bind="if: $data==$root.displayedPageindices()[0]+$root.maxNumDisplayPageIndices()-1,  click: $root.goToNextPage, attr: {class: ($root.currentPageIndex()==$root.maxPageIndex())?'disabled':''} ">
+		<a href="#">&raquo;</a>
+	</li>
+	
+	<li data-bind="if: $data==$root.displayedPageindices()[0]+$root.maxNumDisplayPageIndices()-1,  click: $root.goToLastPage, attr: {class: ($root.currentPageIndex()==$root.maxPageIndex())?'disabled':''} ">
+		<a href="#">&raquo;&raquo;</a>
 	</li>
 </script>
 

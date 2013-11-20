@@ -19,7 +19,7 @@
       </div>
 
       <div class="modal-body">
-      <div id="loginMessage"> </div>
+      <div id="loginMessage"  data-bind="if: user()==null"> </div>
       <div id ="successStatus"> </div>
 
       <form class="form" role="form" id="createtopic-form" method = "post" action="">
@@ -55,9 +55,9 @@
     </div>
 
     <div class="modal-footer form-actions">
-      <button type="button" class="btn btn-danger pull-left" id="create-topic-delete" data-bind="click: deleteTopic, visible: id">Delete</button>
+      <button type="button" class="btn btn-danger pull-left" id="create-topic-delete" data-bind="click: deleteTopic, visible: id, enable: user()!==null">Delete</button>
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary" id="create-topic-submit">Save</button>
+      <button type="button" class="btn btn-primary" id="create-topic-submit"  data-bind="enable: user()!==null">Save</button>
     </div>
 
    </div><!-- /.modal-content -->
@@ -115,7 +115,7 @@
     <div class="panel-collapse collapse out" data-bind="attr: {id: attr.idt}">
       <div class="panel-body">
 
-      <p class="help-block">Users can submit reports by sending an SMS to <a href="tel:+44 1274 451680">+44 1274 451680</a>. A hashtag is required to link messages to your topic. It may slightly change if it is no longer available. </p>
+      <p class="help-block">Users can submit reports by sending an SMS to <a href="tel:+44 1304 410167">+44 1304 410167</a>. A hashtag is required to link messages to your topic. It may slightly change if it is no longer available. </p>
       <div class="form-group">
         <label class="sr-only" for="smsHashtag">Hashtag</label>
         <input type="text" class="form-control" id="smsHashtag" name="smsHashtag" placeholder="#hashtag" data-bind="value: hashtag"/>

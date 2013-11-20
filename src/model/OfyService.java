@@ -26,10 +26,7 @@ public class OfyService {
   public static Objectify ofy() {
     return ObjectifyService.ofy();
   }
-
-  /**
-   * @return Factory for Objectify instances.
-   */
+  
   public static ObjectifyFactory factory() {
     return ObjectifyService.factory();
   }

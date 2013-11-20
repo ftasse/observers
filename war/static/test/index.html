@@ -571,6 +571,14 @@
   <body>
     <!--Add a button for the user to click to initiate auth sequence -->
     <button id="authorize-button" style="visibility: visible">Authorize</button>
+    <script type="text/javascript">
+function epochExample1(){
+    var epoch = 1380564060000;
+  var d = new Date(epoch); //prompt('Cut/Paste into the converter to Test',(d.getTime()-d.getMilliseconds())/1000)
+  alert("Time "+ d+"\n"+epoch + "\n" + (new Date()));
+}
+</script>
+<a href="#" onclick="epochExample1(); return false;">Click to Show Current Epoch Time</a>
     <header>
       <h1>Google Cloud Storage JavaScript Client Library Application</h1>
     </header>

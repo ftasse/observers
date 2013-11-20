@@ -20,13 +20,14 @@
       <div class="modal-body">
 
       <div id ="successStatus"> </div>
+      <div id ="signinStatus" data-bind="if: user()==null"> </div>
 
       <form class="form" role="form"  id="sharestory-form" method = "post" action="">
         <fieldset>
 
       <div class="form-group">
-        <p class="help-block" >
-          You can share the story through: the web form below, tweets on a given account or SMS. More info about the other methods is coming soon.</p>
+        <p class="help-block" data-bind="html: helpMessage">
+          </p>
         <!-- <div class="panel-group" id="accordion" data-bind="template: {name: templateToUse, foreach: channels}"> -->
       </div>
 
@@ -48,7 +49,7 @@
           <div class="form-group">
             <label for="attachment" class="control-label">Attachment</label>
             <input type="file" id="mediaFiles" name="mediaFiles" data-bind="event: { change: function(data, event){ mediaFiles(event.target.files);} }"/> 
-            <p class="help-block" data-bind="text: mediaText"></p>
+            <p class="help-block" id="mediaText">Add a document to support your report.</p>
           </div>
 
       </fieldset>
@@ -58,7 +59,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button id="share-story-submit" type="button" class="btn btn-primary">Submit report</button>
+        <button id="share-story-submit" type="button" class="btn btn-primary" data-bind="enable: user()!=null">Submit report</button>
       </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
@@ -67,6 +68,7 @@
 
 <script type="text/javascript">
   var currentReportModel = null;
+  var geolocation_timeout = null;
 
   /*function CloudStorageInfo () {
     var self = this;
@@ -82,6 +84,8 @@
   function SendReportModel (topicId) {
     var self = this;
 
+    signInMessage($('#signinStatus'));
+
     self.topicId = topicId;
 
     self.authorName = ko.observable();
@@ -89,10 +93,11 @@
     self.mediaUrls = ko.observableArray([]);
 
     self.mediaFiles = ko.observable();
-    self.mediaText = ko.observable("Add a document to support your report.");
 
     self.opinionList = ko.observableArray(['Unknown',  'Neutral', 'Positive', 'Negative']);
     self.selectedOpinion = ko.observable();
+
+    self.helpMessage = ko.observable("You can share the story through: the web form below, tweets on a given account or SMS. More info about the other methods is coming soon.");
 
     /*self.mediaFiles.subscribe(function(files) {
       for (var i = 0; i < files.length; i++) {
@@ -145,7 +150,7 @@
             'method': 'POST',
             'params': {'uploadType': 'multipart'},
             'headers': {
-              'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+              'Content-Type': 'multipart/mixed; boundary="' + boundary + '"' //, 'x-goog-acl': 'public-read'
             },
             'body': multipartRequestBody});
             
@@ -159,7 +164,7 @@
                   alert(JSON.stringify(resp));
                 } else
                 {
-                  self.mediaText("Thanks for uploading your file. It is now available at <a>" + resp["mediaLink"] + "</a>");
+                  $('#mediaText').html("Thanks for uploading your file. It is now available at <a>" + resp["mediaLink"] + "</a>");
                   self.mediaUrls.push(resp["mediaLink"]);
 
                   /*var resource = {
@@ -178,40 +183,50 @@
                   //$('#mediaFilePath').hide();
 
                 }
-                jQuery('.modal-body').hideLoading();
+                jQuery('#dashboardStatus').hideLoading();
               });
             }
             catch(e) {
-              alert('An error has occurred: ' + e.message);
-              jQuery('.modal-body').hideLoading();
+              console.log('An error has occurred: ' + e.message);
+              jQuery('#dashboardStatus').hideLoading();
             }
           };
           reader.readAsBinaryString(fileData);
       }
-
-        runOnceAuthenticated(run, $("#successStatus"));
+        run();
+        //runOnceAuthenticated(run, $("#successStatus"));
     };
 
     self.saveChanges = function() {
-        jQuery('.modal-body').showLoading();
-        if (navigator.geolocation) {
-          var geo_options = {
-            enableHighAccuracy: false, 
-            maximumAge        : 6000000, 
-            timeout           : 2000
-          };
+        jQuery('#dashboardStatus').showLoading();
 
-          navigator.geolocation.getCurrentPosition(function(position) {
-             sendReport(position)
-          }, function(error) {
+        var waitTime = 5000;
+        try {
+          if (navigator.geolocation) {
+            var geo_options = {
+              enableHighAccuracy: false, 
+              maximumAge        : 6000000, 
+              timeout           : 2000
+            };
+
+            navigator.geolocation.getCurrentPosition(function(position) {
+               sendReport(position)
+            }, function(error) {
+                sendReport(null);
+            }, geo_options
+            );
+            geolocation_timeout = setTimeout(function () {
               sendReport(null);
-          }, geo_options
-          );
-      } else {
-          // Fallback for no geolocation
-          sendReport(null);
-      }
-      
+            }, waitTime);
+          } else {
+              // Fallback for no geolocation
+              sendReport(null);
+          }
+          
+          
+        } catch (evt) {
+            alert(evt);
+        }
     };
 
     currentReportModel = self;
@@ -236,7 +251,7 @@
               dataType: 'json',
               async: true,
               success: function(result) {
-                $("#successStatus").html("<div class='alert alert-success'>"+"Thank you " + currentReportModel.authorName() + ", your report was submitted" +"</div>");
+                $("#successStatus").html("<div class='alert alert-success'>"+"Thank you " + ", your report was submitted" +"</div>");
                 currentReportModel.authorName(null);
                 currentReportModel.report(null);
                 currentReportModel.mediaUrls([]);
@@ -251,7 +266,7 @@
                 $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
                 console.log("some error occured: ", errorThrown);
               }, complete: function() {
-                jQuery('.modal-body').hideLoading();
+                jQuery('#dashboardStatus').hideLoading();
               }
         });
       }
@@ -261,13 +276,19 @@
           console.log("Start sendin report!!!");
           if (currentReportModel.mediaFiles() != null && currentReportModel.mediaFiles().length > 0)
           {
+            jQuery('#dashboardStatus').showLoading();
             currentReportModel.uploadMediaFile(currentReportModel.mediaFiles()[0], run);
           }
           else run();
         }
 
-        console.log("Authenticate user!!!");
-        runOnceAuthenticated(runWithMediaUpload, $("#successStatus"));
+        //console.log("Authenticate user!!!");
+        //runOnceAuthenticated(runWithMediaUpload, $("#successStatus"));
+
+        clearTimeout(geolocation_timeout);
+        jQuery('#dashboardStatus').hideLoading();
+        if (currentReportModel.report() !== null)
+          runWithMediaUpload();
       };
 
 

@@ -122,7 +122,7 @@
     
 <script type="text/html" id="topics-list-template">
     <a  class="list-group-item" data-bind="{click: $root.goToTopic, attr: {href: 'dashboard.html?topicId='+id}}">
-        <h4 class="list-group-item-heading" data-bind="{text: title}"> </h4> 
+        <h4 class="list-group-item-heading" data-bind="{text: title}"> </h4> <span class="badge" data-bind="text: numReports"></span>
         <p data-bind="{text: shortDescription}"></p>
         <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span>
         <span style="text-align:center;" href="#" data-bind="visible: (ownerUserId == $root.userId())" ><b  class="glyphicon glyphicon-user  pull-right" ></b></span>

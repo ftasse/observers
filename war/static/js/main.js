@@ -1,25 +1,91 @@
 var user = ko.observable(null);
 var QueryString = getRequestParameters ();
+var auth_callback = null;
 
 var clientId = '907117162790.apps.googleusercontent.com';
-var scopes = 'https://www.googleapis.com/auth/plus.me '; // https://www.googleapis.com/auth/devstorage.write_only
+var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/devstorage.read_write'; //
 
+  (function () {
+    $.getScript("/js/vendor/bootbox.min.js", function(){});
 
-(function () {
-  $.getScript("/js/vendor/bootbox.min.js", function(){});
+  	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/client:plusone.js?onload=registerGoogleAPI'; //:plusone.js?onload=customSigninRender 
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  }());
 
-	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-  po.src = 'https://apis.google.com/js/client.js?onload=registerGoogleAPI'; //:plusone.js?onload=customSigninRender 
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-}());
+    function checkAuth() {
+      gapi.auth.authorize({
+        client_id: clientId,
+        scope: scopes,
+        immediate: true
+      }, handleAuthResult);
+    }
+
+    /**
+     * Handle authorization.
+     */
+    function handleAuthResult(token) {
+      if (token != null && (token['access_token'] || token['code'])) {
+            $.ajax({
+              url: 'api/oauth2callback',
+              type: 'POST',
+              data: JSON.stringify(token),
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              async: true,
+              beforeSend: function() {
+                jQuery("#signinButton").showLoading();
+              },
+              success: function(result) {
+                user(result);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                user(null);
+                console.log("some error occured: ", errorThrown);
+              },
+              complete: function() {
+                jQuery("#signinButton").hideLoading();
+              }
+            });
+          } else if (token != null && token['error']) {
+              console.log('Sign-in state: ' + token['error']);
+              gapi.auth.checkSessionState({client_id: clientId, session_state:null}, function(status) {
+                if (status == false)
+                  user(null);
+              });
+              jQuery("#signinButton").hideLoading();
+          }  else {
+              console.log("Token: ", token);
+              user(null);
+              jQuery("#signinButton").hideLoading();
+          }
+
+    }
+
+    function googleSigninRender(elt_id)
+    {
+      gapi.signin.render(elt_id, {
+      'callback': 'handleAuthResult',
+      'clientid': clientId,
+      'cookiepolicy': 'single_host_origin',
+      'scope': scopes
+    });
+    }
+
+    function signInMessage(divEl) {
+      divEl.html("<div class='alert alert-info'>Please signin to proceed. <button type='button' id='signinButtonExtra'> Sign in </button> ");
+      //$("#signinButtonExtra").on('click', function(e) { checkAuth(); }); 
+      googleSigninRender("signinButtonExtra")
+    }
 
 function registerGoogleAPI()
 {
   console.log("Loaded Google api!");
   gapi.client.setApiKey("***REMOVED***");
   gapi.client.load('storage', 'v1beta1');
-  gapi.client.load('plus', 'v1');
-  $("#signinButton").on('click', function(e) { runOnceAuthenticated(); });
+  //gapi.client.load('plus', 'v1');
+  //$("#signinButton").on('click', function(e) { checkAuth(); });
+  googleSigninRender("signinButton");
 }
 
 function showConfirmDialog(text, ok_callback, cancel_callback)
@@ -43,6 +109,7 @@ function userLogout(complete_callback)
 	if (user() !== null)
 	{
 		$.get('api/logout', function(data) { 
+      gapi.auth.signOut();
 			user(null);
 		}).error(function() {
 			console.log("Could not log out");
@@ -55,53 +122,9 @@ function userDisconnect(complete_callback)
 {
   showConfirmDialog("Are you sure you want to delete your account? All your data will be deleted from our server. ",
 	                 function(){
+                    gapi.auth.signOut();
                     $.post('api/disconnect', function(data){ console.log(data); user(null); }).complete(complete_callback)
                    });
-}
-
-function runOnceAuthenticated(callback, errorDiv) {
-  if (user()) {
-    callback();
-  }
-  else {
-    var options = {
-          client_id: clientId,
-          immediate: true,
-          scope: scopes
-        };
-        gapi.auth.authorize(options, function (token) {
-          //alert("Token " + token["access_token"]);
-          if (token != null && (token['access_token'] || token['code'])) {
-            $.ajax({
-              url: 'api/oauth2callback',
-              type: 'POST',
-              data: JSON.stringify(token),
-              contentType: 'application/json; charset=utf-8',
-              dataType: 'json',
-              async: false,
-              success: function(result) {
-                user(result);
-                if (callback != undefined)
-                  callback();
-              },
-              error: function(XMLHttpRequest, textStatus, errorThrown) {
-                if (errorDiv != undefined && errorDiv != null)
-                {
-                  var msg = "We were unable to sign you in: " + textStatus + ". Please try again later";
-                  errorDiv.html("<div class='alert alert-danger'>"+msg +"</div>");
-                }
-                console.log("some error occured: ", errorThrown);
-              }
-            });
-          } else if (token != null && authResult['error']) {
-              console.log('Sign-in state: ' + authResult['error']);
-
-          }  else if (errorDiv != undefined && errorDiv != null) {
-              var msg = "We were unable to sign you in: error from Google server. Please try again later";
-              errorDiv.html("<div class='alert alert-danger'>"+msg +"</div>"); 
-            }
-        });
-  }
 }
 
 function getRequestParameters() {
@@ -154,73 +177,8 @@ $('#edit-topic-link').on('click', function (e) {
   });
 });
 
-$('#share-story-link').on('click', function (e) {
-  e.defaultPrevented = true;
-  $( "#create-topic-modal" ).html("");
-  jQuery('.container').showLoading();
-
-   $("#share-story-modal" ).load("sharestory_form.html", function() {
-    jQuery('.container').hideLoading();
-
-    var sendReport = new SendReportModel(QueryString.topicId);
-    //alert(ko.toJS(sendReport.opinionList));
-    ko.applyBindings(sendReport, document.getElementById("sharestory-dialog"));
-    $('#share-story-modal').modal( {backdrop:'static'} );
-  });
-});
-
 function openInNewTab(url )
 {
   var win=window.open(url, '_blank');
   win.focus();
-}
-
-function insertObject(fileData) { // event.target.files[0]
-      const boundary = '-------314159265358979323846';
-      const delimiter = "\r\n--" + boundary + "\r\n";
-      const close_delim = "\r\n--" + boundary + "--";
-
-      var reader = new FileReader();
-      reader.readAsBinaryString(fileData);
-      reader.onload = function(e) {
-        var contentType = fileData.type || 'application/octet-stream';
-        var metadata = {
-          'name': fileData.name,
-          'mimeType': contentType
-        };
-
-        var base64Data = btoa(reader.result);
-        var multipartRequestBody =
-        delimiter +
-        'Content-Type: application/json\r\n\r\n' +
-        JSON.stringify(metadata) +
-        delimiter +
-        'Content-Type: ' + contentType + '\r\n' +
-        'Content-Transfer-Encoding: base64\r\n' +
-        '\r\n' +
-        base64Data +
-        close_delim;
-
-        //Note: gapi.client.storage.objects.insert() can only insert
-        //small objects (under 64k) so to support larger file sizes
-        //we're using the generic HTTP request method gapi.client.request()
-        var request = gapi.client.request({
-          'path': '/upload/storage/v1beta2/b/' + BUCKET + '/o',
-          'method': 'POST',
-          'params': {'uploadType': 'multipart'},
-          'headers': {
-            'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-          },
-          'body': multipartRequestBody});
-          //Remove the current API result entry in the main-content div
-          try{
-            //Execute the insert object request
-            executeRequest(request, 'insertObject');
-            //Store the name of the inserted object
-            object = fileData.name;        
-          }
-          catch(e) {
-            alert('An error has occurred: ' + e.message);
-       }
-   }
 }
