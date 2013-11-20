@@ -171,8 +171,15 @@ function initializeTopicSummary()
 
 	$.getScript("/js/jquery.showLoading.js", function(){
 		jQuery('.container').showLoading();
-		$.get('/api/topics', {topicId: topicSummary.id()}).done(function(topic) {
-				topicSummary.title(topic.title);
+		$.ajax({
+              url: 'api/topics',
+              type: 'GET',
+              data: {topicId: topicSummary.id()},
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              async: false,
+              success: function(topic) {
+                topicSummary.title(topic.title);
 				topicSummary.shortDescription(topic.shortDescription);
 				topicSummary.supportsSms(topic.supportsSms);
 				topicSummary.ownerUserId(topic.ownerUserId);
@@ -181,12 +188,14 @@ function initializeTopicSummary()
 			
 				//$('title').text(self.title());
 	   			$('meta[name=description]').attr('content', self.shortDescription);
-			}).complete(function() {jQuery('.container').hideLoading();}); 
-
+              },
+              complete: function() { jQuery('.container').hideLoading(); }
+            });
+		
 		topicSummary.hasBuzzwords(false);
 		location.hash = "recentreports";
 
-		jQuery('#reports-canvas').showLoading();
+		/*jQuery('#reports-canvas').showLoading();*/
          $.ajax({
               url: 'api/reports',
               type: 'GET',
@@ -197,7 +206,7 @@ function initializeTopicSummary()
               success: function(result) {
                 topicSummary.reports(result)
               },
-              complete: function() { jQuery('#reports-canvas').hideLoading(); }
+              complete: function() { /*jQuery('#reports-canvas').hideLoading(); */}
             });
 	});
 }

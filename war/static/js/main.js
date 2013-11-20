@@ -1,27 +1,26 @@
 var user = ko.observable(null);
 var QueryString = getRequestParameters ();
 
-
 var clientId = '907117162790.apps.googleusercontent.com';
-var scopes = 'https://www.googleapis.com/auth/plus.me';
+var scopes = 'https://www.googleapis.com/auth/plus.me '; // https://www.googleapis.com/auth/devstorage.write_only
 
 
 (function () {
   $.getScript("/js/vendor/bootbox.min.js", function(){});
 
-	/*var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/client:plusone.js?onload=customSigninRender'; 
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-    console.log("Loaded G+ api!");*/
-
-    $.getScript("https://apis.google.com/js/client:plusone.js", function() { 
-          console.log('Login api loaded.'); 
-          //gapi.client.setApiKey("***REMOVED***");
-          $("#signinButton").on('click', function(e) {
-            runOnceAuthenticated();
-          });
-    });
+	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+  po.src = 'https://apis.google.com/js/client.js?onload=registerGoogleAPI'; //:plusone.js?onload=customSigninRender 
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 }());
+
+function registerGoogleAPI()
+{
+  console.log("Loaded Google api!");
+  gapi.client.setApiKey("***REMOVED***");
+  gapi.client.load('storage', 'v1beta1');
+  gapi.client.load('plus', 'v1');
+  $("#signinButton").on('click', function(e) { runOnceAuthenticated(); });
+}
 
 function showConfirmDialog(text, ok_callback, cancel_callback)
 {
@@ -67,12 +66,12 @@ function runOnceAuthenticated(callback, errorDiv) {
   else {
     var options = {
           client_id: clientId,
-          immediate: false,
+          immediate: true,
           scope: scopes
         };
         gapi.auth.authorize(options, function (token) {
           //alert("Token " + token["access_token"]);
-          if (token['access_token']) {
+          if (token != null && (token['access_token'] || token['code'])) {
             $.ajax({
               url: 'api/oauth2callback',
               type: 'POST',
@@ -94,9 +93,13 @@ function runOnceAuthenticated(callback, errorDiv) {
                 console.log("some error occured: ", errorThrown);
               }
             });
-          } else if (authResult['error']) {
+          } else if (token != null && authResult['error']) {
               console.log('Sign-in state: ' + authResult['error']);
-          } 
+
+          }  else if (errorDiv != undefined && errorDiv != null) {
+              var msg = "We were unable to sign you in: error from Google server. Please try again later";
+              errorDiv.html("<div class='alert alert-danger'>"+msg +"</div>"); 
+            }
         });
   }
 }
@@ -170,4 +173,54 @@ function openInNewTab(url )
 {
   var win=window.open(url, '_blank');
   win.focus();
+}
+
+function insertObject(fileData) { // event.target.files[0]
+      const boundary = '-------314159265358979323846';
+      const delimiter = "\r\n--" + boundary + "\r\n";
+      const close_delim = "\r\n--" + boundary + "--";
+
+      var reader = new FileReader();
+      reader.readAsBinaryString(fileData);
+      reader.onload = function(e) {
+        var contentType = fileData.type || 'application/octet-stream';
+        var metadata = {
+          'name': fileData.name,
+          'mimeType': contentType
+        };
+
+        var base64Data = btoa(reader.result);
+        var multipartRequestBody =
+        delimiter +
+        'Content-Type: application/json\r\n\r\n' +
+        JSON.stringify(metadata) +
+        delimiter +
+        'Content-Type: ' + contentType + '\r\n' +
+        'Content-Transfer-Encoding: base64\r\n' +
+        '\r\n' +
+        base64Data +
+        close_delim;
+
+        //Note: gapi.client.storage.objects.insert() can only insert
+        //small objects (under 64k) so to support larger file sizes
+        //we're using the generic HTTP request method gapi.client.request()
+        var request = gapi.client.request({
+          'path': '/upload/storage/v1beta2/b/' + BUCKET + '/o',
+          'method': 'POST',
+          'params': {'uploadType': 'multipart'},
+          'headers': {
+            'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+          },
+          'body': multipartRequestBody});
+          //Remove the current API result entry in the main-content div
+          try{
+            //Execute the insert object request
+            executeRequest(request, 'insertObject');
+            //Store the name of the inserted object
+            object = fileData.name;        
+          }
+          catch(e) {
+            alert('An error has occurred: ' + e.message);
+       }
+   }
 }

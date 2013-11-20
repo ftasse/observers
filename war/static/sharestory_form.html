@@ -45,6 +45,12 @@
             <select class="form-control" id="selectedOpinion" name="opinion" data-bind="options: opinionList, value: selectedOpinion, optionsCaption: 'Choose...'"></select>
         </div>
 
+          <div class="form-group">
+            <label for="attachment" class="control-label">Attachment</label>
+            <input type="file" id="mediaFiles" name="mediaFiles" data-bind="event: { change: function(data, event){ mediaFiles(event.target.files);} }"/> 
+            <p class="help-block" data-bind="text: mediaText"></p>
+          </div>
+
       </fieldset>
     </form>
 
@@ -62,6 +68,17 @@
 <script type="text/javascript">
   var currentReportModel = null;
 
+  /*function CloudStorageInfo () {
+    var self = this;
+
+    self.projectNumber = '907117162790';
+    self.clientId = '907117162790.apps.googleusercontent.com';
+    self.apiKey = '***REMOVED***';
+    self.scopes = 'https://www.googleapis.com/auth/devstorage.full_control';
+    self.api_version = 'v1beta1';
+    self.bucket = 'observers-bucket';
+  }*/
+
   function SendReportModel (topicId) {
     var self = this;
 
@@ -71,23 +88,127 @@
     self.report = ko.observable();
     self.mediaUrls = ko.observableArray([]);
 
+    self.mediaFiles = ko.observable();
+    self.mediaText = ko.observable("Add a document to support your report.");
+
     self.opinionList = ko.observableArray(['Unknown',  'Neutral', 'Positive', 'Negative']);
     self.selectedOpinion = ko.observable();
 
+    /*self.mediaFiles.subscribe(function(files) {
+      for (var i = 0; i < files.length; i++) {
+            // get item
+            //var file = files.item(i);
+            //or
+            var file = files[i];
+            self.uploadMediaFile(file);
+        }
+    });*/
+
+    self.uploadMediaFile = function(fileData, callback) {
+      function run () {
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          //do your stuff!
+        } else {
+          alert('File upload are not fully supported by your browser.');
+          return;
+        }
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var contentType = fileData.type || 'application/octet-stream';
+          var metadata = {
+            'name': fileData.name,
+            'mimeType': contentType
+          };
+
+          var base64Data = btoa(reader.result);
+          var multipartRequestBody =
+            delimiter +
+            'Content-Type: application/json\r\n\r\n' +
+            JSON.stringify(metadata) +
+            delimiter +
+            'Content-Type: ' + contentType + '\r\n' +
+            'Content-Transfer-Encoding: base64\r\n' +
+            '\r\n' +
+            base64Data +
+            close_delim;
+
+          //Note: gapi.client.storage.objects.insert() can only insert
+          //small objects (under 64k) so to support larger file sizes
+          //we're using the generic HTTP request method gapi.client.request()
+          var request = gapi.client.request({
+            'path': '/upload/storage/v1beta2/b/' + "observers-bucket" + '/o',
+            'method': 'POST',
+            'params': {'uploadType': 'multipart'},
+            'headers': {
+              'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+            },
+            'body': multipartRequestBody});
+            
+            try {
+              //alert("Upload " + fileData);
+             request.execute(function(resp) {
+                if (resp['error'])
+                {
+                  var msg = "We were unable to upload your file. Please try again later";
+                $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
+                  alert(JSON.stringify(resp));
+                } else
+                {
+                  self.mediaText("Thanks for uploading your file. It is now available at <a>" + resp["mediaLink"] + "</a>");
+                  self.mediaUrls.push(resp["mediaLink"]);
+
+                  /*var resource = {
+                      'entity': 'allUsers',
+                      'role': 'READER'
+                    };
+                    var orequest = gapi.client.storage.objectAccessControls.insert({
+                        'bucket': resp["bucket"],
+                        'object': resp["name"],
+                        'resource': resource
+                    });
+                    orequest.execute(function(resp) { console.log(resp) } );*/
+
+                  if (callback != undefined)
+                    callback();
+                  //$('#mediaFilePath').hide();
+
+                }
+                jQuery('.modal-body').hideLoading();
+              });
+            }
+            catch(e) {
+              alert('An error has occurred: ' + e.message);
+              jQuery('.modal-body').hideLoading();
+            }
+          };
+          reader.readAsBinaryString(fileData);
+      }
+
+        runOnceAuthenticated(run, $("#successStatus"));
+    };
+
     self.saveChanges = function() {
+        jQuery('.modal-body').showLoading();
         if (navigator.geolocation) {
-          jQuery('#successStatus').showLoading();
-          var location_timeout = setTimeout("sendReport(null)",  10000);
+          var geo_options = {
+            enableHighAccuracy: false, 
+            maximumAge        : 6000000, 
+            timeout           : 2000
+          };
 
           navigator.geolocation.getCurrentPosition(function(position) {
              sendReport(position)
           }, function(error) {
-              clearTimeout(location_timeout);
               sendReport(null);
-          });
+          }, geo_options
+          );
       } else {
           // Fallback for no geolocation
-          jQuery('#successStatus').showLoading();
           sendReport(null);
       }
       
@@ -100,6 +221,7 @@
       {
 
         function run () {
+        
         $.ajax({
               url: 'api/reports?topicId=' +  currentReportModel.topicId,
               type: 'POST',
@@ -112,13 +234,16 @@
               }),
               contentType: 'application/json; charset=utf-8',
               dataType: 'json',
-              async: false,
+              async: true,
               success: function(result) {
                 $("#successStatus").html("<div class='alert alert-success'>"+"Thank you " + currentReportModel.authorName() + ", your report was submitted" +"</div>");
                 currentReportModel.authorName(null);
                 currentReportModel.report(null);
                 currentReportModel.mediaUrls([]);
                 currentReportModel.selectedOpinion(null);
+                currentReportModel.mediaUrls([]);
+                currentReportModel.mediaFiles(null);
+                window.location.href = "dashboard.html?topicId="+currentReportModel.topicId;
                 //window.setTimeout(function() { $('#sharestory-dialog').modal('hide') }, 1000);
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -126,12 +251,23 @@
                 $("#successStatus").html("<div class='alert alert-danger'>"+msg +"</div>");
                 console.log("some error occured: ", errorThrown);
               }, complete: function() {
-                jQuery('#successStatus').hideLoading();
+                jQuery('.modal-body').hideLoading();
               }
         });
       }
 
-        runOnceAuthenticated(run, $("#successStatus"));
+        function runWithMediaUpload()
+        {
+          console.log("Start sendin report!!!");
+          if (currentReportModel.mediaFiles() != null && currentReportModel.mediaFiles().length > 0)
+          {
+            currentReportModel.uploadMediaFile(currentReportModel.mediaFiles()[0], run);
+          }
+          else run();
+        }
+
+        console.log("Authenticate user!!!");
+        runOnceAuthenticated(runWithMediaUpload, $("#successStatus"));
       };
 
 
@@ -179,5 +315,6 @@
 }());
 
 </script>
+
 </body>
 </html>
