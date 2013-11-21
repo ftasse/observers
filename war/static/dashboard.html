@@ -1,22 +1,22 @@
 <!DOCTYPE HTML>
 
-<html>
+<html id="htmlTop" lang="en">
 
 <head>
-	<title data-bind="text: title"></title>
+	<title id="pageTitle">Observers</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<meta itemprop="name" content="Observers">
-	<meta itemprop="description" content="Discover, create and contribute to new topics!">
+	<meta itemprop="name" content="Observers" />
+	<meta itemprop="description" content="Discover, create and contribute to new topics!" />
 	
-	<link rel="stylesheet" href="css/normalize.css">
-	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet"/>
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="css/normalize.css" />
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="css/main.css"/>
-	<link  rel="stylesheet" href="css/dashboard.css"/>
+	<link rel="stylesheet" href="css/dashboard.css"/>
 
 	<script src="js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
@@ -36,32 +36,40 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
 					<li><!--<a data-target="#createTopicModal" data-toggle="modal" >-->
-						<a id="create-topic-link" style="cursor: pointer; cursor: hand;">
+						<a id="create-topic-link" style="cursor: pointer; cursor: hand;" href="javascript:void(0)">
 						Start new topic </a>
 					</li>
 					<li><!--<a data-target="#createTopicModal" data-toggle="modal" >-->
-						<a id="edit-topic-link" style="cursor: pointer; cursor: hand;" data-bind="{text: 'Edit topic', visible: (id && isAdmin)}">
+						<a id="edit-topic-link" style="cursor: pointer; cursor: hand;" data-bind="{text: 'Edit topic', visible: (id && isAdmin)}"  href="javascript:void(0)">
 						</a>
 					</li>
 					<li data-bind="if: isLoggedIn()" class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span><img class="img-responsive img-circle pull-left"  alt="Google profile image" data-bind="attr: {src: user().googlePublicProfilePhotoUrl, width:30, height:30}"/>
+						<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
+                            <span><img src="#" class="img-responsive img-circle pull-left"  alt="Google profile image" data-bind="attr: {src: user().googlePublicProfilePhotoUrl, width:30, height:30}"/>
                             <span data-bind="text: userName"></span></span>
                             <b class="caret"></b>
                         </a>
 
 						<ul class="dropdown-menu">
 							<!--<li><a href="#">Manage my topics</a></li>-->
-							<li><a href="javascript:void(0);" onclick="userLogout()">Logout</a></li>
+							<li><a href="javascript:void(0)" onclick="userLogout()">Logout</a></li>
 							<li class="divider"></li>
-							<li><a href="javascript:void(0);" onclick="userDisconnect()">Delete my account</a></li>
+							<li><a href="javascript:void(0)" onclick="userDisconnect()">Delete my account</a></li>
 						</ul>
 					</li>
-					<li data-bind="visible: !isLoggedIn()"> <a> <span  id="signinButton">
+					<li data-bind="visible: !isLoggedIn()"> <a > <span  id="signinButton" tabindex="0">
 						<span class="icon"></span>
-	    				<span class="buttonText">Sign in</span>					
+	    				<span class="buttonText">Sign in</span>
+	    				<!--<span
+					    class="g-signin"
+					    data-callback="signinCallback"
+					    data-clientid="907117162790.apps.googleusercontent.com"
+					    data-cookiepolicy="single_host_origin"
+					    data-requestvisibleactions="http://schemas.google.com/AddActivity"
+					    data-scope="https://www.googleapis.com/auth/plus.login">
+					  </span>-->
 					</span></a> </li>		
-					<li> <a class="fa fa-info-circle" onclick='showMoreInfo()'> <span class="sr-only"> Help </span></a> </li>	
+					<li> <a class="fa fa-info-circle" onclick='showMoreInfo()'  href="javascript:void(0)"> <span class="sr-only"> Help </span></a> </li>	
 				</ul>
 			</div>
 		</nav>
@@ -72,13 +80,18 @@
 
 <div id="dashboardStatus"></div>
 <!-- Modal -->
-<div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="createTopicModalLabel" aria-hidden="true">
+<div id="createtopic-label" style="display: none"> Create a new topic </div>
+<div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="createtopic-label" aria-hidden="true">
 </div><!-- /.modal -->
-
 
 <!-- Modal -->
-<div class="modal fade" id="share-story-modal" tabindex="-1" role="dialog" aria-labelledby="shareTopicModalLabel" aria-hidden="true">
+<div id="share-story-label" style="display: none"> Share your story </div>
+<div class="modal fade" id="share-story-modal" tabindex="-1" role="dialog" aria-labelledby="share-story-label" aria-hidden="true">
 </div><!-- /.modal -->
+
+<div id="more-info-label" style="display: none"> More Info </div>
+<div class="modal fade" id="more-info-modal" tabindex="-1" role="dialog" aria-labelledby="more-info-label" aria-hidden="true">
+</div>
 
 
 	<div class="row">
@@ -96,7 +109,7 @@
 							<a href="https://twitter.com/share" class="" data-text="Check out reports on this topic!" data-hashtags="#observersreports"><i class="fa fa-twitter"></i></a>
 							<!--<a href="#" class="" data-bind = "{visible: supportsSms(), click: shareWithSMS}"><i class="fa fa-mobile-phone"></i></a> -->
 						</div>
-						<p><a id="share-story-link" data-toggle="modal" class="btn btn-primary btn-lg" role="button">Share your story</a></p>
+						<p><a id="share-story-link"  href="javascript:void(0)" data-toggle="modal" class="btn btn-primary btn-lg" role="button">Share your story</a></p>
 					</div>
 				</div>
 
@@ -144,9 +157,8 @@
 			<div class="panel panel-primary"> <!-- dashboard-piece dashboard-content -->
 				<div class="panel-heading">
 				<h3 class="panel-title pull-left">
-					<div class="">
 							<b data-bind="{visible: !$root.hasBuzzwords(), text: 'Latest reports'}"></b>
-					</div> </h3>
+					 </h3>
 				    <div class="clearfix"></div>
 				</div>
 				<!--<div class=" panel-body ">-->
@@ -179,10 +191,10 @@
 </footer>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>');</script>
 
 <script type="text/javascript" src="/js/jquery.showLoading.js"> </script>
-<script type="text/javascript"> jQuery(".container").showLoading() </script>
+<script type="text/javascript"> jQuery(".container").showLoading(); </script>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- //-beg- concat_js -->
@@ -197,36 +209,36 @@
 <script type="text/javascript" src="js/vendor/sammy-latest.min.js"></script>
 <script type="text/javascript" src="js/dashboard.js"></script>
 <!-- //-end- concat_js -->
-<script type="text/javascript"> jQuery(".container").hideLoading() </script>
+<script type="text/javascript"> jQuery(".container").hideLoading(); </script>
 
 <script type="text/html" id="buzzwords-template">
-	<li class="list-group-item"> ${word} <br> ${frequency} </li>
+	<!--<li class="list-group-item"> ${word} <br> ${frequency} </li>-->
 </script>
 
 <script type="text/html" id="reports-template">
-	<li class="list-group-item" style="text-align: left">  
-		<a href="#" class="glyphicon glyphicon-minus-sign" data-bind="{visible: $root.isAdmin, click: $root.removeReport}" style="color:  #b94a48;"></a>
+	<li   tabindex="0" class="list-group-item" style="text-align: left;">  
+		<a href="javascript:void(0)" class="glyphicon glyphicon-minus-sign" data-bind="{visible: $root.isAdmin, click: $root.removeReport}" style="color:  #b94a48;"></a>
 		<span data-bind="text: content"></span> <br> <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span> 
-		<a href="#" class="pull-right glyphicon glyphicon-eye-open" data-bind="{visible: $root.reportHasMedia($data), click: $root.showMedia}"></a> <span class="pull-right" style="margin-left: 5px">&zwnj; &nbsp;</span>
-		<a href="#" class="pull-right glyphicon glyphicon-map-marker" data-bind="{visible: $data.location != undefined, click: $root.showOnMap}"></a>
+		<a href="javascript:void(0)" class="pull-right glyphicon glyphicon-eye-open" data-bind="{visible: $root.reportHasMedia($data), click: $root.showMedia}"></a> <span class="pull-right" style="margin-left: 5px">&zwnj; &nbsp;</span>
+		<a href="javascript:void(0)" class="pull-right glyphicon glyphicon-map-marker" data-bind="{visible: $data.location != undefined, click: $root.showOnMap}"></a>
 	</li>
 </script>
 
 <script type="text/html" id="pager-template">
-	<li data-bind="if: $data==$root.displayedPageindices()[0], click: $root.goToFirstPage, attr: {class: ($root.currentPageIndex()==0 )?'disabled':'' }"><a href="#">&laquo;&laquo;</a></li>
+	<li tabindex="0" data-bind="if: $data==$root.displayedPageindices()[0], click: $root.goToFirstPage, attr: {class: ($root.currentPageIndex()==0 )?'disabled':'' }"><a href="javascript:void(0)">&laquo;&laquo;</a></li>
 	
-	<li data-bind="if: $data==$root.displayedPageindices()[0], click: $root.goToPrevPage, attr: {class: ($root.currentPageIndex()==0)?'disabled':''} "><a href="#">&laquo;</a></li>
+	<li tabindex="0" data-bind="if: $data==$root.displayedPageindices()[0], click: $root.goToPrevPage, attr: {class: ($root.currentPageIndex()==0)?'disabled':''} "><a href="javascript:void(0)">&laquo;</a></li>
 
-	<li class="active" data-bind="attr: { class: ($root.currentPageIndex()==$data)?'active':'' } ">
-		<a href="#" data-bind="text: $data+1, click: $root.goToPage"> </a>
+	<li tabindex="0" class="active" data-bind="attr: { class: ($root.currentPageIndex()==$data)?'active':'' } ">
+		<a href="javascript:void(0)" data-bind="text: $data+1, click: $root.goToPage"> </a>
 	</li>
 
-	<li data-bind="if: $data==$root.displayedPageindices()[0]+$root.maxNumDisplayPageIndices()-1,  click: $root.goToNextPage, attr: {class: ($root.currentPageIndex()==$root.maxPageIndex())?'disabled':''} ">
-		<a href="#">&raquo;</a>
+	<li tabindex="0" data-bind="if: $data==$root.displayedPageindices()[0]+$root.maxNumDisplayPageIndices()-1,  click: $root.goToNextPage, attr: {class: ($root.currentPageIndex()==$root.maxPageIndex())?'disabled':''} ">
+		<a href="javascript:void(0)">&raquo;</a>
 	</li>
 	
-	<li data-bind="if: $data==$root.displayedPageindices()[0]+$root.maxNumDisplayPageIndices()-1,  click: $root.goToLastPage, attr: {class: ($root.currentPageIndex()==$root.maxPageIndex())?'disabled':''} ">
-		<a href="#">&raquo;&raquo;</a>
+	<li tabindex="0" data-bind="if: $data==$root.displayedPageindices()[0]+$root.maxNumDisplayPageIndices()-1,  click: $root.goToLastPage, attr: {class: ($root.currentPageIndex()==$root.maxPageIndex())?'disabled':''} ">
+		<a href="javascript:void(0)">&raquo;&raquo;</a>
 	</li>
 </script>
 

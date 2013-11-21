@@ -8,10 +8,11 @@
 
 
 var topicSummary;
+var titleModel;
 
 $.fn.max = function(selector) { 
     return Math.max.apply(null, this.map(function(index, el) { return selector.apply(el); }).get() ); 
-}
+};
 
 /*function showCreateTopic () {
 	var url = "/createtopic_form.html";
@@ -63,6 +64,7 @@ function dashboardViewModel() {
 	}, this);
 
 	self.displayedPageindicesCompute = ko.computed(function () {
+		var i;
 		var maxPageId = self.maxPageIndex();
 		var mid = Math.floor(self.maxNumDisplayPageIndices()/2);
 		var mid2 = Math.ceil(self.maxNumDisplayPageIndices()/2);
@@ -73,13 +75,13 @@ function dashboardViewModel() {
 			var maxPg = Math.min(self.maxPageIndex() + 1, self.currentPageIndex()+mid2);
 			minPg = minPg - (self.currentPageIndex()+mid2 - maxPg);
 
-			for (var i=minPg; i<maxPg; i++) {
+			for (i=minPg; i<maxPg; i+=1) {
 			  pageIndices.push(i);
 			}
 		} else
 		{
 			var len = Math.min(self.maxPageIndex()+1, self.maxNumDisplayPageIndices());
-			for (var i=0; i<len; i++) {
+			for (i=0; i<len; i+=1) {
 			  pageIndices.push(i);
 			}
 			//console.log(self.maxPageIndex() + " " + self.maxNumDisplayPageIndices());
@@ -112,7 +114,7 @@ function dashboardViewModel() {
     }, this);
 
     self.isAdmin = ko.computed(function() {
-        return self.ownerUserId() == self.userId();
+        return self.ownerUserId() === self.userId();
     }, this);
 
     self.isLoggedIn = ko.computed(function() {
@@ -142,7 +144,7 @@ function dashboardViewModel() {
 	    	console.log("Select report: " +  JSON.stringify(mev) + " " + keys);*/
 
     	}
-    }
+    };
 
     self.goToPage = function(pageIndex) {
 
@@ -164,7 +166,7 @@ function dashboardViewModel() {
 					dataType: 'json',
 					async: true,
 					success: function(result) {
-						topicSummary.reports(result)
+						topicSummary.reports(result);
 					},
 					complete: function() { jQuery('#reports-canvas').parent().hideLoading(); }
 			});
@@ -187,7 +189,7 @@ function dashboardViewModel() {
 	}
 
     self.reportHasMedia = function(report) {
-    	if (report['mediaUrls'] == null || report['mediaUrls'] == undefined || report['mediaUrls'].length == 0)
+    	if (report['mediaUrls'] === null || report['mediaUrls'] === undefined || report['mediaUrls'].length == 0)
     		return false;
     	return true;
     };
@@ -274,6 +276,7 @@ function initializeTopicSummary()
 
 	topicSummary.id(QueryString.topicId);
 
+
 	if (topicSummary.id() === null)
 	{
 		console.log("A topic id was not specified in the query");
@@ -297,6 +300,8 @@ function initializeTopicSummary()
 				topicSummary.ownerUserId(topic.ownerUserId);
 				topicSummary.numSmsShares(topic.numSmsShares);
 				topicSummary.numReports(topic.numReports);
+
+				$("#pageTitle").html(topic.title);
 
 				$.ajax({
 		              url: 'api/channels?topicId='+topicSummary.id(),
@@ -328,7 +333,7 @@ function initializeTopicSummary()
 				google.load("visualization", "1", {packages:["corechart", "map", "annotatedtimeline"], callback: initializeCharts}); 
 				
 				//$('title').text(self.title());
-				$('meta[name=description]').attr('content', self.shortDescription);
+				//$('meta[name=description]').attr('content', self.shortDescription);
               },
               complete: function() { jQuery('#summary-canvas').hideLoading(); }
             });
@@ -434,51 +439,7 @@ function drawTimeSeriesChart() {
 	    else if (window.attachEvent) {
 	        window.attachEvent('onresize', resizeHandler);
 	    }
-
-	/*var options = {
-			title: "Reports per day",
-			width: $('#timeseries-canvas').width(),
-			strokeWidth: 2,
-			'Reports per day': {
-				strokeWidth: 1.0,
-				drawPoints: true,
-				pointSize: 1.5
-			}
-		}
-
-	g = new Dygraph(
-		document.getElementById("timeseries-canvas"),
-		function() {
-			return frequencyView;
-		},
-		options
-		);
-
-	function timeseriesResizeHandler () {
-			options.width = $('#timeseries-canvas').width();
-			console.log("redraw!!! " + options.width);
-	        g.updateOptions(options);
-	    }
-	if (window.addEventListener) {
-	    window.addEventListener('resize', timeseriesResizeHandler, false);
-	}
-	else if (window.attachEvent) {
-	    window.attachEvent('onresize', timeseriesResizeHandler);
-	}*/
 }
-
-/*function redraw(animation){
-    var options = {};
-    if (!animation){
-        options.animation = false;
-    } else {
-        options.animation = true;
-    }
-    
-	drawSentimentChart();
-	drawTimeSeriesChart();
-	drawMapChart();
-}*/
 
 function initializeCharts()
 {
@@ -498,37 +459,12 @@ function initializeCharts()
         drawSentimentChart();
 		drawTimeSeriesChart();
 		drawMapChart();
-       
-       	/*$('.l-box').height(function () {
-  			var maxHeight = $(this).closest('.dashboard.col-wrap').find('.l-box')
-            .max( function () {
-            	return $(this).height();
-        	});
-			return maxHeight;
-		});*/
+
 	});
 }
 
-var t;
-function size(animate){
-    // If we are resizing, we don't want the charts drawing on every resize event.
-    // This clears the timeout so that we only run the sizing function
-    // when we are done resizing the window
-    /*clearTimeout(t);
-    // This will reset the timeout right after clearing it.
-    t = setTimeout(function(){
-    	//redraw(animate);
-    	$('.l-box').height(function () {
-  			var maxHeight = $(this).closest('.row').find('.l-box')
-            .max( function () {
-            	return $(this).height();
-        	});
-			return maxHeight;
-		});
-    }, 400); // the timeout should run after 400 milliseconds*/
-}
-
 (function () {
+	"use strict";
 	initializeTopicSummary();
 	loadSocialScripts();
 }) ();

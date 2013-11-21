@@ -1,35 +1,40 @@
 var user = ko.observable(null);
 var QueryString = getRequestParameters ();
 var auth_callback = null;
+var first_try_login = true;
 
 var clientId = '907117162790.apps.googleusercontent.com';
 var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/devstorage.read_write'; //
 
   (function () {
+    "use strict";
     $.getScript("/js/vendor/bootbox.min.js", function(){});
 
-  	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/client:plusone.js?onload=registerGoogleAPI'; //:plusone.js?onload=customSigninRender 
+  	var po = document.createElement('script'); 
+    po.type = 'text/javascript'; 
+    po.async = true;
+    po.src = 'https://apis.google.com/js/client:plusone.js?onload=registerGoogleAPI';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  }());
-
-    function checkAuth() {
-      gapi.auth.authorize({
-        client_id: clientId,
-        scope: scopes,
-        immediate: true
-      }, handleAuthResult);
-    }
+  } ());
 
     /**
      * Handle authorization.
      */
     function handleAuthResult(token) {
-      if (token != null && (token['access_token'] || token['code'])) {
+      if (token !== null && (token['access_token'] || token['code'])) {
+            var jsonData = null;
+            if (token['code'])
+              jsonData = JSON.stringify({code: token['code'], state: token['state']});
+            else if (token['access_token'])
+              jsonData = JSON.stringify({access_token: token['access_token']});
+            else 
+              jsonData = JSON.stringify(token);
+            //console.log("Token: "  + jsonData);
+
             $.ajax({
               url: 'api/oauth2callback',
               type: 'POST',
-              data: JSON.stringify(token),
+              data: jsonData,
               contentType: 'application/json; charset=utf-8',
               dataType: 'json',
               async: true,
@@ -47,12 +52,14 @@ var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com
                 jQuery("#signinButton").hideLoading();
               }
             });
-          } else if (token != null && token['error']) {
+          } else if (token !== null && token['error']) {
               console.log('Sign-in state: ' + token['error']);
-              gapi.auth.checkSessionState({client_id: clientId, session_state:null}, function(status) {
-                if (status == false)
-                  user(null);
-              });
+              //gapi.auth.checkSessionState({client_id: clientId, session_state:null}, function(status) {
+              //  if (status === false)
+                  if  (token['error'] != 'immediate_failed' || !first_try_login) 
+                    user(null);
+                  first_try_login = false;
+              //});
               jQuery("#signinButton").hideLoading();
           }  else {
               console.log("Token: ", token);
@@ -68,14 +75,15 @@ var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com
       'callback': 'handleAuthResult',
       'clientid': clientId,
       'cookiepolicy': 'single_host_origin',
-      'scope': scopes
+      'scope': scopes,
+      'redirecturi':"postmessage",
+      'accesstype': "offline"
       });
     }
 
     function signInMessage(divEl) {
-      divEl.html("<div class='alert alert-info'>Please signin to proceed. <button type='button' id='signinButtonExtra'> Sign in </button> ");
-      //$("#signinButtonExtra").on('click', function(e) { checkAuth(); }); 
-      googleSigninRender("signinButtonExtra")
+      divEl.html("<div class='alert alert-info'>Please sign in to proceed. <button type='button' id='signinButtonExtra'> Sign in </button> </div>");
+      googleSigninRender("signinButtonExtra");
     }
 
 function registerGoogleAPI()
@@ -104,9 +112,9 @@ function showMoreInfo() {
     });*/
 
     jQuery(".container").showLoading();
-    $("#create-topic-modal" ).load( "info.html", function() {
+    $("#more-info-modal" ).load( "info.html", function() {
       jQuery('.container').hideLoading();
-      $('#create-topic-modal').modal( {backdrop:'static'} );
+      $('#more-info-modal').modal( {backdrop:'static'} );
   });
 }
 

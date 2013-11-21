@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <title data-bind="text: title"></title>
+    <title>Observers: read reports, write reports or create your own topic!</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -37,7 +37,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li><!--<a data-target="#createTopicModal" data-toggle="modal" >-->
-                        <a id="create-topic-link" style="cursor: pointer; cursor: hand;">
+                        <a id="create-topic-link" style="cursor: pointer; cursor: hand;" tabindex="0">
                         Start new topic </a>
                     </li>
                     <!--<li>
@@ -53,16 +53,16 @@
 
                         <ul class="dropdown-menu">
                             <!--<li><a href="#">Manage my topics</a></li>-->
-                            <li><a href="javascript:void(0);" onclick="userLogout()">Logout</a></li>
+                            <li><a href="javascript:void(0)" onclick="userLogout()">Logout</a></li>
                             <li class="divider"></li>
-                            <li><a href="javascript:void(0);" onclick="userDisconnect()">Delete my account</a></li>
+                            <li><a href="javascript:void(0)" onclick="userDisconnect()">Delete my account</a></li>
                         </ul>
                     </li>
-                    <li data-bind="visible: !isLoggedIn()"> <a> <span  id="signinButton">
+                    <li data-bind="visible: !isLoggedIn()"> <a> <span  id="signinButton" tabindex="0">
                         <span class="icon"></span>
                         <span class="buttonText">Sign in</span>                 
                     </span></a> </li>  
-                    <li> <a class="fa fa-info-circle" onclick='showMoreInfo()'> <span class="sr-only"> Help </span></a> </li>         
+                    <li> <a class="fa fa-info-circle" onclick='showMoreInfo()' tabindex="0"> <span class="sr-only"> Help </span></a> </li>         
                 </ul>
             </div>
         </nav>
@@ -74,8 +74,13 @@
 <div id="homeStatus"></div>
 
 <!-- Modal -->
-<div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="createtopic-label" style="display: none"> Create new topic </div>
+<div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="createtopic-label" aria-hidden="true">
 </div><!-- /.modal -->
+
+<div id="more-info-label" style="display: none"> More info </div>
+<div class="modal fade" id="more-info-modal" tabindex="-1" role="dialog" aria-labelledby="more-info-label" aria-hidden="true">
+</div>
 
 <div class="jumbotron">
 <h1>Observers</h1>
@@ -117,7 +122,6 @@
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- //-beg- concat_js -->
-<!--<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>-->
 <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
 <script type="text/javascript" src="js/plugins.js"></script>
@@ -193,6 +197,7 @@
     }
 
     (function () {
+        "use strict";
         if (user() == null)
         {
             getUser();

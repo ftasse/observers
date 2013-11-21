@@ -1,6 +1,7 @@
 var currentModel = null;
 
 (function () {
+   "use strict";
     /*if (typeof user === 'undefined') {
       user = ko.observable();
     } else*/ if ( user() === null)
