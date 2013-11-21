@@ -1,12 +1,6 @@
-<!-- Indices written at Thu, 21 Nov 2013 23:53:59 CET -->
+<!-- Indices written at Fri, 22 Nov 2013 00:31:24 CET -->
 
 <datastore-indexes>
-
-    <!-- Used 2 times in query history -->
-    <datastore-index kind="Channel" ancestor="false" source="auto">
-        <property name="topicId" direction="asc"/>
-        <property name="+source" direction="asc"/>
-    </datastore-index>
 
     <!-- Used 2 times in query history -->
     <datastore-index kind="Report" ancestor="false" source="auto">

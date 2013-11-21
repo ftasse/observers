@@ -42,6 +42,19 @@
 
 }());
 
+function srt(desc) {
+  return function(a,b){
+   return desc ? ~~(a < b) : ~~(a > b);
+  };
+}
+
+// sort on key values
+function keysrt(key,desc) {
+  return function(a,b){
+   return desc ? ~~(a[key] < b[key]) : ~~(a[key] > b[key]);
+  }
+}
+
 // Place any jQuery/helper plugins in here.
 function loadFacebookScript(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];

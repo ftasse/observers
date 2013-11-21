@@ -180,7 +180,7 @@ public class ConnectServletCallback extends JsonRestServlet {
       throws TokenDataException {
     try {
       // Upgrade the authorization code into an access and refresh token.
-      System.out.println("Code: " + accessToken.code);
+      //System.out.println("Code: " + accessToken.code);
       GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(
           TRANSPORT, JSON_FACTORY, CLIENT_ID, CLIENT_SECRET, accessToken.code,
           "postmessage").execute();

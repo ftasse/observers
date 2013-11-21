@@ -308,6 +308,7 @@ function initializeTopicSummary()
 		              type: 'GET',
 		              async: false,
 		              success: function(jsonData) {
+		              	jsonData.sort(keysrt('source'));
 		              	var msg = ""
 		                for (var i in jsonData)
 		                {

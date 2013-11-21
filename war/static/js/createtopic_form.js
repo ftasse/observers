@@ -157,6 +157,7 @@ function EditTopicModel (topicId) {
       var hasWeb = false;
       var hasTwitter = false;
       var hasTwilio = false;
+      jsonData.sort(keysrt('source'));
 
       for (var i in jsonData)
       {

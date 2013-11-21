@@ -112,7 +112,7 @@ public class Topic extends Jsonifiable {
   }
 
     public Collection<Channel> getChannels() {
-        return ofy().load().type(Channel.class).filter("topicId", getId()).order("+source").list();
+        return ofy().load().type(Channel.class).filter("topicId", getId()).list();
     }
 
     public Collection<Category> getCategories() {
