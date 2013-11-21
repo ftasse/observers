@@ -1,8 +1,8 @@
-<!-- Indices written at Thu, 21 Nov 2013 12:14:19 CET -->
+<!-- Indices written at Thu, 21 Nov 2013 19:11:32 CET -->
 
 <datastore-indexes>
 
-    <!-- Used 85 times in query history -->
+    <!-- Used 1 time in query history -->
     <datastore-index kind="Report" ancestor="false" source="auto">
         <property name="topicId" direction="asc"/>
         <property name="created" direction="desc"/>

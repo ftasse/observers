@@ -137,6 +137,8 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
 		if (topicId != null) {
       	// Get the topic with the given ID and return it.
 			Topic topic = q.filter("id", Long.parseLong(topicId)).first().get();
+      if (topic == null)
+        throw new NotFoundException();
 			sendResponse(req, resp, topic);
 		} else {
 			if (userIdParam != null) {
@@ -157,7 +159,9 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
 		}
 	} catch (UserNotAuthorizedException e) {
 		sendError(resp, 401, "Unauthorized request");
-	}
+	} catch (NotFoundException e) {
+    sendError(resp, 404, "Topic with ID: "+ req.getParameter("topicId") + " does not exists");
+  }
 }
 
  /**

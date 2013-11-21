@@ -104,7 +104,10 @@ public class Topic extends Jsonifiable {
         if (numReports == 0)
         {
             numReports = ofy().load().type(Report.class).filter("topicId", id).count();
-            if (numReports > 0) ofy().save().entity(this).now();
+            if (numReports > 0) {
+             ofy().save().entity(this).now();
+             ofy().clear();
+            }
         }
   }
 

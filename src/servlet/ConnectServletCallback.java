@@ -201,7 +201,7 @@ public class ConnectServletCallback extends JsonRestServlet {
   private String verifyToken(GoogleCredential credential)
       throws TokenVerificationException, IOException {
     // Check that the token is valid.
-    Oauth2 oauth2 = new Oauth2.Builder(TRANSPORT, JSON_FACTORY, credential)
+    Oauth2 oauth2 = new Oauth2.Builder(TRANSPORT, JSON_FACTORY, credential).setApplicationName("Observers-API/1.0")
         .build();
     Tokeninfo tokenInfo = oauth2.tokeninfo()
         .setAccessToken(credential.getAccessToken()).execute();
@@ -250,7 +250,7 @@ public class ConnectServletCallback extends JsonRestServlet {
         .filter("googleUserId", tokenGoogleUserId).first().get();
     if (user == null) {
       // Register a new user.  Collect their Google profile info first.
-      Plus plus = new Plus.Builder(TRANSPORT, JSON_FACTORY, credential).build();
+      Plus plus = new Plus.Builder(TRANSPORT, JSON_FACTORY, credential).setApplicationName("Observers/1.0").build();
       Person profile;
       Plus.People.Get get;
       try {

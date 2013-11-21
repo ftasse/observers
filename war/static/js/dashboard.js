@@ -335,6 +335,10 @@ function initializeTopicSummary()
 				//$('title').text(self.title());
 				//$('meta[name=description]').attr('content', self.shortDescription);
               },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+              	console.log("some error occured: ", errorThrown);
+		        window.location.href = "/";
+              },
               complete: function() { jQuery('#summary-canvas').hideLoading(); }
             });
 		
