@@ -245,7 +245,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     Channel channel = null;
 
     try {
-      hashtag = hashtag.replaceAll("#", "%23");
+      //hashtag = hashtag.replaceAll("#", "%23");
       URL url = new URL(host_url + "/api/twitter?topicId=" + topicId);    
       String payload = String.format("{\"name\":\"%1$s\",\"hashtag\":\"%2$s\"}", name, hashtag);
       HttpURLConnection connection = createURLConnection(url, "POST", payload, sessionid);
@@ -302,6 +302,9 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoOutput(true);
     connection.setRequestMethod(method);
+
+    connection.setConnectTimeout( 6 * 10 * 1000 ); // One Minute
+
 
     connection.setRequestProperty("Content-Type", "application/json");
     connection.setRequestProperty("Accept", "application/json");
