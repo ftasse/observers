@@ -1,11 +1,18 @@
-<!-- Indices written at Thu, 21 Nov 2013 19:11:32 CET -->
+<!-- Indices written at Thu, 21 Nov 2013 23:53:59 CET -->
 
 <datastore-indexes>
 
-    <!-- Used 1 time in query history -->
+    <!-- Used 2 times in query history -->
+    <datastore-index kind="Channel" ancestor="false" source="auto">
+        <property name="topicId" direction="asc"/>
+        <property name="+source" direction="asc"/>
+    </datastore-index>
+
+    <!-- Used 2 times in query history -->
     <datastore-index kind="Report" ancestor="false" source="auto">
         <property name="topicId" direction="asc"/>
         <property name="created" direction="desc"/>
+        <property name="retrieved" direction="desc"/>
     </datastore-index>
 
 </datastore-indexes>

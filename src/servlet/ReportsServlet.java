@@ -223,7 +223,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     }
     q = q.offset(from);
 
-    List<Report> reports = q.order("-created").list();
+    List<Report> reports = q.order("-created").order("-retrieved").list();
     sendResponse(req, resp, reports, "observers#reports");
   /*} catch (UserNotAuthorizedException e) {
     sendError(resp, 401, "Unauthorized request");

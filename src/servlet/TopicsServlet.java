@@ -153,7 +153,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
             	// Get all topics for the user.
 				q = q.filter("ownerUserId", userId);
 			}
-
+      q = q.order("-created");
       List<Topic> topics = q.list();
       sendResponse(req, resp, topics, "observers#topics");
 		}
