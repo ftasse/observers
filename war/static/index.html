@@ -11,8 +11,8 @@
     <meta itemprop="description" content="Discover, create and contribute to new topics!">
     
     <link rel="stylesheet" href="css/normalize.css">
-    <link href="css/vendor/bootstrap.min.css" rel="stylesheet"/>
-    <link href="css/vendor/bootstrap-theme.min.css" rel="stylesheet"/>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet"/>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
 
     <link rel="stylesheet" href="css/main.css"/>
@@ -61,7 +61,8 @@
                     <li data-bind="visible: !isLoggedIn()"> <a> <span  id="signinButton">
                         <span class="icon"></span>
                         <span class="buttonText">Sign in</span>                 
-                    </span></a> </li>           
+                    </span></a> </li>  
+                    <li> <a class="fa fa-info-circle" onclick='showMoreInfo()'> <span class="sr-only"> Help </span></a> </li>         
                 </ul>
             </div>
         </nav>
@@ -71,12 +72,16 @@
 <div class="container clearfix">
 
 <div id="homeStatus"></div>
-<img src="/img/ajax-loader.gif" style="display: none" />
-<!--<button class="btn" id="loading-indicator">"loading stuff..."</button>-->
 
 <!-- Modal -->
 <div class="modal fade" id="create-topic-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 </div><!-- /.modal -->
+
+<div class="jumbotron">
+<h1>Observers</h1>
+<p class="lead">Easy, accessible and smart platform that shows the world what people are feeling about an issue, where they are and what are their concerns.  Here, you can see reports about various topics, send your own report, or even create a topic you are passionate about!</p>
+<a href="#" class="btn btn-primary btn-lg" onclick="showMoreInfo()">More Info</a>
+</div>
 
     <div class="row">
         <div class="dashboard  col-wrap ">
@@ -84,7 +89,7 @@
 
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h3 class="panel-title">All Topics</h3>
+                    <h2 class="panel-title">Current Topics</h2>
                   </div>
                 <!-- <div class="table-responsive">
                 <table class="table table-hover table-striped" >
@@ -113,7 +118,7 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- //-beg- concat_js -->
 <!--<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>-->
-<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
 <script type="text/javascript" src="js/plugins.js"></script>
 <script type="text/javascript" src="js/vendor/jquery.validate.min.js"></script>

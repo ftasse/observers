@@ -11,9 +11,9 @@
 	<meta itemprop="description" content="Discover, create and contribute to new topics!">
 	
 	<link rel="stylesheet" href="css/normalize.css">
-	<link href="css/vendor/bootstrap.min.css" rel="stylesheet"/>
-	<link href="css/vendor/bootstrap-theme.min.css" rel="stylesheet"/>
-	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet"/>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
 
     <link rel="stylesheet" href="css/main.css"/>
 	<link  rel="stylesheet" href="css/dashboard.css"/>
@@ -60,7 +60,8 @@
 					<li data-bind="visible: !isLoggedIn()"> <a> <span  id="signinButton">
 						<span class="icon"></span>
 	    				<span class="buttonText">Sign in</span>					
-					</span></a> </li>			
+					</span></a> </li>		
+					<li> <a class="fa fa-info-circle" onclick='showMoreInfo()'> <span class="sr-only"> Help </span></a> </li>	
 				</ul>
 			</div>
 		</nav>
@@ -186,7 +187,7 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- //-beg- concat_js -->
 <!--<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>-->
-<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
 <script type="text/javascript" src="js/plugins.js"></script>
 <script type="text/javascript" src="js/vendor/jquery.validate.min.js"></script>
@@ -206,7 +207,8 @@
 	<li class="list-group-item" style="text-align: left">  
 		<a href="#" class="glyphicon glyphicon-minus-sign" data-bind="{visible: $root.isAdmin, click: $root.removeReport}" style="color:  #b94a48;"></a>
 		<span data-bind="text: content"></span> <br> <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span> 
-		<a href="#" class="pull-right glyphicon glyphicon-eye-open" data-bind="{visible: $root.reportHasMedia($data), click: $root.showMedia}"></a>
+		<a href="#" class="pull-right glyphicon glyphicon-eye-open" data-bind="{visible: $root.reportHasMedia($data), click: $root.showMedia}"></a> <span class="pull-right" style="margin-left: 5px">&zwnj; &nbsp;</span>
+		<a href="#" class="pull-right glyphicon glyphicon-map-marker" data-bind="{visible: $data.location != undefined, click: $root.showOnMap}"></a>
 	</li>
 </script>
 

@@ -91,6 +91,7 @@ function dashboardViewModel() {
     self.displayedPageindicesCompute.subscribe(function (newValue) { self.displayedPageindices(newValue); });
 
 	self.data = ko.observable(null);
+	self.map = null;
 
 	self.userName = ko.computed(function() {
 		if (user() === null) {
@@ -117,6 +118,31 @@ function dashboardViewModel() {
     self.isLoggedIn = ko.computed(function() {
         return (user() !== null);
     }, this);
+
+    self.showOnMap = function(report) {
+    	if (self.data() !== null && report.location !== undefined)
+    	{
+    		
+			//google.visualization.events.trigger(this, 'select', mev);
+
+    		var selectionArray = [];
+	    	var foundRows = self.data().getFilteredRows([{column: 0, value: report.id}]);
+
+	    	for (var y = 0, maxrows = foundRows.length; y < maxrows; y++) {
+			     selectionArray.push({row: foundRows[y], column:null});
+			}
+			self.map.setSelection(selectionArray);
+
+			/*var mev = {
+			  stop: null,
+			  latLng: new google.maps.LatLng(report.location.lat, report.location.lng)
+			}
+	    	console.log("Select report: " +  JSON.stringify(self.map.getSelection()));
+	    	keys = Object.keys(self.map);
+	    	console.log("Select report: " +  JSON.stringify(mev) + " " + keys);*/
+
+    	}
+    }
 
     self.goToPage = function(pageIndex) {
 
@@ -338,11 +364,11 @@ function drawMapChart() {
       	useMapTypeControl: true
       };
 
-      var map = new google.visualization.Map(document.getElementById('map-canvas'));
-      map.draw(geoView, options);
+      topicSummary.map = new google.visualization.Map(document.getElementById('map-canvas'));
+      topicSummary.map.draw(geoView, options);
 
 	    function resizeHandler () {
-	        map.draw(geoView, options);
+	        topicSummary.map.draw(geoView, options);
 	    }
 	    if (window.addEventListener) {
 	        window.addEventListener('resize', resizeHandler, false);

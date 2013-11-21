@@ -69,7 +69,7 @@ var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com
       'clientid': clientId,
       'cookiepolicy': 'single_host_origin',
       'scope': scopes
-    });
+      });
     }
 
     function signInMessage(divEl) {
@@ -93,7 +93,22 @@ function showConfirmDialog(text, ok_callback, cancel_callback)
   bootbox.confirm(text, function(result) {
     if (result == true) ok_callback();
   }); 
-} 
+}
+
+function showMoreInfo() {
+    /*jQuery(".container").showLoading();
+    $.get( "/info.html", function( data ) {
+      jQuery(".container").hideLoading();
+      $( ".result" ).html( data );
+      bootbox.alert(data);
+    });*/
+
+    jQuery(".container").showLoading();
+    $("#create-topic-modal" ).load( "info.html", function() {
+      jQuery('.container').hideLoading();
+      $('#create-topic-modal').modal( {backdrop:'static'} );
+  });
+}
 
 function getUser (complete_callback) {
 	$.get('/api/users').done(function(userJson) {
