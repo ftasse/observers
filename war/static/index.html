@@ -126,7 +126,7 @@
 <!-- //-end- concat_js -->
     
 <script type="text/html" id="topics-list-template">
-    <a  class="list-group-item" data-bind="{click: $root.goToTopic, attr: {href: 'dashboard.html?topicId='+id}}">
+    <a  class="list-group-item" data-bind="{if: (id!=undefined),click: $root.goToTopic, attr: {href: 'dashboard.html?topicId='+id}}">
         <h4 class="list-group-item-heading" data-bind="{text: title}"> </h4> <span class="badge" data-bind="text: numReports"></span>
         <p data-bind="{text: shortDescription}"></p>
         <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span>
