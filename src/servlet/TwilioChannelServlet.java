@@ -255,6 +255,9 @@ public class TwilioChannelServlet extends JsonRestServlet {
                     if (!message.getBody().contains(account.getHashtag()))
                         continue;
 
+                    if (message.getDateSent().before(topic.getCreated()))
+                        continue;
+
                     //http://twilio.github.io/twilio-java/com/twilio/sdk/resource/instance/Message.html
                 
                     String messageId = message.getSid();
