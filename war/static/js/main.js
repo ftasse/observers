@@ -60,7 +60,11 @@ var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com
                     user(null);
                   first_try_login = false;
               //});
+            try {
               jQuery("#signinButton").hideLoading();
+            } catch (err){
+              console.log("catched error: " + err);
+            }
           }  else {
               console.log("Token: ", token);
               user(null);

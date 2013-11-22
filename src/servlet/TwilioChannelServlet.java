@@ -233,6 +233,9 @@ public class TwilioChannelServlet extends JsonRestServlet {
             .filter("topicId", topicId).list();
             for (TwilioAccount account: accounts)
             {
+                if (!(account.getHashtag().length() != 0 && account.getHashtag().charAt(0) == '#' && account.getHashtag().length()>1))
+                    continue;
+
                 TwilioRestClient client = new TwilioRestClient(account.getTwilioAccountId(), account.getAuthToken());
  
                 //http://www.twilio.com/docs/api/rest/message

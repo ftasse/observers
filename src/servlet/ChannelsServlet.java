@@ -150,7 +150,8 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
               TwilioAccount account = ofy().load().key(TwilioAccount.key(channel.getAccountId())).safeGet();
               if (account != null && !account.getHashtag().equals(hashtag))
               {
-                account.setValidHashtag(hashtag);
+                if (hashtag.length()==0) account.setHashtag(hashtag);
+                else account.setValidHashtag(hashtag);
                 ofy().save().entity(account).now();
               }
              

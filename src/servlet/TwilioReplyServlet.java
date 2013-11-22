@@ -158,6 +158,7 @@ public class TwilioReplyServlet extends JsonRestServlet {
             || c == '?'
             || c == ':'
             || c == ';'
+            || c == ' '
             ;
     }
 
