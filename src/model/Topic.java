@@ -116,7 +116,7 @@ public class Topic extends Jsonifiable {
     }
 
     public Collection<Category> getCategories() {
-        return ofy().load().type(Category.class).filter("topicId", getId()).order("+title").list();
+        return ofy().load().type(Category.class).filter("topicId", getId()).list();
     }
 
     public void delete()
