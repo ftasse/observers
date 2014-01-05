@@ -55,9 +55,6 @@ import com.observers.tools.Iso2Phone;
 public class TwilioChannelServlet extends JsonRestServlet {
     private static final long serialVersionUID = 1657390011452788111L;
 
-    private String MY_TWILIO_ACCOUNT_ID="***REMOVED***";
-    private String MY_TWILIO_AUTH_TOKEN="***REMOVED***";
-
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             checkAuthorization(req);
@@ -117,13 +114,13 @@ public class TwilioChannelServlet extends JsonRestServlet {
                     channel = ofy().load().type(Channel.class).filter("accountId", account.getId()).first().get();
                     sendResponse(req, resp, channel);
                     return;
-                } else if (req.getParameter("hashtag") != null)
+                } else //if (req.getParameter("hashtag") != null)
                 {
 
                     //Create a Twilio subaccount
                     TwilioRestClient client = new TwilioRestClient(MY_TWILIO_ACCOUNT_ID, MY_TWILIO_AUTH_TOKEN);
-                    /*User user = ofy().load().type(User.class).id(userId).get();
-                    String friendlyName = user.getGoogleDisplayName()+"|"+topic.getId();
+                    User user = ofy().load().type(User.class).id(userId).get();
+                    String friendlyName = user.getGoogleDisplayName() + "|" + topic.getId();
 
                     // Build a filter for the AccountList
                     List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -139,29 +136,32 @@ public class TwilioChannelServlet extends JsonRestServlet {
                     if (subaccountList != null && (subaccounts = subaccountList.getPageData()).size()>0 )
                         subaccount = subaccounts.get(0);
                     else
-                        subaccount = accountFactory.create(params);*/
-                    Account subaccount = client.getAccount();
+                        subaccount = accountFactory.create(params);
+                    //Account subaccount = client.getAccount();
 
 
                     account = new TwilioAccount();
                     account.setName(subaccount.getFriendlyName());
                     account.setTwilioAccountId(subaccount.getSid());
                     account.setAuthToken(subaccount.getAuthToken());
-                    account.setHashtag(req.getParameter("hashtag"));
+                    if (req.getParameter("hashtag") != null) account.setHashtag(req.getParameter("hashtag"));
 
                     Locale locale = req.getLocale();
                     String countryPhoneCode = Iso2Phone.getPhone(locale.getISO3Country());
                     
                     IncomingPhoneNumberList phoneNumberList = subaccount.getIncomingPhoneNumbers();
+                    boolean hasNumber = false;
                     if (phoneNumberList != null)
                     {
                         List<IncomingPhoneNumber> phoneNumbers = phoneNumberList.getPageData();
                         for (IncomingPhoneNumber phoneNumber: phoneNumbers)
                         {
                             account.addPhoneNumber(new PhoneNumber(phoneNumber.getPhoneNumber()));
+                            hasNumber = true;
                         }
                     }
-                    else
+                    
+                    if (!hasNumber)
                     {
                         client = new TwilioRestClient(subaccount.getSid(), subaccount.getAuthToken());
                         final AvailablePhoneNumberList availPhoneNumbers = subaccount.getAvailablePhoneNumbers();
@@ -173,6 +173,7 @@ public class TwilioChannelServlet extends JsonRestServlet {
                         params2.put("SmsUrl", "http://demo.twilio.com/welcome/voice/");
                         IncomingPhoneNumber number = subaccount.getIncomingPhoneNumberFactory().create(params2);
                         account.addPhoneNumber(new PhoneNumber (number.getPhoneNumber()));
+                        System.out.println("Bought number: " + number.getPhoneNumber());
                     }
                     
                 }
@@ -233,8 +234,8 @@ public class TwilioChannelServlet extends JsonRestServlet {
             .filter("topicId", topicId).list();
             for (TwilioAccount account: accounts)
             {
-                if (!(account.getHashtag().length() != 0 && account.getHashtag().charAt(0) == '#' && account.getHashtag().length()>1))
-                    continue;
+                //if (!(account.getHashtag().length() != 0 && account.getHashtag().charAt(0) == '#' && account.getHashtag().length()>1))
+                //    continue;
 
                 TwilioRestClient client = new TwilioRestClient(account.getTwilioAccountId(), account.getAuthToken());
  
@@ -252,8 +253,8 @@ public class TwilioChannelServlet extends JsonRestServlet {
                     if (!message.getStatus().equals("received"))
                         continue;
 
-                    if (!message.getBody().contains(account.getHashtag()))
-                        continue;
+                    //if ((account.getHashtag().length() != 0 && account.getHashtag().charAt(0) == '#') && !message.getBody().contains(account.getHashtag()))
+                    //    continue;
 
                     if (message.getDateSent().before(topic.getCreated()))
                         continue;

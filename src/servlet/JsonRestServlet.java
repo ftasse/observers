@@ -115,6 +115,10 @@ public abstract class JsonRestServlet extends HttpServlet {
 
   public static final TwitterFactory TWITTER_FACTORY = new TwitterFactory();
 
+
+  public static String MY_TWILIO_ACCOUNT_ID = "***REMOVED***";
+  public static String MY_TWILIO_AUTH_TOKEN = "***REMOVED***";
+
   protected String getConnectRedirectUri(HttpServletRequest req) 
       throws IOException {
     GenericUrl url = new GenericUrl(req.getRequestURL().toString());
@@ -278,7 +282,8 @@ public abstract class JsonRestServlet extends HttpServlet {
   protected String getHostURL(HttpServletRequest req) {
     String scheme = req.getScheme();             // http
     String serverName = req.getServerName();
-    String host_url = scheme + "://" + serverName;
+    int serverPort = req.getServerPort();
+    String host_url = scheme + "://" + serverName + ":" + serverPort;
     return host_url;
   }
 

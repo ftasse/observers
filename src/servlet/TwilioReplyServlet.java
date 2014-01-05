@@ -73,14 +73,13 @@ public class TwilioReplyServlet extends JsonRestServlet {
 
                 account = ofy().load().type(TwilioAccount.class)
                 .filter("twilioAccountId", twilioAccountId)
-                .filter("hashtag", msgHashtag)
+                //.filter("hashtag", msgHashtag)
                 .first().get();
             }
             if (account == null)
             {
-                message = "Sorry, but you cannot send reports to this number, with the given hashtag at the moment. Try again later.";
-            }
-            else
+                message = "Sorry, but you cannot send reports to this number at the moment (since there is no topic attached to it). Try again later.";
+            } else
             {
                 Channel channel = ofy().load().type(Channel.class)
                 .filter("accountId", account.getId()).first().get();

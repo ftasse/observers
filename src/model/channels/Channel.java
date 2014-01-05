@@ -71,7 +71,10 @@ public class Channel extends Jsonifiable {
             else if (source == Source.Facebook)
                 ofy().delete().entity(ofy().load().key(FacebookAccount.key(accountId)).safeGet()).now();
             else if (source == Source.Twilio)
-                ofy().delete().entity(ofy().load().key(TwilioAccount.key(accountId)).safeGet()).now();
+            {
+                TwilioAccount account = ofy().load().key(TwilioAccount.key(accountId)).safeGet();
+                account.delete();
+            }
         }
         ofy().delete().entity(this).now();
     }

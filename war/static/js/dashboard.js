@@ -317,7 +317,7 @@ function initializeTopicSummary()
 					          msg += "<li>" + "Using the form below" + "</li>\n"
 					        } else if (channelData.source == "Twitter") {
 					          msg += "<li>" + "Tweeting by mentionning " + channelData.account.name + " and using the hashtag " + channelData.account.hashtag + "</li>\n"
-					        } else if (channelData.source == "Twilio" && channelData.account.hashtag != "") {
+					        } else if (channelData.source == "Twilio") {
 					          msg += "<li>" + "Sending an SMS ending with " + channelData.account.hashtag + " to the phone number: " + channelData.account.phoneNumbers[0] + "</li>\n"
 					        }
 		                }

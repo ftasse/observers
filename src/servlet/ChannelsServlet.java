@@ -154,7 +154,6 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
                 else account.setValidHashtag(hashtag);
                 ofy().save().entity(account).now();
               }
-             
             }
           }
         } else
@@ -169,7 +168,9 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
           } else if (data.source == Channel.Source.Twilio)
           {
             String hashtag = data.account.hashtag;
-            if (hashtag.length() > 0 && !hashtag.equals(""))  channel = createNewTwilioChannel(topicId, hashtag, getHostURL(req), req.getRequestedSessionId());
+            //if (hashtag.length() > 0 && !hashtag.equals("")) 
+              channel = createNewTwilioChannel(topicId, hashtag, getHostURL(req), req.getRequestedSessionId());
+              System.out.println("Created a new Twilio channel: " + channel.getId()); 
           }
         }
       }
@@ -272,7 +273,8 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
   protected Channel createNewTwilioChannel(Long topicId, String hashtag, String host_url, String sessionid) 
       throws IOException
   {
-    hashtag = TwilioAccount.getValidHashtag(hashtag);
+    if (hashtag.length() > 0 && !hashtag.equals(""))
+      hashtag = TwilioAccount.getValidHashtag(hashtag);
     Channel channel = null;
 
     try {

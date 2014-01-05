@@ -24,6 +24,15 @@ import java.util.ArrayList;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
+import com.twilio.sdk.TwilioRestClient;
+import com.twilio.sdk.TwilioRestException;
+import com.twilio.sdk.resource.instance.Account;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.observers.servlet.JsonRestServlet;
+
 @Entity
 @Cache
 @EqualsAndHashCode(of="id", callSuper=false)
@@ -99,5 +108,21 @@ public class TwilioAccount extends Jsonifiable {
     public void setValidHashtag(String new_hashtag) {
         
         hashtag = TwilioAccount.getValidHashtag(new_hashtag);
+    }
+
+    public void delete() {
+        TwilioRestClient client = new TwilioRestClient(JsonRestServlet.MY_TWILIO_ACCOUNT_ID, JsonRestServlet.MY_TWILIO_AUTH_TOKEN);
+        Account account = client.getAccount(twilioAccountId);
+        System.out.println("TwilioAccount status" + account.getStatus());
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("Status", "closed"));
+
+        try {
+            account.update(params);
+        } catch (TwilioRestException e) {
+            System.out.println("Cannot close account: \n" + e);
+        }
+
+        ofy().delete().entity(this).now();
     }
 }

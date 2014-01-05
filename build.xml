@@ -47,14 +47,15 @@
     <enhance_war war="war" />
   </target>
 
-  <!-- should depend on datanucleusenhance to support JDO enhancement -->
-  <target name="runserver" depends="datanucleusenhance"
+  <!-- should depend on datanucleusenhance to support JDO enhancement  depends="datanucleusenhance"-->
+  <target name="runserver" 
     description="Starts the development server.">
     <dev_appserver war="war" port="8080">
-      <!--
-      <options>
-      </options> 
-      -->
+      <!-- <options>
+        
+      </options> -->
+    </dev_appserver>
+    <dev_appserver war="war" address="0.0.0.0">
     </dev_appserver>
   </target>
 
