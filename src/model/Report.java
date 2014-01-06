@@ -180,7 +180,7 @@ public class Report extends Jsonifiable {
         .filter("reportId", id)
         .list();
         numVotes = votes.size();
-  }
+    }
 
   @OnSave
   protected void updateTopicReportCount()
@@ -188,8 +188,7 @@ public class Report extends Jsonifiable {
     if (id == null)
     {
         Topic topic = ofy().load().key(Topic.key(topicId)).safeGet();
-        topic.setNumReports(topic.getNumReports() + 1);
-        ofy().save().entity(topic).now();
+        topic.updateNumReports();
     }
   }
 
@@ -219,7 +218,7 @@ public class Report extends Jsonifiable {
     ofy().delete().entities(votes);
     ofy().delete().entities(this).now();
 
-    topic.setNumReports(topic.getNumReports() - 1);
+    topic.updateNumReports();
     ofy().save().entity(topic).now();
   }
 }

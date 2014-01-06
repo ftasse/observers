@@ -103,13 +103,18 @@ public class Topic extends Jsonifiable {
     protected void setupNumReports() {
         if (numReports == 0)
         {
-            numReports = ofy().load().type(Report.class).filter("topicId", id).count();
-            if (numReports > 0) {
-             ofy().save().entity(this).now();
-             ofy().clear();
-            }
+            updateNumReports();
         }
   }
+
+    protected void updateNumReports() {
+            long prev_numReports = ofy().load().type(Report.class).filter("topicId", id).count();
+            if (prev_numReports != numReports) {
+                numReports = prev_numReports;
+                ofy().save().entity(this).now();
+                ofy().clear();
+            }
+    }
 
     public Collection<Channel> getChannels() {
         return ofy().load().type(Channel.class).filter("topicId", getId()).list();
