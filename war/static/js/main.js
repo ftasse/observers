@@ -39,7 +39,7 @@ var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com
               dataType: 'json',
               async: true,
               beforeSend: function() {
-                jQuery("#signinButton").showLoading();
+                //jQuery("#signinButton").showLoading();
               },
               success: function(result) {
                 user(result);
@@ -49,7 +49,7 @@ var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com
                 console.log("some error occured: ", errorThrown);
               },
               complete: function() {
-                jQuery("#signinButton").hideLoading();
+                //jQuery("#signinButton").hideLoading();
               }
             });
           } else if (token !== null && token['error']) {
@@ -97,7 +97,10 @@ function registerGoogleAPI()
   gapi.client.load('storage', 'v1beta1');
   //gapi.client.load('plus', 'v1');
   //$("#signinButton").on('click', function(e) { checkAuth(); });
-  googleSigninRender("signinButton");
+
+  getUser(function() {
+    googleSigninRender("signinButton");
+  });
 }
 
 function showConfirmDialog(text, ok_callback, cancel_callback)
@@ -128,6 +131,14 @@ function getUser (complete_callback) {
 	}).error(function () {
 		user(null);
 	}).complete(complete_callback);
+}
+
+function hasValidUser() {
+  if (user() == null)
+    return false;
+  if (user().googleExpiresAt < (new Date()).getTime())
+    return false;
+  return true;
 }
 
 function userLogout(complete_callback)

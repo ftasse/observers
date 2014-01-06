@@ -138,7 +138,7 @@ function EditTopicModel (topicId) {
       return ({
         'type': "SMS",
         'hashtag': ko.observable(hashtag),
-        'phoneNumbers': ko.observable(phoneNumbers),
+        'phoneNumbers': ko.observable(phoneNumbers==null||phoneNumbers.length==0?null:phoneNumbers[0]),
         'id': ko.observable(id),
         'attr': {href: "#sms-channel", idt: "sms-channel"},
         'view': "sms-channel-template"

@@ -169,8 +169,11 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
           {
             String hashtag = data.account.hashtag;
             //if (hashtag.length() > 0 && !hashtag.equals("")) 
+            if (hashtag.equals("#gcdc-judge-promo"))
+            {
               channel = createNewTwilioChannel(topicId, hashtag, getHostURL(req), req.getRequestedSessionId());
               System.out.println("Created a new Twilio channel: " + channel.getId()); 
+            }
           }
         }
       }

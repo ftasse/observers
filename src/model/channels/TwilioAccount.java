@@ -96,12 +96,12 @@ public class TwilioAccount extends Jsonifiable {
 
     public static String getValidHashtag(String new_hashtag)
     {
-        if (!(new_hashtag.length() == 0) && new_hashtag.charAt(0) != '#')  new_hashtag = "#" + new_hashtag;
+        /*if (!(new_hashtag.length() == 0) && new_hashtag.charAt(0) != '#')  new_hashtag = "#" + new_hashtag;
 
         while ((new_hashtag.length()==0) || ofy().load().type(TwilioAccount.class).filter("hashtag", new_hashtag).list().size() > 0 )
         {
           new_hashtag = '#' + (new BigInteger(16, new SecureRandom()).toString(32));
-        }
+        }*/
         return new_hashtag.toLowerCase();
     }
 

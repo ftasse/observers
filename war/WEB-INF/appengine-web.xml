@@ -4,6 +4,7 @@
   <version>1</version>
   <threadsafe>true</threadsafe>
   <sessions-enabled>true</sessions-enabled>
+  <async-session-persistence enabled="true" />
   
   <public-root>/static/</public-root>
 

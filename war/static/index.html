@@ -9,30 +9,11 @@
 
     <meta itemprop="name" content="Observers">
     <meta itemprop="description" content="Discover, create and contribute to new topics!">
-    
-    <link rel="stylesheet" href="css/normalize.css">
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet"/>
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
 
-    <link rel="stylesheet" href="css/main.css"/>
-    <link  rel="stylesheet" href="css/dashboard.css"/>
 
-    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
-
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-46059536-1', 'gcdc2013-observers.appspot.com');
-    ga('send', 'pageview');
-
-  </script>
 </head>
 
-<body > 
+<body >
 
     <header> <span id="fb-root"></span>
         <nav class="navbar navbar-default navbar-static-top" id="horizontal-menu" role="navigation">
@@ -71,9 +52,9 @@
                     </li>
                     <li data-bind="visible: !isLoggedIn()"> <a> <span  id="signinButton" tabindex="0">
                         <span class="icon"></span>
-                        <span class="buttonText">Sign in</span>                 
-                    </span></a> </li>  
-                    <li> <a class="fa fa-info-circle" onclick='showMoreInfo()' tabindex="0"> <span class="sr-only"> Help </span></a> </li>         
+                        <span class="buttonText">Sign in</span>
+                    </span></a> </li>
+                    <li> <a class="fa fa-info-circle" onclick='showMoreInfo()' tabindex="0"> <span class="sr-only"> Help </span></a> </li>
                 </ul>
             </div>
         </nav>
@@ -93,11 +74,11 @@
 <div class="modal fade" id="more-info-modal" tabindex="-1" role="dialog" aria-labelledby="more-info-label" aria-hidden="true">
 </div>
 
-<div class="jumbotron">
+<!--<div class="jumbotron">
 <h1>Observers</h1>
 <p class="lead">Easy, accessible and smart platform that shows the world what people are feeling about an issue, where they are and what are their concerns.  Here, you can see reports about various topics, send your own report, or even create a topic you are passionate about!</p>
 <a href="#" class="btn btn-primary btn-lg" onclick="showMoreInfo()">More Info</a>
-</div>
+</div>-->
 
     <div class="row">
         <div class="dashboard  col-wrap ">
@@ -118,7 +99,7 @@
 
                <!-- <div class="panel-footer"></div>-->
             </div>
-            
+
         </div>
     </div>
     </div>
@@ -130,17 +111,41 @@
     <a class="pull-right" href="https://plus.google.com/100962573176836284931" rel="publisher">Google+</a>
 </footer>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet"/>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="css/main.min.css"/>
+    <link  rel="stylesheet" href="css/dashboard.css"/>
+
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-46059536-1', 'gcdc2013-observers.appspot.com');
+    ga('send', 'pageview');
+
+  </script>
+
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load("jquery", "1");
+</script>
+
 <!-- //-beg- concat_js -->
 <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/vendor/knockout-3.0.0.js"></script>
 <script type="text/javascript" src="js/plugins.js"></script>
 <script type="text/javascript" src="js/vendor/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="/js/jquery.showLoading.js"></script>
 <!-- //-end- concat_js -->
-    
+
 <script type="text/html" id="topics-list-template">
     <a  class="list-group-item" data-bind="{if: (id!=undefined),click: $root.goToTopic, attr: {href: 'dashboard.html?topicId='+id}}">
         <h4 class="list-group-item-heading" data-bind="{text: title}"> </h4> <span class="badge" data-bind="text: numReports"></span>
@@ -165,23 +170,23 @@
         if (user() === null) {
             return null;
         }
-        else { 
+        else {
             return user().googleDisplayName;
         }
         }, this);
 
         self.userId = ko.computed(function() {
-            if ( user() === null) { 
+            if ( user() === null) {
                 return null;
             }
-            else { 
+            else {
                 return  user().id;
             }
         }, this);
 
         self.goToTopic = function(topic) {
             window.location.href = "/dashboard.html?topicId=" + topic.id;
-        };  
+        };
 
         self.removeTopic = function(topic) {
             self.topics.remove(topic);
@@ -193,7 +198,7 @@
                   dataType: 'json',
                   async: true,
                   success: function(result) {
-                    
+
                     $("#homeStatus").html("<div class='alert alert-success'>"+"The topic titled \"" + topic.title + "\" was successfully deleted." +"</div>");
                   },
                   error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -216,8 +221,6 @@
         }
         var viewModel = new TopicListModel ();
         ko.applyBindings(viewModel);
-
-        $.getScript("/js/jquery.showLoading.js", function(){
 
             jQuery('.container').showLoading();
             $.ajax({
@@ -248,7 +251,6 @@
                     jQuery('.container').hideLoading();
                   }
                 });
-         });
 
     }());
 

@@ -214,11 +214,12 @@ public class Report extends Jsonifiable {
   public void delete()
   {
     Topic topic = ofy().load().key(Topic.key(topicId)).safeGet();
-    topic.setNumReports(topic.getNumReports() - 1);
-    ofy().save().entity(topic).now();
 
     List<Vote> votes = ofy().load().type(Vote.class).filter("reportId", id).list();
     ofy().delete().entities(votes);
     ofy().delete().entities(this).now();
+
+    topic.setNumReports(topic.getNumReports() - 1);
+    ofy().save().entity(topic).now();
   }
 }

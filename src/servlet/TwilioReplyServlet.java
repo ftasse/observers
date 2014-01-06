@@ -70,12 +70,13 @@ public class TwilioReplyServlet extends JsonRestServlet {
                 }  
                 msgHashtag = msgHashtag.toLowerCase();
                 System.out.println("Hashtag: " + msgHashtag);
+            }
 
-                account = ofy().load().type(TwilioAccount.class)
+            account = ofy().load().type(TwilioAccount.class)
                 .filter("twilioAccountId", twilioAccountId)
                 //.filter("hashtag", msgHashtag)
                 .first().get();
-            }
+                
             if (account == null)
             {
                 message = "Sorry, but you cannot send reports to this number at the moment (since there is no topic attached to it). Try again later.";

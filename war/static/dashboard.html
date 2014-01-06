@@ -9,31 +9,9 @@
 
 	<meta itemprop="name" content="Observers" />
 	<meta itemprop="description" content="Discover, create and contribute to new topics!" />
-	
-	<link rel="stylesheet" href="css/normalize.css" />
-	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
-
-    <link rel="stylesheet" href="css/main.css"/>
-	<link rel="stylesheet" href="css/dashboard.css"/>
-
-	<script src="js/vendor/modernizr-2.6.2.min.js"></script>
-
-
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-46059536-1', 'gcdc2013-observers.appspot.com');
-    ga('send', 'pageview');
-
-  </script>
 </head>
 
-<body >	
+<body >
 	<header> <span id="fb-root"></span>
 		<nav class="navbar navbar-default navbar-static-top" id="horizontal-menu" role="navigation">
 			<div class="navbar-header">
@@ -80,8 +58,8 @@
 					    data-requestvisibleactions="http://schemas.google.com/AddActivity"
 					    data-scope="https://www.googleapis.com/auth/plus.login">
 					  </span>-->
-					</span></a> </li>		
-					<li> <a class="fa fa-info-circle" onclick='showMoreInfo()'  href="javascript:void(0)"> <span class="sr-only"> Help </span></a> </li>	
+					</span></a> </li>
+					<li> <a class="fa fa-info-circle" onclick='showMoreInfo()'  href="javascript:void(0)"> <span class="sr-only"> Help </span></a> </li>
 				</ul>
 			</div>
 		</nav>
@@ -113,11 +91,11 @@
 				<div class="col-md-8">
 					<div class="jumbotron dashboard-piece dashboard-piece-redbg " id="summary-canvas"> <!-- jumbotron  -->
 						<h2 data-bind="text: title"></h2>
-						<p data-bind="text: shortDescription"></p>
+						<p style="font-size:12pt;" data-bind="text: shortDescription"></p>
 
-						<div class="text-center v-center" style="font-size:29pt;"> 
-							<a class="" data-bind="{attr: {href: googleplusShareUrl()}}"><i class="fa fa-google-plus"></i></a>  
-							<a class="" data-bind="{attr: {href: facebookShareUrl()}}"><i class="fa fa-facebook"></i></a> 
+						<div class="text-center v-center" style="font-size:20pt;">
+							<a class="" data-bind="{attr: {href: googleplusShareUrl()}}"><i class="fa fa-google-plus"></i></a>
+							<a class="" data-bind="{attr: {href: facebookShareUrl()}}"><i class="fa fa-facebook"></i></a>
 							<a href="https://twitter.com/share" class="" data-text="Check out reports on this topic!" data-hashtags="#observersreports"><i class="fa fa-twitter"></i></a>
 							<!--<a href="#" class="" data-bind = "{visible: supportsSms(), click: shareWithSMS}"><i class="fa fa-mobile-phone"></i></a> -->
 						</div>
@@ -136,7 +114,7 @@
 				</div>
 				</div>
 			</div>
-			
+
 			<div class="row  col-wrap" >
 				<div class="col-md-12">
 					<div class="dashboard-piece  dashboard-piece-orangebg">
@@ -145,17 +123,17 @@
 					</div>
 					</div>
 				</div>
-				
+
 			</div>
 
 			<div class="row  col-wrap">
-				
+
 			<div class="col-md-12">
 				<div class="dashboard-piece dashboard-piece-yellowbg" id="timeseries-dashboard-piece">
 					<div class="canvas-title">
 						<b data-bind="{text: 'Reports per day', visible: data}"></b>
 					</div>
-					
+
 					<div class="dashboard-content">
 						<div class="canvas" id="timeseries-canvas" > </div>
 					</div>
@@ -202,13 +180,35 @@
 	&copy; 2013 F. Tasse
 </footer>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>');</script>
+  <link rel="stylesheet" href="css/normalize.min.css" />
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/main.min.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+  <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-46059536-1', 'gcdc2013-observers.appspot.com');
+    ga('send', 'pageview');
+
+  </script>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load("jquery", "1");
+</script>
 
 <script type="text/javascript" src="/js/jquery.showLoading.js"> </script>
 <script type="text/javascript"> jQuery(".container").showLoading(); </script>
 
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- //-beg- concat_js -->
 <!--<script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>-->
 <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
@@ -219,7 +219,7 @@
 
 <script type="text/javascript" src="js/vendor/dygraph-combined.js"></script>
 <script type="text/javascript" src="js/vendor/sammy-latest.min.js"></script>
-<script type="text/javascript" src="js/dashboard.js"></script>
+<script type="text/javascript" src="js/dashboard.min.js"></script>
 <!-- //-end- concat_js -->
 <script type="text/javascript"> jQuery(".container").hideLoading(); </script>
 
@@ -228,17 +228,20 @@
 </script>
 
 <script type="text/html" id="reports-template">
-	<li   tabindex="0" class="list-group-item" style="text-align: left;">  
+	<li   tabindex="0" class="list-group-item" style="text-align: left;">
 		<a href="javascript:void(0)" class="glyphicon glyphicon-minus-sign" data-bind="{visible: $root.isAdmin, click: $root.removeReport}" style="color:  #b94a48;"></a>
-		<span data-bind="text: content"></span> <br> <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span> 
+		<span data-bind="text: content"></span> <br> <span class="glyphicon glyphicon-calendar"></span> <span data-bind="text: (new Date(created)).formatMMMDDYYYY()"></span>
 		<a href="javascript:void(0)" class="pull-right glyphicon glyphicon-eye-open" data-bind="{visible: $root.reportHasMedia($data), click: $root.showMedia}"></a> <span class="pull-right" style="margin-left: 5px">&zwnj; &nbsp;</span>
 		<a href="javascript:void(0)" class="pull-right glyphicon glyphicon-map-marker" data-bind="{visible: $data.location != undefined, click: $root.showOnMap}"></a>
+		<a href="javascript:void(0)" class="pull-right glyphicon glyphicon-map-marker" data-bind="{visible: $data.location != undefined, click: $root.showOnMap}"></a>
+		
 	</li>
 </script>
+<!-- <a class="pull-right" data-bind="click: $root.googleplusShareUrl"><i class="fa fa-google-plus"></i></a> -->
 
 <script type="text/html" id="pager-template">
 	<li tabindex="0" data-bind="if: $data==$root.displayedPageindices()[0], click: $root.goToFirstPage, attr: {class: ($root.currentPageIndex()==0 )?'disabled':'' }"><a href="javascript:void(0)">&laquo;&laquo;</a></li>
-	
+
 	<li tabindex="0" data-bind="if: $data==$root.displayedPageindices()[0], click: $root.goToPrevPage, attr: {class: ($root.currentPageIndex()==0)?'disabled':''} "><a href="javascript:void(0)">&laquo;</a></li>
 
 	<li tabindex="0" class="active" data-bind="attr: { class: ($root.currentPageIndex()==$data)?'active':'' } ">
@@ -248,7 +251,7 @@
 	<li tabindex="0" data-bind="if: $data==$root.displayedPageindices()[0]+$root.maxNumDisplayPageIndices()-1,  click: $root.goToNextPage, attr: {class: ($root.currentPageIndex()==$root.maxPageIndex())?'disabled':''} ">
 		<a href="javascript:void(0)">&raquo;</a>
 	</li>
-	
+
 	<li tabindex="0" data-bind="if: $data==$root.displayedPageindices()[0]+$root.maxNumDisplayPageIndices()-1,  click: $root.goToLastPage, attr: {class: ($root.currentPageIndex()==$root.maxPageIndex())?'disabled':''} ">
 		<a href="javascript:void(0)">&raquo;&raquo;</a>
 	</li>

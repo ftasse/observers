@@ -170,7 +170,7 @@ public class TwilioChannelServlet extends JsonRestServlet {
                         final Map<String, String> params2 = new HashMap<String, String>();
                         params2.put("PhoneNumber", list.get(0).getPhoneNumber());
                         params2.put("VoiceUrl", "http://demo.twilio.com/welcome/voice/");
-                        params2.put("SmsUrl", "http://demo.twilio.com/welcome/voice/");
+                        params2.put("SmsUrl", getHostURL(req) + "/api/twilio/sms");
                         IncomingPhoneNumber number = subaccount.getIncomingPhoneNumberFactory().create(params2);
                         account.addPhoneNumber(new PhoneNumber (number.getPhoneNumber()));
                         System.out.println("Bought number: " + number.getPhoneNumber());
