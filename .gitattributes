@@ -1,0 +1,1 @@
+war/WEB-INF/classes/tools/*.csv filter=lfs diff=lfs merge=lfs -text
