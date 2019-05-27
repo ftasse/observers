@@ -77,15 +77,15 @@ public abstract class JsonRestServlet extends HttpServlet {
   /**
    * Replace this with the client secret you got from the Google APIs console.
    */
-  public static final String CLIENT_SECRET = "***REMOVED***";
+  public static final String CLIENT_SECRET = System.getenv("GAPI_CLIENT_SECRET");
 
-  public static final String BROWSER_API_KEY = "AIzaSyDQmCvXpzW-TvUM05APUPznzOs9MCF_AZQ";
-  public static final String SERVER_API_KEY = "***REMOVED***";
+  public static final String BROWSER_API_KEY =  System.getenv("GAPI_BROWSER_KEY");
+  public static final String SERVER_API_KEY =  System.getenv("GAPI_SERVER_KEY");
 
-  public static final String APP_ID = "gcdc2013-observers";
+  public static final String APP_ID =  System.getenv("GAPI_APP_ID");
 
-  public static final String SERVICE_ACCOUNT_PKCS12_FILE_PATH = "***REMOVED***";
-  public static final String SERVICE_ACCOUNT_EMAIL = "***REMOVED***";
+  public static final String SERVICE_ACCOUNT_PKCS12_FILE_PATH = System.getenv("GCLOUD_SERVICE_ACCOUNT_PRIVATEKEY");
+  public static final String SERVICE_ACCOUNT_EMAIL =  System.getenv("GCLOUD_SERVICE_ACCOUNT_EMAIL");
 
   /**
    * MIME type to use when sending responses back to PhotoHunt clients.
@@ -116,8 +116,8 @@ public abstract class JsonRestServlet extends HttpServlet {
   public static final TwitterFactory TWITTER_FACTORY = new TwitterFactory();
 
 
-  public static String MY_TWILIO_ACCOUNT_ID = "***REMOVED***";
-  public static String MY_TWILIO_AUTH_TOKEN = "***REMOVED***";
+  public static String MY_TWILIO_ACCOUNT_ID = System.getenv("TWILIO_ACCOUNT_ID");
+  public static String MY_TWILIO_AUTH_TOKEN = System.getenv("TWILLIO_AUTH_TOKEN");
 
   protected String getConnectRedirectUri(HttpServletRequest req) 
       throws IOException {

@@ -39,8 +39,8 @@ import com.observers.tools.Iso2Phone;
 public class TwitterChannelServlet extends JsonRestServlet {
     private static final long serialVersionUID = 1657390011452788111L;
 
-    private String ACCESS_TOKEN="***REMOVED***";
-    private String ACCESS_TOKEN_SECRET="***REMOVED***";
+    private String ACCESS_TOKEN=System.getenv("TWITTER_ACCESS_TOKEN");
+    private String ACCESS_TOKEN_SECRET=System.getenv("TWITTER_ACCESS_TOKEN_SECRET");
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
