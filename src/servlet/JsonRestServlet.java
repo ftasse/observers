@@ -79,7 +79,7 @@ public abstract class JsonRestServlet extends HttpServlet {
    */
   public static final String CLIENT_SECRET = "***REMOVED***";
 
-  public static final String BROWSER_API_KEY = "***REMOVED***";
+  public static final String BROWSER_API_KEY = "AIzaSyDQmCvXpzW-TvUM05APUPznzOs9MCF_AZQ";
   public static final String SERVER_API_KEY = "***REMOVED***";
 
   public static final String APP_ID = "gcdc2013-observers";

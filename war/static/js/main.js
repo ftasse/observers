@@ -93,7 +93,7 @@ var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com
 function registerGoogleAPI()
 {
   console.log("Loaded Google api!");
-  gapi.client.setApiKey("***REMOVED***");
+  gapi.client.setApiKey("AIzaSyDQmCvXpzW-TvUM05APUPznzOs9MCF_AZQ");
   gapi.client.load('storage', 'v1beta1');
   //gapi.client.load('plus', 'v1');
   //$("#signinButton").on('click', function(e) { checkAuth(); });
