@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const globalErrorHandler = require('controllers/errorController');
 
 const app = express();
 
@@ -10,5 +11,8 @@ if (process.env.NODE_ENV === 'development') {
 
 // BodyParser: Parses request's data into req.body
 app.use(express.json());
+
+//Global error handler middleware
+app.use(globalErrorHandler);
 
 module.exports = app;
