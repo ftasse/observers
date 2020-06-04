@@ -3,7 +3,7 @@ const sendErrorDevelopment = (err, res) => {
     status: err.status,
     message: err.message,
     error: err,
-    stack: error.stack
+    stack: err.stack
   });
 };
 
@@ -22,6 +22,9 @@ const sendErrorProduction = (err, res) => {
 };
 
 module.exports = (err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+
   if (process.env.NODE_ENV === 'development') {
     sendErrorDevelopment(err, res);
   } else {
