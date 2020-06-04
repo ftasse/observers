@@ -1,9 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
+const helmet = require('helmet');
+
 const globalErrorHandler = require('controllers/errorController');
 const AppError = require('utils/appError');
 
 const app = express();
+
+// Add security HTTP headers to request
+app.use(helmet());
 
 // Add logger
 if (process.env.NODE_ENV === 'development') {
