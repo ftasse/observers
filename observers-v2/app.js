@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 
 const globalErrorHandler = require('controllers/errorController');
 const AppError = require('utils/appError');
+const topicRouter = require('routes/topicRoutes');
 
 const app = express();
 const apiEndpoint = '/api/v1';
@@ -34,6 +35,9 @@ app.use(mongoSanitize());
 
 // Data sanitization: Prevents against cross-site scripting
 app.use(xss());
+
+// Routes
+app.use(`${apiEndpoint}/topics`, topicRouter);
 
 // Handle unimplemented routes
 app.all('*', (req, res, next) => {
