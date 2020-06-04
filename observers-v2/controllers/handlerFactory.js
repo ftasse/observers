@@ -1,9 +1,15 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const QueryHelper = require('../utils/queryHelper');
 
 exports.getAll = Model =>
   catchAsync(async (req, res, next) => {
-    const data = await Model.find();
+    const query = new QueryHelper(Model.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const data = await query.query;
 
     res.status(200).json({
       status: 'success',
