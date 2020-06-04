@@ -5,9 +5,9 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 
-const globalErrorHandler = require('controllers/errorController');
-const AppError = require('utils/appError');
-const topicRouter = require('routes/topicRoutes');
+const globalErrorHandler = require('./controllers/errorController');
+const AppError = require('./utils/appError');
+const topicRouter = require('./routes/topicRoutes');
 
 const app = express();
 const apiEndpoint = '/api/v1';
