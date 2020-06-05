@@ -1,3 +1,11 @@
+const AppError = require('../utils/appError');
+
+const handleDuplicateFieldErrorDB = err => {
+  const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
+  const message = `Duplicate field value: ${value}. Please use another value!`;
+  return new AppError(message, 400);
+};
+
 const sendErrorDevelopment = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -28,6 +36,12 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDevelopment(err, res);
   } else {
+    let error = { ...err };
+
+    if (error.code && error.code === 11000) {
+      error = handleDuplicateFieldErrorDB(error);
+      console.log(error);
+    }
     sendErrorProduction(err, res);
   }
 };
