@@ -139,3 +139,17 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   createSendJWT(res, user, 200);
 });
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('+password');
+
+  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError('Invalid password. Please try again', 403));
+  }
+
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+
+  createSendJWT(res, user, 200);
+});
