@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 
 const AppError = require('../utils/appError');
@@ -12,11 +13,11 @@ const createSendJWT = (res, user, statusCode) => {
 
   const cookieOptions = {
     maxAge: process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-    secure: true
+    httpOnly: true
   };
-  if (process.env.NODE_ENV === 'production') cookieOptions.httpOnly = true;
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  res.cookie('jwt', `Bearer ${token}`, cookieOptions);
+  res.cookie('jwt', token, cookieOptions);
 
   user.password = undefined;
 
@@ -56,4 +57,33 @@ exports.signin = catchAsync(async (req, res, next) => {
   }
 
   createSendJWT(res, user, 200);
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  let token;
+  if (req.authorization && req.authorization.startsWith('Bearer')) {
+    token = req.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+
+  const decodedToken = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET
+  );
+  console.log(decodedToken);
+
+  const freshUser = await User.findById(decodedToken.id);
+
+  if (!freshUser) {
+    return next(
+      new AppError('No user associated with the provided token', 404)
+    );
+  }
+
+  // TODO: Check if password has been changed after the token was issued
+
+  req.user = freshUser;
+
+  next();
 });
