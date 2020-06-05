@@ -71,7 +71,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     token,
     process.env.JWT_SECRET
   );
-  console.log(decodedToken);
 
   const freshUser = await User.findById(decodedToken.id);
 
@@ -87,3 +86,12 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+exports.restrictTo = (...roles) => (req, res, next) => {
+  if (!roles.includes(req.user.role)) {
+    return next(
+      new AppError("You don't have the right to access this route", 403)
+    );
+  }
+  next();
+};
