@@ -40,6 +40,16 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    message: 'Account successfully deleted',
+    data: null
+  });
+});
+
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 exports.deleteUser = factory.deleteOne(User);
