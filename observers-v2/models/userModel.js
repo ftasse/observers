@@ -11,8 +11,8 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Please provide an email'],
     unique: true,
+    required: [true, 'Please provide email'],
     validate: [validator.isEmail, 'Please provide a valid email']
   },
   role: {
@@ -42,8 +42,45 @@ const userSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true
+  },
+  googleUserId: {
+    type: String,
+    unique: true
+  },
+  twitterUserId: {
+    type: String,
+    unique: true
+  },
+  facebookUserId: {
+    type: String,
+    unique: true
   }
 });
+
+userSchema.index(
+  { googleUserId: 1 },
+  {
+    partialFilterExpression: {
+      googleUserId: { $exists: true }
+    }
+  }
+);
+userSchema.index(
+  { twitterUserId: 1 },
+  {
+    partialFilterExpression: {
+      twitterUserId: { $exists: true }
+    }
+  }
+);
+userSchema.index(
+  { facebookUserId: 1 },
+  {
+    partialFilterExpression: {
+      facebookUserId: { $exists: true }
+    }
+  }
+);
 
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
