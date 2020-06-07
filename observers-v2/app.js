@@ -11,6 +11,9 @@ const AppError = require('./utils/appError');
 const topicRouter = require('./routes/topicRoutes');
 const userRouter = require('./routes/userRoutes');
 
+const passportSetup = require('./passport-setup');
+const passport = require('passport');
+
 const app = express();
 const apiEndpoint = '/api/v1';
 
@@ -41,6 +44,7 @@ app.use(mongoSanitize());
 // Data sanitization: Prevents against cross-site scripting
 app.use(xss());
 
+app.use(passport.initialize());
 // Routes
 app.use(`${apiEndpoint}/topics`, topicRouter);
 app.use(`${apiEndpoint}/users`, userRouter);

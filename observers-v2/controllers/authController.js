@@ -157,3 +157,36 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   createSendJWT(res, user, 200);
 });
+
+exports.verifyGoogleStrategy = async function(
+  accessToken,
+  refreshToken,
+  profile,
+  done
+) {
+  try {
+    let user = await User.findOne({ googleUserId: profile.id });
+
+    if (!user) {
+      const password = await crypto.randomBytes(12).toString('hex');
+
+      // TODO: Send password to newly created user's password via email
+
+      user = await User.create({
+        email: profile._json.email,
+        name: profile.displayName,
+        googleUserId: profile.id,
+        thumbnail: profile._json.picture,
+        password,
+        passwordConfirm: password
+      });
+    }
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+};
+
+exports.signinOAuth2 = (req, res, next) => {
+  createSendJWT(res, req.user, 200);
+};

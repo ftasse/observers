@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
@@ -9,6 +10,18 @@ router.post('/signup', authController.signup);
 router.post('/signin', authController.signin);
 router.post('/forgotPassword', authController.forgotPassword);
 router.post('/resetPassword/:resetToken', authController.resetPassword);
+router.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: '/login',
+    session: false
+  }),
+  authController.signinOAuth2
+);
 
 router.use(authController.protect);
 
