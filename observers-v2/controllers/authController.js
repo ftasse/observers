@@ -60,6 +60,14 @@ exports.signin = catchAsync(async (req, res, next) => {
   createSendJWT(res, user, 200);
 });
 
+exports.signout = (req, res, next) => {
+  res.cookie('jwt', 'sign-out', {
+    maxAge: 10 * 1000,
+    httpOnly: true
+  });
+  res.status(200).json({ status: 'success' });
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   if (req.authorization && req.authorization.startsWith('Bearer')) {
