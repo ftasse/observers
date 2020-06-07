@@ -41,7 +41,8 @@ const userSchema = new mongoose.Schema({
   passwordResetTokenExpires: Date,
   active: {
     type: Boolean,
-    default: true
+    default: true,
+    select: false
   },
   googleUserId: {
     type: String,
