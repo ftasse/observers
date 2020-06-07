@@ -3,6 +3,11 @@ const topicController = require('../controllers/topicController');
 
 const router = express.Router();
 
+router.get(
+  '/topicsWithin/:distance/center/:latLng/unit/:unit',
+  topicController.getTopicsWithin
+);
+
 router
   .route('/')
   .get(topicController.getAllTopics)
