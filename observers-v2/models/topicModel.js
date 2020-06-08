@@ -5,11 +5,11 @@ const slugify = require('slugify');
 const topicTags = require('./topicTags');
 
 const topicSchema = new mongoose.Schema({
-  // author: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'User',
-  //   required: true
-  // },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   // channels: [
   //   {
   //     type: mongoose.Schema.Types.ObjectId,
@@ -72,6 +72,15 @@ topicSchema.index({ location: '2dsphere' });
 
 topicSchema.pre('save', function(next) {
   this.slug = slugify(this.title, { lower: true });
+  next();
+});
+
+topicSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'author',
+    select:
+      '-__v -passwordChangedAt -googleUserId -twitterUserId -facebookUserId'
+  });
   next();
 });
 
