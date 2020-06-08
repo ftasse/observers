@@ -52,6 +52,9 @@ exports.deleteOne = Model =>
 
 exports.createOne = Model =>
   catchAsync(async (req, res, next) => {
+    if (req.user) {
+      req.body.author = req.user._id;
+    }
     const doc = await Model.create(req.body);
 
     res.status(201).json({

@@ -1,5 +1,6 @@
 const express = require('express');
 const topicController = require('../controllers/topicController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -11,7 +12,11 @@ router.get(
 router
   .route('/')
   .get(topicController.getAllTopics)
-  .post(topicController.createTopic);
+  .post(
+    authController.protect,
+    authController.restrictTo('user', 'moderator'),
+    topicController.createTopic
+  );
 
 router
   .route('/:id')
