@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const slugify = require('slugify');
 
-const topicTags = require('./topicTags');
+const topicCategories = require('./topicCategories');
 
 const topicSchema = new mongoose.Schema({
   author: {
@@ -28,20 +28,17 @@ const topicSchema = new mongoose.Schema({
     required: [true, 'A topic must have a description'],
     trim: true
   },
-  tags: {
-    type: [
-      {
-        type: String,
-        enum: topicTags
-      }
-    ],
-    validate: {
-      validator: function(val) {
-        return val.length <= 3;
-      },
-      message: 'A topic can only have a maximum of 3 tags'
-    }
+  category: {
+    type: String,
+    enum: topicCategories,
+    required: [true, 'A topic must have a category']
   },
+  tags: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Tag'
+    }
+  ],
   slug: String,
   createdAt: {
     type: Date,
@@ -67,6 +64,8 @@ const topicSchema = new mongoose.Schema({
   }
 });
 
+topicSchema.index({ category: 1 });
+topicSchema.index({ tags: 1 });
 topicSchema.index({ slug: 1 });
 topicSchema.index({ location: '2dsphere' });
 
@@ -80,6 +79,9 @@ topicSchema.pre(/^find/, function(next) {
     path: 'author',
     select:
       '-__v -passwordChangedAt -googleUserId -twitterUserId -facebookUserId'
+  }).populate({
+    path: 'tags',
+    select: 'name'
   });
   next();
 });

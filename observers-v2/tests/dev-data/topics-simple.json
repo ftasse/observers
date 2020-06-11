@@ -1,6 +1,6 @@
 [{
   "title": "The consequences of deforestation in a region",
-  "tags": ["environment", "economy"],
+  "category": "Climate & Environment",
   "location": {
     "address": "Amazonas, Brazil",
     "type": "Point",
@@ -9,7 +9,7 @@
   "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. At ultrices mi tempus imperdiet nulla. Porttitor leo a diam sollicitudin tempor id. Velit laoreet id donec ultrices tincidunt arcu non sodales. Faucibus pulvinar elementum integer enim neque volutpat. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Est lorem ipsum dolor sit. Augue mauris augue neque gravida in. Sit amet purus gravida quis blandit turpis cursus in. Urna neque viverra justo nec. Ut morbi tincidunt augue interdum velit euismod in pellentesque massa. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien nec sagittis. Lobortis scelerisque fermentum dui faucibus in ornare quam. Gravida arcu ac tortor dignissim convallis aenean et. Id semper risus in hendrerit gravida rutrum quisque non tellus."
 }, {
   "title": "Suffering of the people due to impassable roads",
-  "tags": ["environment", "economy", "politics"],
+  "category": "Transportation",
   "location": {
     "address": "Bafoussam, Cameroon",
     "type": "Point",
@@ -18,7 +18,7 @@
   "description": "Eget magna fermentum iaculis eu. Risus pretium quam vulputate dignissim suspendisse in est. Ridiculus mus mauris vitae ultricies leo. At varius vel pharetra vel. Neque volutpat ac tincidunt vitae. Ultrices dui sapien eget mi proin sed libero. Amet consectetur adipiscing elit duis tristique. Nec feugiat nisl pretium fusce id velit ut. Nunc sed id semper risus in. Odio morbi quis commodo odio aenean sed adipiscing diam donec. Nibh cras pulvinar mattis nunc sed."
 }, {
   "title": "Waterborne diseases due to lack of drinking water",
-  "tags": ["environment", "health"],
+  "category": "Health",
   "location": {
     "address": "Mumbai, India",
     "type": "Point",
@@ -27,7 +27,7 @@
   "description": "Dui id ornare arcu odio ut. Donec ultrices tincidunt arcu non sodales. Cursus euismod quis viverra nibh cras pulvinar mattis nunc sed. Interdum velit laoreet id donec. Ipsum dolor sit amet consectetur adipiscing elit pellentesque habitant. Erat pellentesque adipiscing commodo elit at imperdiet dui accumsan. Odio morbi quis commodo odio aenean sed adipiscing diam donec. Duis tristique sollicitudin nibh sit amet commodo nulla facilisi nullam. Ultrices gravida dictum fusce ut placerat orci nulla. Vulputate sapien nec sagittis aliquam. Eros in cursus turpis massa tincidunt dui ut. Egestas erat imperdiet sed euismod nisi porta. Lectus vestibulum mattis ullamcorper velit. Lacus sed turpis tincidunt id aliquet. Dui faucibus in ornare quam. Blandit massa enim nec dui nunc mattis enim ut tellus. Enim tortor at auctor urna. Donec et odio pellentesque diam volutpat commodo."
 }, {
   "title": "Barriers to the creation and operation of private enterprises",
-  "tags": ["economy", "politics"],
+  "category": "Economy",
   "location": {
     "description": "Miami, USA",
     "type": "Point",
