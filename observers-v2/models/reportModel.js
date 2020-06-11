@@ -39,7 +39,7 @@ const reportSchema = new mongoose.Schema({
 reportSchema.index({ location: '2dsphere' });
 
 reportSchema.pre('save', function(next) {
-  // this.sentimentScore = sentimentAnalyzer.analyze(this.content);
+  this.sentimentScore = sentimentAnalyzer.analyze(this.content);
   this.mood = sentimentAnalyzer.getMood(this.sentimentScore);
   next();
 });
