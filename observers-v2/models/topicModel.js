@@ -4,70 +4,85 @@ const slugify = require('slugify');
 
 const topicCategories = require('./topicCategories');
 
-const topicSchema = new mongoose.Schema({
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  // channels: [
-  //   {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: 'Channel'
-  //   }
-  // ],
-  title: {
-    type: String,
-    required: [true, 'A topic must have a title'],
-    minLength: [10, "A topic's title must be at least 10 characters long"],
-    maxLength: [120, "A topic's title must be at most 120 characters long"],
-    unique: true
-  },
-  description: {
-    type: String,
-    required: [true, 'A topic must have a description'],
-    trim: true
-  },
-  category: {
-    type: String,
-    enum: topicCategories,
-    required: [true, 'A topic must have a category']
-  },
-  tags: [
-    {
+const topicSchema = new mongoose.Schema(
+  {
+    author: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Tag'
-    }
-  ],
-  slug: String,
-  createdAt: {
-    type: Date,
-    default: Date.now()
-  },
-  imageCover: String,
-  supportingDocs: [String],
-  supportingLinks: [
-    { type: String, validate: [validator.isURL, 'Please provide a valid URL'] }
-  ],
-  location: {
-    type: {
-      type: String,
-      default: 'Point',
-      enum: 'Point'
+      ref: 'User',
+      required: true
     },
-    coordinates: [Number],
-    address: String
+    // channels: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Channel'
+    //   }
+    // ],
+    title: {
+      type: String,
+      required: [true, 'A topic must have a title'],
+      minLength: [10, "A topic's title must be at least 10 characters long"],
+      maxLength: [120, "A topic's title must be at most 120 characters long"],
+      unique: true
+    },
+    description: {
+      type: String,
+      required: [true, 'A topic must have a description'],
+      trim: true
+    },
+    category: {
+      type: String,
+      enum: topicCategories,
+      required: [true, 'A topic must have a category']
+    },
+    tags: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tag'
+      }
+    ],
+    slug: String,
+    createdAt: {
+      type: Date,
+      default: Date.now()
+    },
+    imageCover: String,
+    supportingDocs: [String],
+    supportingLinks: [
+      {
+        type: String,
+        validate: [validator.isURL, 'Please provide a valid URL']
+      }
+    ],
+    location: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: 'Point'
+      },
+      coordinates: [Number],
+      address: String
+    },
+    moderated: {
+      type: Boolean,
+      select: false
+    }
   },
-  moderated: {
-    type: Boolean,
-    select: false
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
-});
+);
 
 topicSchema.index({ category: 1 });
 topicSchema.index({ tags: 1 });
 topicSchema.index({ slug: 1 });
 topicSchema.index({ location: '2dsphere' });
+
+topicSchema.virtual('reports', {
+  ref: 'Report',
+  foreignField: 'topic',
+  localField: '_id'
+});
 
 topicSchema.pre('save', function(next) {
   this.slug = slugify(this.title, { lower: true });
