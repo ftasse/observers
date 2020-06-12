@@ -2,7 +2,11 @@ const express = require('express');
 const topicController = require('../controllers/topicController');
 const authController = require('../controllers/authController');
 
+const reportRouter = require('../routes/reportRoutes');
+
 const router = express.Router();
+
+router.get('/:topicId/reports', reportRouter);
 
 router.get(
   '/topicsWithin/:distance/center/:latLng/unit/:unit',

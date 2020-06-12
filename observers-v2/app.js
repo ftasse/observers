@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
+const reportRouter = require('./routes/reportRoutes');
 const topicRouter = require('./routes/topicRoutes');
 const userRouter = require('./routes/userRoutes');
 
@@ -46,6 +47,7 @@ app.use(xss());
 
 app.use(passport.initialize());
 // Routes
+app.use(`${apiEndpoint}/reports`, reportRouter);
 app.use(`${apiEndpoint}/topics`, topicRouter);
 app.use(`${apiEndpoint}/users`, userRouter);
 
