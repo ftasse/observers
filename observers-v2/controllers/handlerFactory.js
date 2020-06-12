@@ -86,3 +86,32 @@ exports.updateOne = Model =>
       }
     });
   });
+
+exports.getAllWithin = (Model, ...filterOptions) =>
+  catchAsync(async (req, res, next) => {
+    const { latLng, distance, unit } = req.params;
+    const [lat, lng] = latLng.split(',');
+    const radius = unit === 'km' ? distance / 6371 : distance / 3958.8;
+
+    if (!lat || !lng) {
+      return next(
+        new AppError(
+          'Please provide latitude and longitude in the format: lat, lng.'
+        ),
+        400
+      );
+    }
+    let filters = !filterOptions ? {} : { ...filterOptions };
+    filters = Object.assign(filters, {
+      location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
+    });
+    const docs = await Model.find(filters);
+
+    res.status(200).json({
+      status: 'success',
+      results: docs.length,
+      data: {
+        data: docs
+      }
+    });
+  });

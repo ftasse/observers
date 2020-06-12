@@ -5,13 +5,20 @@ const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
+router.get(
+  '/reportsWithin/:distance/center/:latLng/unit/:unit',
+  reportController.setTopicId,
+  reportController.getReportsWithin
+);
+
 router
   .route('/')
   .get(reportController.getAllReport)
   .post(
     authController.protect,
     authController.restrictTo('user'),
-    reportController.setTopicUserIds,
+    reportController.setUserId,
+    reportController.setTopicId,
     reportController.createReport
   );
 
