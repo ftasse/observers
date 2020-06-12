@@ -20,9 +20,12 @@ exports.getAll = Model =>
     });
   });
 
-exports.getOne = Model =>
+exports.getOne = (Model, ...populateFields) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findById(req.params.id);
+    const query = Model.findById(req.params.id);
+    populateFields.forEach(el => query.populate({ path: el }));
+
+    const doc = await query;
 
     if (!doc) {
       return next(new AppError('Document not found', 404));
