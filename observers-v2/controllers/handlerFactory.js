@@ -23,7 +23,7 @@ exports.getAll = Model =>
 exports.getOne = (Model, ...populateFields) =>
   catchAsync(async (req, res, next) => {
     const query = Model.findById(req.params.id);
-    populateFields.forEach(el => query.populate({ path: el }));
+    populateFields.forEach(el => query.populate(el));
 
     const doc = await query;
 

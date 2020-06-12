@@ -44,17 +44,6 @@ reportSchema.pre('save', function(next) {
   next();
 });
 
-reportSchema.pre(/^find/, function(next) {
-  this.populate({
-    path: 'author',
-    select:
-      '-__v -passwordChangedAt -googleUserId -twitterUserId -facebookUserId'
-  }).populate({
-    path: 'topic',
-    select: 'title slug'
-  });
-  next();
-});
 const Report = mongoose.model('Report', reportSchema);
 
 module.exports = Report;
