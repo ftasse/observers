@@ -6,7 +6,7 @@ const reportRouter = require('../routes/reportRoutes');
 
 const router = express.Router();
 
-router.get('/:topicId/reports', reportRouter);
+router.use('/:topicId/reports', reportRouter);
 
 router.get(
   '/topicsWithin/:distance/center/:latLng/unit/:unit',

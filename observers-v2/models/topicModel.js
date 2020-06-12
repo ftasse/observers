@@ -94,9 +94,6 @@ topicSchema.pre(/^find/, function(next) {
     path: 'author',
     select:
       '-__v -passwordChangedAt -googleUserId -twitterUserId -facebookUserId'
-  }).populate({
-    path: 'tags',
-    select: 'name'
   });
   next();
 });

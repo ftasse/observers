@@ -96,7 +96,7 @@ userSchema.virtual('topics', {
 });
 
 userSchema.virtual('reports', {
-  ref: 'Topic',
+  ref: 'Report',
   foreignField: 'author',
   localField: '_id'
 });
