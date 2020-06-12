@@ -103,7 +103,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...roles) => (req, res, next) => {
   if (!roles.includes(req.user.role)) {
     return next(
-      new AppError("You don't have the right to access this route", 403)
+      new AppError("You do not have permission. Operation forbidden", 403)
     );
   }
   next();
