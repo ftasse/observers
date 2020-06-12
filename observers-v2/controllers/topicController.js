@@ -4,7 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.getAllTopics = factory.getAll(Topic);
-exports.getTopic = factory.getOne(Topic);
+exports.getTopic = factory.getOne(Topic, 'reports');
 exports.createTopic = factory.createOne(Topic);
 exports.updateTopic = factory.updateOne(Topic);
 exports.deleteOne = factory.deleteOne(Topic);
