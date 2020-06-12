@@ -46,8 +46,8 @@ const topicSchema = new mongoose.Schema(
       default: Date.now()
     },
     imageCover: String,
-    supportingDocs: [String],
-    supportingLinks: [
+    mediaUploads: [String],
+    mediaUrls: [
       {
         type: String,
         validate: [validator.isURL, 'Please provide a valid URL']
