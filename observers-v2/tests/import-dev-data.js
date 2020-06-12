@@ -7,6 +7,8 @@ const dotenv = require('dotenv');
 dotenv.config({ path: '../config.env' });
 
 const Topic = require('../models/topicModel');
+const User = require('../models/userModel');
+const Report = require('../models/reportModel');
 
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
@@ -40,6 +42,8 @@ const loadData = async () => {
 const deleteData = async () => {
   try {
     await Topic.deleteMany();
+    await User.deleteMany();
+    await Report.deleteMany();
     console.log('Data successfully deleted!');
   } catch (err) {
     console.log(err);
