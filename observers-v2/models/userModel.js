@@ -3,60 +3,66 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please tell us your name'],
-    unique: true
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: [true, 'Please provide email'],
-    validate: [validator.isEmail, 'Please provide a valid email']
-  },
-  role: {
-    type: String,
-    default: 'user',
-    enum: ['user', 'admin', 'moderator']
-  },
-  password: {
-    type: String,
-    required: [true, 'Please provide a password'],
-    select: false
-  },
-  passwordConfirm: {
-    type: String,
-    required: [true, 'Please confirm your password'],
-    validate: {
-      validator: function(val) {
-        return val === this.password;
-      },
-      message: 'Passwords are not matched'
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please tell us your name'],
+      unique: true
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: [true, 'Please provide email'],
+      validate: [validator.isEmail, 'Please provide a valid email']
+    },
+    role: {
+      type: String,
+      default: 'user',
+      enum: ['user', 'admin', 'moderator']
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide a password'],
+      select: false
+    },
+    passwordConfirm: {
+      type: String,
+      required: [true, 'Please confirm your password'],
+      validate: {
+        validator: function(val) {
+          return val === this.password;
+        },
+        message: 'Passwords are not matched'
+      }
+    },
+    thumbnail: String,
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetTokenExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false
+    },
+    googleUserId: {
+      type: String,
+      unique: true
+    },
+    twitterUserId: {
+      type: String,
+      unique: true
+    },
+    facebookUserId: {
+      type: String,
+      unique: true
     }
   },
-  thumbnail: String,
-  passwordChangedAt: Date,
-  passwordResetToken: String,
-  passwordResetTokenExpires: Date,
-  active: {
-    type: Boolean,
-    default: true,
-    select: false
-  },
-  googleUserId: {
-    type: String,
-    unique: true
-  },
-  twitterUserId: {
-    type: String,
-    unique: true
-  },
-  facebookUserId: {
-    type: String,
-    unique: true
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
-});
+);
 
 userSchema.index(
   { googleUserId: 1 },
@@ -82,6 +88,18 @@ userSchema.index(
     }
   }
 );
+
+userSchema.virtual('topics', {
+  ref: 'Topic',
+  foreignField: 'author',
+  localField: '_id'
+});
+
+userSchema.virtual('reports', {
+  ref: 'Topic',
+  foreignField: 'author',
+  localField: '_id'
+});
 
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
