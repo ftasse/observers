@@ -5,7 +5,7 @@ const stemmerFr = require('natural').PorterStemmerFr;
 const SW = require('stopword');
 
 const defaultAnalyzer = new Analyzer('English', stemmer, 'afinn');
-const frAnalyzer = new Analyzer('French', stemmerFr, 'senticon');
+const frAnalyzer = new Analyzer('French', stemmerFr, 'pattern');
 const tokenizer = new WordTokenizer();
 
 exports.analyze = (report, lang = 'en') => {
@@ -23,5 +23,6 @@ exports.getMood = score => {
     '1': 'Positive',
     '-1': 'Negative'
   };
-  return moodMap[Math.sign(score)];
+  const convertedValue = Math.sign(score);
+  return convertedValue ? moodMap[Math.sign(score)] : 'Unknown';
 };
