@@ -40,6 +40,14 @@ const topicSchema = new mongoose.Schema(
         ref: 'Tag'
       }
     ],
+    averageSentimentScore: {
+      type: Number,
+      default: 0
+    },
+    averageMood: {
+      type: String,
+      default: 'Neutral'
+    },
     slug: String,
     createdAt: {
       type: Date,
