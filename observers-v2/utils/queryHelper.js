@@ -6,7 +6,7 @@ class QueryHelper {
 
   filter() {
     const queryObj = { ...this.queryStr };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
     excludedFields.forEach(el => delete queryObj[el]);
 
     let queryString = JSON.stringify(queryObj);
@@ -19,6 +19,15 @@ class QueryHelper {
 
     return this;
   }
+  search() {
+    if (this.queryStr.search) {
+      const searchText = this.queryStr.search;
+      this.query = this.query.find({ $text: { $search: searchText } });
+      console.log(searchText);
+    }
+    return this;
+  }
+
   sort() {
     if (this.queryStr.sort) {
       const sortBy = this.queryStr.sort.split(',').join(' ');
