@@ -23,6 +23,6 @@ exports.getMood = score => {
     '1': 'Positive',
     '-1': 'Negative'
   };
-  const convertedValue = Math.sign(score);
-  return convertedValue ? moodMap[Math.sign(score)] : 'Unknown';
+  const mood = moodMap[Math.sign(score)];
+  return !mood ? 'Unknown' : mood;
 };
