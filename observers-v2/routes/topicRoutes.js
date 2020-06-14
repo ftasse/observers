@@ -33,7 +33,7 @@ router
   .delete(
     authController.protect,
     authController.restrictTo('admin', 'user'),
-    topicController.deleteOne
+    topicController.deleteTopic
   );
 
 module.exports = router;

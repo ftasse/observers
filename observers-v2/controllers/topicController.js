@@ -7,7 +7,7 @@ exports.getAllTopics = factory.getAll(Topic);
 exports.getTopic = factory.getOne(Topic, { path: 'reports' });
 exports.createTopic = factory.createOne(Topic);
 exports.updateTopic = factory.updateOne(Topic);
-exports.deleteOne = catchAsync(async (req, res, next) => {
+exports.deleteTopic = catchAsync(async (req, res, next) => {
   await Report.deleteMany({ topic: req.params.id });
   await factory.deleteOne(Topic)(req, res, next);
 });
