@@ -73,12 +73,12 @@ reportSchema.post('save', async function() {
 });
 
 // Hack to access document after query has been executed
-reportSchema.pre(/^findOneAnd/, async function(next) {
+reportSchema.pre(/^find(One|ById)And/, async function(next) {
   this.r = await this.findOne();
   next();
 });
 
-reportSchema.post(/^findOneAnd/, async function() {
+reportSchema.post(/^find(One|ById)And/, async function() {
   await this.r.constructor.calcAverageSentiment(this.r.topic);
 });
 
