@@ -5,6 +5,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
+const hpp = require('hpp');
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
@@ -44,6 +45,21 @@ app.use(mongoSanitize());
 
 // Data sanitization: Prevents against cross-site scripting
 app.use(xss());
+
+// Prevent parameter pollution
+app.use(
+  hpp({
+    whitelist: [
+      'title',
+      'description',
+      'tags',
+      'category',
+      'averageMood',
+      'content',
+      'mood'
+    ]
+  })
+);
 
 app.use(passport.initialize());
 // Routes
