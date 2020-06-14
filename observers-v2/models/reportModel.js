@@ -7,11 +7,13 @@ const Topic = require('../models/topicModel');
 const reportSchema = new mongoose.Schema({
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: [true, 'A report must have an author']
   },
   topic: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Topic'
+    ref: 'Topic',
+    required: [true, 'A report must be for a topic']
   },
   content: {
     type: String,
