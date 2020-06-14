@@ -42,7 +42,15 @@ exports.getOne = (Model, ...populateFields) =>
 
 exports.deleteOne = Model =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndDelete(req.params.id);
+    let doc;
+    if (req.user.role === 'admin') {
+      doc = await Model.findByIdAndDelete(req.params.id);
+    } else {
+      doc = await Model.findOneAndDelete({
+        _id: req.params.id,
+        author: req.user._id
+      });
+    }
 
     if (!doc) {
       return next(new AppError('Document not found', 404));
@@ -71,10 +79,19 @@ exports.createOne = Model =>
 
 exports.updateOne = Model =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    let doc;
+    if (req.user.role === 'admin') {
+      doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+      });
+    } else {
+      doc = await Model.findOneAndUpdate(
+        { _id: req.params.id, author: req.user._id },
+        req.body,
+        { new: true, runValidators: true }
+      );
+    }
 
     if (!doc) {
       return next(new AppError('Document not found', 404));
