@@ -7,6 +7,7 @@ exports.getAll = Model =>
     const filterOption = req.body.topic ? { topic: req.body.topic } : {};
     const query = new QueryHelper(Model.find(filterOption), req.query)
       .filter()
+      .search()
       .sort()
       .limitFields()
       .paginate();

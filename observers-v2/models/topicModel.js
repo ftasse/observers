@@ -85,6 +85,8 @@ topicSchema.index({ category: 1 });
 topicSchema.index({ tags: 1 });
 topicSchema.index({ slug: 1 });
 topicSchema.index({ location: '2dsphere' });
+topicSchema.index({ description: 'text' });
+topicSchema.index({ title: 'text' });
 
 topicSchema.virtual('reports', {
   ref: 'Report',

@@ -40,6 +40,7 @@ const reportSchema = new mongoose.Schema({
   numDisLikes: Number
 });
 
+reportSchema.index({ content: 'text' });
 reportSchema.index({ location: '2dsphere' });
 
 reportSchema.pre('save', function(next) {
