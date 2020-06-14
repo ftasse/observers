@@ -4,7 +4,8 @@ const QueryHelper = require('../utils/queryHelper');
 
 exports.getAll = Model =>
   catchAsync(async (req, res, next) => {
-    const query = new QueryHelper(Model.find(), req.query)
+    const filterOption = req.body.topic ? { topic: req.body.topic } : {};
+    const query = new QueryHelper(Model.find(filterOption), req.query)
       .filter()
       .sort()
       .limitFields()
@@ -22,8 +23,8 @@ exports.getAll = Model =>
 
 exports.getOne = (Model, ...populateFields) =>
   catchAsync(async (req, res, next) => {
-    const query = Model.findById(req.params.id);
-    populateFields.forEach(el => query.populate(el));
+    let query = Model.findById(req.params.id);
+    populateFields.forEach(el => (query = query.populate(el)));
 
     const doc = await query;
 
@@ -87,7 +88,7 @@ exports.updateOne = Model =>
     });
   });
 
-exports.getAllWithin = (Model, ...filterOptions) =>
+exports.getAllWithin = Model =>
   catchAsync(async (req, res, next) => {
     const { latLng, distance, unit } = req.params;
     const [lat, lng] = latLng.split(',');
@@ -101,11 +102,11 @@ exports.getAllWithin = (Model, ...filterOptions) =>
         400
       );
     }
-    let filters = !filterOptions ? {} : { ...filterOptions };
-    filters = Object.assign(filters, {
+    let filterOptions = req.body.topic ? { topic: req.body.topic } : {};
+    filterOptions = Object.assign(filterOptions, {
       location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
     });
-    const docs = await Model.find(filters);
+    const docs = await Model.find(filterOptions);
 
     res.status(200).json({
       status: 'success',

@@ -18,7 +18,4 @@ exports.getReport = factory.getOne(Report);
 exports.createReport = factory.createOne(Report);
 exports.updateReport = factory.updateOne(Report);
 exports.deleteReport = factory.deleteOne(Report);
-exports.getReportsWithin = (req, res, next) => {
-  const filter = !req.body.topic ? {} : { topic: req.body.topic };
-  factory.getAllWithin(Report, filter)(req, res, next);
-};
+exports.getReportsWithin = factory.getAllWithin(Report);
