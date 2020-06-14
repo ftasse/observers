@@ -13,7 +13,7 @@ router.get(
 
 router
   .route('/')
-  .get(reportController.getAllReport)
+  .get(reportController.setTopicId, reportController.getAllReport)
   .post(
     authController.protect,
     authController.restrictTo('user'),
