@@ -14,10 +14,13 @@ const voteSchema = new mongoose.Schema({
     required: true
   },
   value: {
-    type: Boolean,
-    required: true
+    type: Number,
+    default: 0,
+    enum: [-1, 0, 1]
   }
 });
+
+voteSchema.index({ author: 1, report: 1 });
 
 voteSchema.statics.calcLikes = async function(reportId) {
   const stats = await this.aggregate([
@@ -26,10 +29,10 @@ voteSchema.statics.calcLikes = async function(reportId) {
       $group: {
         _id: '$report',
         numLikes: {
-          $sum: { $cond: [{ $eq: ['$value', true] }, 1, 0] }
+          $sum: { $cond: [{ $eq: ['$value', 1] }, 1, 0] }
         },
         numDislikes: {
-          $sum: { $cond: [{ $eq: ['$value', false] }, 1, 0] }
+          $sum: { $cond: [{ $eq: ['$value', -1] }, 1, 0] }
         }
       }
     }

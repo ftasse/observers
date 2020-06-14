@@ -36,8 +36,14 @@ const reportSchema = new mongoose.Schema({
     coordinates: [Number],
     description: String
   },
-  numLikes: Number,
-  numDisLikes: Number
+  numLikes: {
+    type: Number,
+    default: 0
+  },
+  numDisLikes: {
+    type: Number,
+    default: 0
+  }
 });
 
 reportSchema.index({ content: 'text' });
