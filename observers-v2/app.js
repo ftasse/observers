@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -19,6 +20,13 @@ const passport = require('passport');
 
 const app = express();
 const apiEndpoint = '/api/v1';
+
+// Setup view engine
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+// Server static files
+app.use(express.static(path.join(__dirname, 'static')));
 
 // Add security HTTP headers to request
 app.use(helmet());
