@@ -72,8 +72,8 @@ reportSchema.statics.calcAverageSentiment = async function(topicId) {
 
   await Topic.findByIdAndUpdate(topicId, {
     $inc: { reportCount: 1 },
-    averageSentimentScore: 0,
-    averageMood: 'Neutral'
+    averageSentimentScore: avgSentiment,
+    averageMood: avgMood
   });
 };
 
