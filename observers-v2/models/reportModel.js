@@ -61,17 +61,20 @@ reportSchema.statics.calcAverageSentiment = async function(topicId) {
     { $group: { _id: '$topic', averageSentiment: { $avg: '$sentimentScore' } } }
   ]);
 
+  let avgSentiment, avgMood;
   if (stats.length > 0) {
-    await Topic.findByIdAndUpdate(topicId, {
-      averageSentimentScore: stats[0].averageSentiment,
-      averageMood: sentimentAnalyzer.getMood(stats[0].averageSentiment)
-    });
+    avgSentiment = stats[0].averageSentiment;
+    avgMood = sentimentAnalyzer.getMood(stats[0].averageSentiment);
   } else {
-    await Topic.findByIdAndUpdate(topicId, {
-      averageSentimentScore: 0,
-      averageMood: 'Neutral'
-    });
+    avgSentiment = 0;
+    avgMood = 'Neutral';
   }
+
+  await Topic.findByIdAndUpdate(topicId, {
+    $inc: { reportCount: 1 },
+    averageSentimentScore: 0,
+    averageMood: 'Neutral'
+  });
 };
 
 reportSchema.post('save', async function() {
@@ -86,6 +89,13 @@ reportSchema.pre(/^find(One|ById)And/, async function(next) {
 
 reportSchema.post(/^find(One|ById)And/, async function() {
   await this.r.constructor.calcAverageSentiment(this.r.topic);
+});
+
+reportSchema.pre(/^delete/, async function(next) {
+  await Topic.findByIdAndUpdate(this.topic, {
+    $inc: { reportCount: -1 }
+  });
+  next();
 });
 
 const Report = mongoose.model('Report', reportSchema);

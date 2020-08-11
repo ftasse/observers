@@ -1,0 +1,45 @@
+.topic-list__configs
+  .topic-list__filter
+    input#topic-list__filter-button.form-button__input(type='checkbox')
+    label.form-button__label.form-button__label--button(for='topic-list__filter-button')
+      span.form-button__icon--close.create-topic-close.btn-close
+        span.btn-close__icon
+      svg.form-button__icon
+        use(xlink:href='img/sprite.svg#icon-sound-mix')
+    .topic-list__filter-container.menu-container.menu-container--left.menu-container--white
+      .menu.menu--left.menu--full.menu--white.menu--centered(data-simplebar='' data-simplebar-auto-hide='false')
+        form.search.search--respond(action='#')
+          input.search__input(type='text' placeholder='Search topics')
+          button.search__button
+            svg.search__icon
+              use(xlink:href='img/sprite.svg#icon-search')
+        .topics__search-bar--filters.topics__search-bar--filters--respond
+          .select-group.select-group--1.multi-select(data-select='categories')
+            .select-container
+              .selected
+                | Select category
+              .select-box
+                .option-container.option-container--orient-left(data-simplebar='' data-simplebar-auto-hide='false')
+                  .option
+                    input#politics--respond.option__radio(type='checkbox' value='Politics' name='category')
+                    label.option__label.option__label--active(for='politics--respond') Politics
+          .select-group.select-group--2.multi-select(data-select='tags')
+            .select-container
+              .selected
+                | Select tags
+              .select-box
+                .option-container.option-container--orient-right(data-simplebar='' data-simplebar-auto-hide='false')
+                  .option
+                    input#covid-19--respond.option__radio(type='checkbox' value='Covid-19' name='tags')
+                    label.option__label.option__label--active(for='covid-19--respond') Covid-19 outbreak
+          span.btn.btn--small.btn-black Filter
+  div &nbsp;
+  form.view-switch.margin-bottom-extra-small(autocomplete='off')
+    input#view-switch--list.form-button__input.view-switch--list(type='radio' name='view-selector' checked='')
+    label.form-button__label.form-button__label--switch(for='view-switch--list')
+      svg.form-button__icon
+        use(xlink:href='img/sprite.svg#icon-list')
+    input#view-switch--map.form-button__input.view-switch--map(type='radio' name='view-selector')
+    label.form-button__label.form-button__label--switch(for='view-switch--map')
+      svg.form-button__icon
+        use(xlink:href='img/sprite.svg#icon-map')

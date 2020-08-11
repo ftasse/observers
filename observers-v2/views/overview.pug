@@ -24,4 +24,61 @@ block content
             a.btn.btn--brown.btn--fill.cta__link(href='#') Become an observer
       .hero-box__hero
         img.hero-box__img(src='img/little-observer.jpg' alt='')
-  section.topics
+
+  section.topics#topics
+    include _topicForm
+    h2.heading--secondary.margin-bottom-medium.margin-top-medium Current topics
+    include _searchBar
+    .topics__view
+      .topic-list
+        include _listViewConfig
+        ul.topic-cards.margin-bottom-small
+
+          each topic in topics
+            li.topic.margin-bottom-extra-small
+              .topic__info
+                .topic__info--basics
+                  span.topic__info--time
+                    a.link-info.link-info--small(href='#')= topic.createdAt.toLocaleString('en-us', {month: 'long', day:'numeric', year:'numeric'})
+                  span.topic__info--location
+                    a.link-info.link-info--small(href='#')= topic.location.address
+                  span.topic__info--category
+                    a.link-info.link-info--category(href='#')= topic.category
+                .topic__info--reports
+                  span.topic__info--report-count
+                    a.link-info.link-info--small(href='#') #{topic.reportCount} report(s)
+              img.topic__img.margin-bottom-small(src='img/politics.jpg' alt=`${topic.title}`)
+              p.topic__title
+                a(href='#')= topic.title
+              p.topic__description= topic.description
+              .topic__read-more
+                a.btn.btn-black(href=`/topics/${topic.slug}`) Read more
+              .topic__tags-container
+                .tags
+                  if topic.tags.length
+                    .tags__title
+                      span.text--secondary--important tags
+                  each tag in topic.tags
+                    .tags__item
+                      a.tag(href='#')= tag.name
+              p.topic__author.paragraph--small.text-italics.margin-bottom-medium &ndash; Author: #{topic.author.name}
+
+
+        .topic-map.margin-bottom-medium.hide
+          #mapbox-topics.map.margin-bottom-small
+          .topic-map__cluster-list.hide(data-simplebar='' data-simplebar-auto-hide='false')
+            .topic-map__cluster-list--close &times;
+            ul.topic-map__cluster-list--elements
+
+        include _pagination
+      .topic-stats
+        h3.section__title.margin-bottom-small Trending topics
+        ul.topic-stats__list.margin-bottom-medium
+          include _smCard
+          include _smCard
+          include _smCard
+        .full-width
+          #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
+            svg.btn__icon
+              use(xlink:href='img/sprite.svg#icon-quill')
+            span Create a new topic

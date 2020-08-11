@@ -61,6 +61,7 @@ const topicSchema = new mongoose.Schema(
         validate: [validator.isURL, 'Please provide a valid URL']
       }
     ],
+    reportCount: Number,
     location: {
       type: {
         type: String,
