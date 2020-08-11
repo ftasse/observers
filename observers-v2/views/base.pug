@@ -7,9 +7,12 @@ html
 
     title Observers &mdash; See, Share, Save!
 
-    link(rel='stylesheet'  href='http://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic|Frank+Ruhl+Libre:400,500,700|Fjalla+One:400' type='text/css' media='all')
-    link(rel='stylesheet' href='css/style.css')
-    link(rel='shortcut icon' type='image/ico' href='img/favicon.ico')
+    block cssImports
+      link(rel='stylesheet' href='https://unpkg.com/simplebar@latest/dist/simplebar.css')
+
+      link(rel='stylesheet'  href='http://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic|Frank+Ruhl+Libre:400,500,700|Fjalla+One:400' type='text/css' media='all')
+      link(rel='stylesheet' href='css/style.css')
+      link(rel='shortcut icon' type='image/ico' href='img/favicon.ico')
 
   body.container
     include _menu-respond
@@ -17,3 +20,4 @@ html
     block content
 
     include _footer
+    block jsImports

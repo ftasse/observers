@@ -1,5 +1,22 @@
 extends base
 
+block prepend cssImports
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css')
+  link(href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet')
+  link(rel='stylesheet' href='https://cdn.quilljs.com/1.3.6/quill.snow.css')
+
+block append jsImports
+  script(src='https://cdn.quilljs.com/1.3.6/quill.js')
+  script(src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js')
+  script(src='https://unpkg.com/supercluster@6.0.2/dist/supercluster.min.js')
+  script(src='https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js')
+  script(src='https://unpkg.com/simplebar@latest/dist/simplebar.min.js')
+
+  script(src="/js/index.js")
+  script(src="/js/quill.js")
+  script(src="/js/choice.js")
+  script(src="/js/mapbox.js")
+
 block content
   header.header.header--set-height
     a.header__scroll-down.scroll-down(href='#topics')
@@ -47,10 +64,10 @@ block content
                 .topic__info--reports
                   span.topic__info--report-count
                     a.link-info.link-info--small(href='#') #{topic.reportCount} report(s)
-              img.topic__img.margin-bottom-small(src='img/politics.jpg' alt=`${topic.title}`)
+              img.topic__img.margin-bottom-small(src=`img/${topic.imageCover}` alt=`${topic.title}`)
               p.topic__title
                 a(href='#')= topic.title
-              p.topic__description= topic.description
+              p.topic__description #{topic.description.slice(0, 400)}...
               .topic__read-more
                 a.btn.btn-black(href=`/topics/${topic.slug}`) Read more
               .topic__tags-container
@@ -65,7 +82,18 @@ block content
 
 
         .topic-map.margin-bottom-medium.hide
-          #mapbox-topics.map.margin-bottom-small
+          #mapbox-topics.map.margin-bottom-small(data-mapData=`${JSON.stringify(topics.map(el => {
+            return {
+              geometry: el.location,
+              createdAt: el.createdAt.toLocaleString('en-us', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              }),
+              title: el.title,
+              category: el.category
+            }
+          }))}`)
           .topic-map__cluster-list.hide(data-simplebar='' data-simplebar-auto-hide='false')
             .topic-map__cluster-list--close &times;
             ul.topic-map__cluster-list--elements
