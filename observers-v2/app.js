@@ -15,6 +15,7 @@ const reportRouter = require('./routes/reportRoutes');
 const topicRouter = require('./routes/topicRoutes');
 const userRouter = require('./routes/userRoutes');
 const voteRouter = require('./routes/voteRoutes');
+const tagRouter = require('./routes/tagRoutes');
 
 const passportSetup = require('./passport-setup');
 const passport = require('passport');
@@ -74,6 +75,7 @@ app.use(
 app.use(passport.initialize());
 // Routes
 app.use('/', viewRouter);
+app.use(`${apiEndpoint}/tags`, tagRouter);
 app.use(`${apiEndpoint}/votes`, voteRouter);
 app.use(`${apiEndpoint}/reports`, reportRouter);
 app.use(`${apiEndpoint}/topics`, topicRouter);
