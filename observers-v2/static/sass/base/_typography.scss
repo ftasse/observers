@@ -1,0 +1,170 @@
+body {
+  font-family: 'PT serif', serif;
+  font-weight: 400;
+  font-size: $default-font-size;
+  color: var(--color-black-lighter);
+}
+
+.heading--primary {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+
+  display: block;
+
+  &--custom {
+      font-size: 4rem;
+      font-weight: 500;
+      font-style: italic;
+  }
+}
+
+.heading--colored--secondary {
+  &:link,
+  &:visited {
+    text-decoration: none;
+    color: var(--color-secondary);
+    transition: all .2s;
+  }
+  &:hover {
+    color: var(--color-grey-light);
+  }
+}
+
+.heading--secondary {
+  font-family: 'Frank Ruhl Libre', serif;
+  text-transform: uppercase;
+  font-size: 2.4rem;
+  letter-spacing: .2rem;
+  font-weight: 500;
+}
+
+.heading--tertiary {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.paragraph--small {
+  font-size: 1.4rem;
+  line-height: 2.3rem;
+  color: var(--color-grey-light);
+}
+
+.paragraph--hero {
+  font-weight: 500;
+  line-height: 1.8;
+}
+
+.link-info {
+  cursor: pointer;
+  text-decoration: none;
+
+  &--small {
+    &:link,
+    &:visited {
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--color-grey-light);
+      transition: all .2s;
+    }
+    &:hover {
+      color: var(--color-secondary);
+    }
+
+    &--sm {
+      &:link,
+      &:visited {
+        font-size: 1.2rem;
+      }
+    }
+  }
+  &--normal {
+    display: block;
+    color: inherit;
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-family: 'Frank Ruhl Libre', serif;
+    transition: all .2s;
+
+    &:hover {
+      color: var(--color-secondary);
+    }
+  }
+
+  &--category {
+      &:link,
+      &:visited {
+        text-transform: uppercase;
+        font-style: normal;
+        font-size: 1.3rem;
+        font-family: 'Fjalla One', serif;
+        color: var(--color-primary);
+        letter-spacing: .2rem;
+      }
+
+     &--small {
+       &:link,
+       &:visited {
+         font-size: 1.1rem;
+         letter-spacing: .1rem;
+       }
+     }
+  }
+}
+
+.text--secondary--important {
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 1.4rem;
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  display: inline-block;
+  letter-spacing: .1rem;
+  padding-bottom: .5rem;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: .1rem;
+    width: 120%;
+    background-color: var(--color-secondary);
+  }
+}
+
+.section__title {
+  font-family: 'Fjalla One', serif;
+  font-size: 1.7rem;
+  letter-spacing: .2rem;
+  font-weight: 400;
+  text-transform: uppercase;
+
+  padding-bottom: 1.5rem;
+  border-bottom: 3px solid var(--color-black);
+
+  &--align-right {
+    text-align: right;
+  }
+}
+
+.text{
+  &__primary {
+    color: var(--color-primary);
+  }
+  &__404 {
+    font-size: 20rem;
+    font-weight: 700;
+    letter-spacing: 1.2rem;
+
+    @include respond(tab-port) {
+      font-size: 18rem;
+      letter-spacing: 1rem;
+    }
+    @include respond(phone) {
+      font-size: 20rem;
+      letter-spacing: 1.2rem;
+    }
+  }
+}

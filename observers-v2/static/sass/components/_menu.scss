@@ -1,0 +1,146 @@
+.menu-container {
+  background-color: rgba($color-black, 0.75);
+  transform-origin: top;
+  transform: translateX(-50%) scaleY(0);
+  opacity: 0;
+  transition: all 1s;
+}
+
+.menu-container--white {
+  background-color: var(--color-white);
+}
+
+.menu-list {
+  list-style: none;
+  position: absolute;
+
+  width: 65%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.menu {
+
+  &__checkbox {
+    display: none;
+  }
+
+  &__checkbox:checked ~ .menu-container {
+    transform: translateX(-50%) scaleY(1);
+    opacity: 1;
+  }
+
+  &__button {
+    position: fixed;
+    top: 2rem;
+    z-index: 100000;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    width: 7rem;
+    height: 6rem;
+    background-color: var(--color-black);
+    transition: all .2s;
+
+    display: none;
+    visibility: hidden;
+
+    @include respond(tab-port) {
+      right: 4rem;
+      display: inline-flex;
+      visibility: visible;
+    }
+    @include respond(phone) {
+      right: 2rem;
+    }
+
+    &:hover {
+      background-color: var(--color-black-lighter);
+    }
+  }
+  &__icon {
+    display: block;
+    &,
+    &::after,
+    &::before {
+      height: .2rem;
+      width: 3rem;
+      background-color: var(--color-secondary);
+      transform-origin: center;
+    }
+
+    position: relative;
+
+    &::after,
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      transition: all .2s;
+    }
+    &::after {
+      top: -.8rem;
+    }
+    &::before {
+      top: .8rem;
+    }
+  }
+  &__button:hover &__icon::after {
+    top: -1rem;
+  }
+  &__button:hover &__icon::before {
+    top: 1rem;
+  }
+
+  &__checkbox:checked + &__button {
+    top: 0;
+    right: 0;
+  }
+  &__checkbox:checked + &__button &__icon {
+    background-color: transparent;
+  }
+  &__checkbox:checked + &__button &__icon::after {
+    top: 0;
+    transform: rotate(-135deg);
+  }
+  &__checkbox:checked + &__button &__icon::before {
+    top: 0;
+    transform: rotate(135deg);
+  }
+
+  &__link {
+    display: block;
+    padding: 1.5rem 4rem;
+    margin-bottom: .1rem;
+
+    color: var(--color-white);
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-family: 'Frank Ruhl Libre', serif;
+    letter-spacing: .2rem;
+    z-index: 10000;
+
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      transform: scaleX(.0);
+      transform-origin: left;
+      background-color: var(--color-secondary);
+      z-index: -1;
+
+      transition: transform .3s;
+    }
+    &:hover::after {
+      transform: scaleX(1);
+    }
+    &--active::after {
+      transform: scaleX(.02);
+    }
+  }
+}

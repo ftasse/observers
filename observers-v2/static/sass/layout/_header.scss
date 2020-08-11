@@ -1,0 +1,87 @@
+.header {
+  grid-row: 1/2;
+  grid-column: center-start / center-end;
+  position: relative;
+
+  &--set-height {
+    height: 95vh;
+  }
+
+  @include respond(tab-port) {
+    //height: 55vh;
+    padding: 0 4rem;
+  }
+  @include respond(phone) {
+    //height: 70vh;
+    padding: 0 2rem;
+  }
+
+  &__scroll-down {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.navigation {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__logo {
+    height: 4rem;
+
+    img {
+      height: 100%;
+    }
+  }
+}
+
+.hero-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80%;
+
+  &__msg {
+    flex: 1;
+    padding-right: 4rem;
+
+    @include respond(tab-port) {
+      flex-basis: 100%;
+      align-self: center;
+      padding-right: 0;
+    }
+  }
+  &__hero {
+    flex-basis: 45%;
+    overflow: hidden;
+
+    @include respond(tab-port) {
+      display: none;
+      visibility: hidden;
+    }
+  }
+
+  &__img {
+    height: 55rem;
+    background-size: cover;
+  }
+}
+
+.cta {
+  width: 100%;
+  list-style: none;
+
+  display: block;
+
+  &__item {
+    display: inline-block;
+
+    margin-right: 3rem;
+  }
+}

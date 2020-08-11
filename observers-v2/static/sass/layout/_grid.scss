@@ -1,0 +1,151 @@
+.container {
+  display: grid;
+  grid-template-rows: repeat(4, min-content);
+  grid-template-columns: [full-start] 1fr [center-start] repeat(8, [col-start] minmax(min-content, 13.7rem) [col-end]) [center-end] 1fr [full-end];
+
+  grid-row-gap: 5rem;
+
+  //@include respond(tab-port) {
+  //  padding: 0 2rem;
+  //}
+}
+
+.container--full {
+  grid-row: 1/-1;
+  grid-column: full-start / full-end;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100vh;
+
+  &__col {
+    height: 100%;
+    &--1 {
+      flex-basis: 45%;
+
+      @include respond(tab-port) {
+        flex-basis: 48%;
+      }
+
+      @include respond(phone) {
+        flex-basis: 100%;
+      }
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+    }
+
+    &--2 {
+      flex-basis: 55%;
+
+      @include respond(tab-port) {
+        flex-basis: 52%;
+      }
+
+      @include respond(phone) {
+        display: none;
+        visibility: hidden;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+.menu-container,
+.full-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(1) scaleY(1);
+  width: 100vw;
+  min-height: 100vh;
+  z-index: 1000;
+}
+
+.menu-container--left {
+  z-index: 100001;
+}
+
+.full-container {
+  background-color: rgba(255, 255, 255, 0.75);
+  transform-origin: right;
+  transform: translateX(-50%) scaleX(0);
+  opacity: 0;
+  transition: all 1s;
+  //animation: growInRight 1s;
+  z-index: 100001;
+}
+
+.menu,
+.form-container {
+  padding: 4rem 3rem 1rem;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  transform: translateX(-100%);
+  height: 100%;
+  box-shadow: $box-shadow-w;
+
+  overflow-y: scroll;
+}
+
+.menu {
+  width: 40%;
+  background-color: var(--color-black-lighter);
+
+  @include respond(tab-port) {
+    width: 60%;
+  }
+
+  @include respond(phone) {
+    width: 100%;
+  }
+}
+
+.menu--left {
+  padding: 4rem 3rem 1rem 1rem;
+  transform: translateX(0);
+  left: 0;
+}
+
+.menu--full {
+  width: 100%;
+}
+
+.menu--white {
+  background-color: var(--color-white);
+}
+
+.menu--stats {
+  padding: 3rem 3rem 0;
+}
+
+.menu--centered {
+  padding: 15rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-container {
+  width: 50%;
+  background-color: var(--color-white);
+
+  @include respond(tab-port) {
+    width: 75%;
+  }
+  @include respond(phone) {
+    width: 100%;
+  }
+}

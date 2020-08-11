@@ -1,0 +1,33 @@
+.tags {
+  &__title {
+    display: block;
+  }
+  &__item {
+
+    display: inline-block;
+    margin-top: 1rem;
+    &:not(:last-child) {
+      margin-right: .5rem;
+    }
+  }
+}
+
+.tag {
+  display: inline-block;
+  padding: .7rem 1.3rem;
+  background-color: var(--color-secondary);
+
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 1.2rem;
+  color: var(--color-white);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all .2s;
+
+  &:hover {
+    background-color: lighten($color-secondary, 10%);
+  }
+  &:active {
+    background-color: darken($color-secondary, 5%);
+  }
+}

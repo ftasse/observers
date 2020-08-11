@@ -1,0 +1,50 @@
+.path {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__item {
+    display: inline-block;
+    position: relative;
+
+    &:not(:last-child) {
+      &::after{
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: rotate(-45deg);
+        width: .55rem;
+        height: .55rem;
+        border: 1px solid transparent;
+        border-bottom-color: var(--color-grey-light);
+        border-right-color: var(--color-grey-light);
+      }
+    }
+  }
+  &__link {
+    padding: 0 1rem;
+
+    color: var(--color-grey-light);
+    text-decoration: none;
+    font-style: italic;
+    font-size: 1.4rem;
+
+    &:hover {
+      color: var(--color-secondary);
+    }
+
+    &--category {
+      font-family: 'Fjalla One', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .1rem;
+      font-size: 1.2rem;
+      color: var(--color-primary);
+
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+}

@@ -1,0 +1,158 @@
+.topics {
+  grid-row: 2/4;
+  grid-column: center-start/center-end;
+
+  position: relative;
+
+  @include respond(tab-port) {
+    padding: 0 4rem;
+  }
+
+  @include respond(phone) {
+    padding: 0 2rem;
+  }
+
+  &__search-bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    @include respond(tab-port) {
+      display: none;
+      visibility: hidden
+    }
+
+    &--filters {
+      flex: 1;
+      margin-left: 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      //& > * {
+      //  flex: 1;
+      //}
+
+      &--respond {
+        margin-left: 0;
+        margin-top: 7rem;
+      }
+    }
+  }
+  &__search-box {
+    flex-basis: 65%;
+  }
+
+  &__view {
+    display: flex;
+    align-items: flex-start;
+
+    @include respond(tab-port) {
+      flex-direction: column;
+    }
+  }
+}
+
+.topic-list {
+  list-style: none;
+  flex-basis: 65%;
+
+  @include respond(tab-port) {
+    flex: 1;
+    align-self: stretch;
+  }
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  &__configs {
+    align-self: stretch;
+
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__filter {
+    display: none;
+    visibility: hidden;
+
+    @include respond(tab-port) {
+      display: block;
+      visibility: visible;
+    }
+  }
+}
+
+.topic-map {
+  width: 100%;
+  height: 50rem;
+  animation: fadeInBottom 2s;
+  position: relative;
+
+  &__cluster-list {
+    position: absolute;
+    transform: translateY(0);
+    right: 0;
+    top: 0;
+    height: calc(100% - 1px);
+    width: 47%;
+    background-color: var(--color-white);
+    box-shadow: $box-shadow-normal;
+    z-index: 200;
+    animation: fadeInBottom 2s;
+
+    @include respond(tab-port) {
+      width: 70%
+    }
+
+    @include respond(phone) {
+      width: 80%;
+    }
+
+    &--close {
+      position: fixed;
+      z-index: 250;
+      top: .7rem;
+      right: 1.5rem;
+      font-size: 3rem;
+      color: var(--color-secondary);
+      transition: all .2s;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+    &--elements {
+      margin-top: 2rem;
+      padding: 1rem;
+    }
+  }
+}
+
+.topic-stats {
+  animation: fadeInRight 3s;
+  margin-left: 4rem;
+  flex: 1;
+
+  @include respond(tab-port) {
+    padding-top: 5rem;
+    margin-left: 0;
+    align-self: stretch;
+  }
+
+  &__list {
+    list-style: none;
+  }
+}
+
+.topic-cards {
+  animation: fadeInLeft 2s;
+}
+
+.full-width {
+  &__btn {
+    width: 100%;
+    text-align: center;
+  }
+}

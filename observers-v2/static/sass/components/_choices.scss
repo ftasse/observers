@@ -1,0 +1,98 @@
+.choices__inner {
+  border: 2px solid transparent;
+  border-bottom-color: var(--color-black);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.is-focused .choices__inner,
+.is-open .choices__inner {
+  border-color: transparent;
+  border-bottom-color: var(--color-secondary);
+
+  color: var(--color-secondary);
+}
+.choices__list.choices__list--single {
+  color: var(--color-primary);
+  font-size: 1.3rem;
+  font-family: 'Fjalla One', serif;
+  letter-spacing: .1rem;
+}
+.choices__list--multiple > .choices__item {
+  border-radius: 0;
+  font-size: inherit;
+  background-color: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+}
+
+.form-control--links {
+  .choices__list--multiple > .choices__item {
+    border-radius: 10rem;
+    font-size: inherit;
+    background-color: lighten($color-secondary, 10%);
+    border: 1px solid var(--color-secondary);
+  }
+}
+
+.choices[data-type*="select-multiple"] .choices__button,
+.choices[data-type*="text"] .choices__button {
+  border-left: 1px solid white;
+}
+
+.choices__list--dropdown .choices__list {
+  display: block;
+  color: white;
+}
+
+.choices__list--dropdown .choices__item--selectable {
+  background-color: var(--color-black);
+  border: 1px solid var(--color-black);
+  padding: 10px 2px;
+
+  position: relative;
+  transition: all .3s ease-out;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    width: 90%;
+    height: .1rem;
+    background-color: #1d1d1d;
+  }
+  &.is-highlighted {
+    background-color: white;
+    color: #ba9545;
+    border: 1px solid #ba9545;
+    &::before {
+      background-color: #ba9545;
+    }
+  }
+}
+
+.choices__list {
+  &--dropdown {
+    border: 1px solid transparent;
+  }
+  border-radius: 0;
+}
+
+.choices__inner {
+  background-color: white;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.choices__input {
+  width: 0;
+  background-color: white;
+  font-family: inherit;
+  font-style: italic;
+  color: var(--color-grey-light)
+}
+
+.choices__item.choices__item--choice.has-no-results {
+  color: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+}

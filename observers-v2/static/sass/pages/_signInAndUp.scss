@@ -1,0 +1,46 @@
+.sign {
+  &__text {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+  &__message {
+    text-align: left;
+    font-size: 2rem;
+    font-weight: 700;
+    padding-top: 2rem;
+    padding-bottom: 1.5rem;
+  }
+  a {
+    text-align: left;
+    display: inline-block;
+  }
+  &__form {
+    width: 60%;
+
+    @include respond(tab-land) {
+      width: 65%;
+    }
+    @include respond(tab-land-small) {
+      width: 70%;
+    }
+    @include respond(tab-port) {
+      width: 75%;
+    }
+    @include respond(phone) {
+      width: 80%;
+    }
+
+    &--404 {
+
+      @include respond(tab-port) {
+        width: 85%;
+      }
+    }
+  }
+  &__alt-operation {
+    &--el {
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+  }
+}

@@ -1,0 +1,89 @@
+.about {
+  margin-bottom: -5rem;
+  grid-row: 3/4;
+  grid-column: full-start / full-end;
+
+  &__element,
+  &__main {
+    display: grid;
+
+    grid-template-columns: [full-start] 1fr [center-start] repeat(8, [col-start] minmax(min-content, 13.7rem) [col-end]) [center-end] 1fr [full-end];
+    grid-template-rows: min-content;
+
+    &--container {
+      grid-row: 1/-1;
+      grid-column: center-start / center-end;
+    }
+  }
+
+  &__main {
+
+    grid-row: 2/3;
+    grid-column: full-start / full-end;
+    background-color: var(--color-black-lighter);
+
+    color: var(--color-white);
+    padding: 12rem 0;
+
+    margin-bottom: -5rem;
+  }
+
+  &__element {
+
+    &--container {
+      display: flex;
+
+      padding: 13rem 0;
+
+      & > div {
+        display: flex;
+        align-items: center;
+
+        &:last-child {
+          justify-content: flex-end;
+        }
+      }
+
+    }
+    grid-column: center-start / center-end;
+    //padding: 12rem;
+
+    &:nth-child(2n+1) {
+      background-color: var(--color-black);
+      color: var(--color-white);
+    }
+
+    &--header {
+      flex-basis: 50%;
+    }
+    &--title {
+      display: inline-block;
+      padding-top: .5rem;
+      margin-bottom: 1.6rem;
+      font-size: 4rem;
+      color: #ba9545;
+
+      font-family: 'Frank Ruhl Libre', serif;
+
+      position: relative;
+
+      &--big {
+        font-size: 5rem;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 30%;
+        height: .4rem;
+        background-color: #ba9545;
+      }
+    }
+    &--content {
+      flex-basis: 50%;
+    }
+  }
+}
