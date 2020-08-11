@@ -1,0 +1,103 @@
+.topic-view {
+
+  &__header {
+    grid-row: 2/3;
+    grid-column: full-start/full-end;
+    background-color: rgba(122, 122, 122, .1);
+
+    padding: 8rem 10rem;
+    text-align: center;
+
+    position: relative;
+    top: -4rem;
+  }
+
+  &__title {
+    display: block;
+  }
+
+  &__info {
+    position: relative;
+    top: -4rem;
+
+    grid-row: 3/4;
+    grid-column: center-start/center-end;
+
+    display: flex;
+    align-items: flex-start;
+  }
+
+  &__description {
+    flex-basis: 65%;
+
+    display: flex;
+    flex-direction: column;
+
+    @include respond(tab-land-small) {
+      flex-basis: 70%;
+    }
+    @include respond(tab-port) {
+      flex: 1;
+      align-self: stretch;
+    }
+    @include respond(tab-port) {
+      padding: 0 4rem;
+    }
+    @include respond(phone) {
+      padding: 0 2rem;
+    }
+  }
+  &__text {
+    position: relative;
+    padding-bottom: 1.5rem;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -.1rem;
+      left: 0;
+      height: .1rem;
+      width: 55%;
+      background-color: var(--color-grey-lighter);
+    }
+  }
+  &__img {
+    width: 100%;
+    height: 40rem;
+    object-fit: cover;
+  }
+
+  &__sources {
+    font-size: 1.5rem;
+  }
+  &__stats {
+    flex: 1;
+
+    margin-left: 4rem;
+
+    @include respond(tab-port) {
+      display: none;
+      visibility: hidden;
+    }
+  }
+
+  &__report-switch {
+    align-self: flex-end;
+  }
+}
+
+.report-freq,
+.sentiment-pie {
+  width: 100%;
+  height: 28rem;
+  box-shadow: $box-shadow-subtle;
+  padding: 1rem .5rem;
+}
+
+.report-freq {
+  height: 30rem;
+}
+
+.reports__pagination {
+  align-self: flex-end;
+}

@@ -1,0 +1,74 @@
+.nav {
+  list-style: none;
+  @include respond(tab-port) {
+    display: none;
+    visibility: hidden;
+  }
+
+  &__item {
+    display: inline-block;
+
+    &:not(:last-child) {
+      margin-right: 2rem;
+    }
+  }
+
+  &__link {
+    display: inline-block;
+    padding: .8rem 2rem;
+    color: var(--color-black-lighter);
+
+    &:link,
+    &:visited {
+      text-decoration: none;
+
+      font-family: 'Frank Ruhl Libre', sans-serif;
+      font-size: 1.4rem;
+      text-transform: uppercase;
+    }
+
+    transition: all .3s;
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: .2rem;
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: all .3s .1s ease-in;
+      background-color: var(--color-primary);
+    }
+
+    &--baseline {
+      &:hover {color: var(--color-primary);}
+      &:hover::after { transform: scaleX(1);}
+    }
+
+    &--active {
+      color: var(--color-primary);
+      &::after {transform: scaleX(1);}
+    }
+
+    &--cta {
+      border: 2px solid var(--color-black);
+
+      &::after {
+        height: 100%;
+        z-index: -1;
+      }
+      &--secondary::after {
+        background-color: var(--color-secondary);
+        transform-origin: right;
+      }
+
+      &:hover {
+        color: var(--color-white);
+        border: 2px solid transparent;
+        &::after {transform: scaleX(1);}
+      }
+    }
+  }
+}

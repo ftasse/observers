@@ -1,0 +1,27 @@
+extends base
+
+block content
+  header.header.header--set-height
+    a.header__scroll-down.scroll-down(href='#topics')
+      .scroll-down__mouse
+        span
+      .scroll-down__arrow
+        span
+
+    include _navigation
+
+    .hero-box
+      .hero-box__msg
+        h1.heading--primary.margin-bottom-small Observe and share
+        p.paragraph--hero.margin-bottom-medium
+          | Be the reporter &ndash;
+          span.text-italics.text-color-primary.text-bold the observer
+          | . Come and share your stories, let the world know what you have seen. Express your opinion on several topics and help make the world a better place.
+        ul.cta
+          li.cta__item
+            a.btn.btn--pink.btn--pink--filled.cta__link(href='#topics') See Topics
+          li.cta__item
+            a.btn.btn--brown.btn--fill.cta__link(href='#') Become an observer
+      .hero-box__hero
+        img.hero-box__img(src='img/little-observer.jpg' alt='')
+  section.topics

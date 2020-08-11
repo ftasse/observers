@@ -1,0 +1,27 @@
+.links {
+  &__item {
+    padding: .8rem 0;
+  }
+  &__link {
+    text-decoration: none;
+    font-family: inherit;
+    color: var(--color-secondary);
+    display: inline-block;
+    font-size: inherit;
+    transition: all .2s;
+
+    &:hover {
+      color: var(--color-black-lighter);
+    }
+  }
+  &__icon {
+    width: 1em;
+    height: 1em;
+    fill: var(--color-secondary);
+    margin-right: .2rem;
+    transition: all .2s;
+  }
+  &__link:hover &__icon {
+    fill: var(--color-black-lighter);
+  }
+}

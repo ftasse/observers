@@ -1,0 +1,75 @@
+$color-primary: #D80C3D;
+$color-secondary: #ba9545;
+$color-black: #000000;
+$default-font-size: 1.6rem;
+
+$box-shadow-subtle: rgba(0, 0, 0, 0.08) 0 0 3px 0;
+$box-shadow-normal: 0 .1rem .1rem 0 rgba($color-black, .14), 0 .2rem .1rem -.1rem rgba($color-black, .12), 0 .1rem .3rem 0 rgba($color-black, .20);
+$box-shadow-w: 0 .2rem 2.4rem -.2rem rgba(0, 0, 0, .14);
+
+
+
+:root {
+  --color-primary: #D80C3D;
+  --color-secondary: #ba9545;
+
+  --color-grey-extra-light: #FCFCFC;
+  --color-grey-lighter: #ddd;
+  --color-grey-light: #7a7a7a;
+
+  --color-black-lighter: #1d1d1d;
+  --color-black: #000000;
+
+  --color-white: #ffffff;
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%; // 10px / 16px = 62.5% => 1rem = 10px
+  @include respond(tab-land) { // width < 1200?
+    font-size: 56.25%; //1 rem = 9px, 9/16 = 50%
+  }
+
+  @include respond(tab-land-small) { // width < 900?
+    font-size: 50%; //1 rem = 8px, 8/16 = 50%
+  }
+
+  @include respond(big-desktop) {
+    font-size: 75%; //1rem = 12, 12/16
+  }
+}
+
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+.simplebar-scroll-content {
+  box-sizing: content-box;
+}
+
+.simplebar-content-wrapper {
+  overflow: auto;
+}
+
+.simplebar-scrollbar::before {
+  background-color: darken($color-secondary, 10%);
+  border-radius: 0;
+}
+
+.simplebar-track {
+  background-color: lighten($color-secondary, 60%);
+  margin-right: .2rem;
+}
+.simplebar-track.simplebar-vertical {
+  top: 0;
+  width: .8rem;
+}

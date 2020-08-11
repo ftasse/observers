@@ -10,6 +10,7 @@ const hpp = require('hpp');
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
+const viewRouter = require('./routes/viewRoutes');
 const reportRouter = require('./routes/reportRoutes');
 const topicRouter = require('./routes/topicRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -72,6 +73,7 @@ app.use(
 
 app.use(passport.initialize());
 // Routes
+app.use('/', viewRouter);
 app.use(`${apiEndpoint}/votes`, voteRouter);
 app.use(`${apiEndpoint}/reports`, reportRouter);
 app.use(`${apiEndpoint}/topics`, topicRouter);
