@@ -5,19 +5,14 @@ block prepend cssImports
   link(href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet')
   link(rel='stylesheet' href='https://cdn.quilljs.com/1.3.6/quill.snow.css')
 
-block append jsImports
-  script(src='https://cdn.quilljs.com/1.3.6/quill.js')
-  script(src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js')
-  script(src='https://unpkg.com/supercluster@6.0.2/dist/supercluster.min.js')
-  script(src='https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js')
-  script(src='https://unpkg.com/simplebar@latest/dist/simplebar.min.js')
-
-  script(src="/js/index.js")
-  script(src="/js/quill.js")
-  script(src="/js/choice.js")
-  script(src="/js/mapbox.js")
 
 block content
+  button.btn-respond.btn-respond--black.btn-respond--topic.add-topic__btn
+    svg.btn-respond__icon
+      use(xlink:href='img/sprite.svg#icon-quill')
+
+  include _menu-respond
+
   header.header.header--set-height
     a.header__scroll-down.scroll-down(href='#topics')
       .scroll-down__mouse
@@ -110,3 +105,6 @@ block content
             svg.btn__icon
               use(xlink:href='img/sprite.svg#icon-quill')
             span Create a new topic
+
+  include _footer
+  include _jsImports
