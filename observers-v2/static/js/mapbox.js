@@ -40,6 +40,7 @@ const getClusterElementClass = size => {
 };
 
 const data = JSON.parse(document.querySelector('.map').dataset.mapdata);
+console.log(data);
 
 mapboxgl.accessToken =
   'pk.eyJ1IjoiYXNuZWxjaHJpc3RpYW4iLCJhIjoiY2thd2Z0aXJ1MDdteTJ0bXU5NDU2bHZ4MCJ9.kChV328HGtNtda8XQQc4tA';
@@ -47,7 +48,7 @@ mapboxgl.accessToken =
 const map = new mapboxgl.Map({
   container: 'mapbox-topics',
   style: 'mapbox://styles/asnelchristian/ckawh4dvvehmi1io10tvsjvtk',
-  maxZoom: 3
+  maxZoom: 7
 });
 
 const bounds = new mapboxgl.LngLatBounds();
@@ -59,7 +60,7 @@ const index = new Supercluster({
   log: true,
   radius: 20,
   extent: 256,
-  maxZoom: 3
+  maxZoom: 7
 }).load(data);
 
 console.log(index);
@@ -150,7 +151,7 @@ let ready = false;
 
 map.on('load', () => {
   ready = false;
-  update(12);
+  update(4);
   ready = true;
 });
 

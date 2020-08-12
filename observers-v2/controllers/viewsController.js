@@ -26,3 +26,9 @@ exports.getTopic = (req, res, next) => {
     title: 'The consequences of deforestation in a region'
   });
 };
+
+exports.login = (req, res, next) => {
+  res.status(200).render('login', {
+    title: 'Log into your account'
+  });
+};
