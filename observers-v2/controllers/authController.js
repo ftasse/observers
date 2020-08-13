@@ -6,7 +6,7 @@ const AppError = require('../utils/appError');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 
-const createSendJWT = (res, user, statusCode) => {
+const createJWT = (res, user) => {
   const id = user._id;
   const token = jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
@@ -21,6 +21,11 @@ const createSendJWT = (res, user, statusCode) => {
   res.cookie('jwt', token, cookieOptions);
 
   user.password = undefined;
+  return token;
+};
+
+const createSendJWT = (res, user, statusCode) => {
+  const token = createJWT(res, user);
 
   res.status(statusCode).json({
     status: 'success',
@@ -219,5 +224,6 @@ exports.verifyGoogleStrategy = async function(
 };
 
 exports.signinOAuth2 = (req, res, next) => {
-  createSendJWT(res, req.user, 200);
+  createJWT(res, req.user);
+  res.redirect('/');
 };
