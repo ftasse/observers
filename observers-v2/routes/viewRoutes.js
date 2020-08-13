@@ -10,5 +10,6 @@ router.use(authController.isLoggedIn);
 router.get('/', viewsController.getOverview);
 router.get('/topics/:slug', viewsController.getTopic);
 router.get('/login', viewsController.login);
+router.get('/signup', viewsController.signup);
 
 module.exports = router;

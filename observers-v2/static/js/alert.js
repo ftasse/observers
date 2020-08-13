@@ -19,5 +19,5 @@ export const showAlert = (type, msg) => {
     </div>`;
   document.querySelector('.container').insertAdjacentHTML('afterbegin', markup);
 
-  window.setTimeout(hideAlert, 5000);
+  window.setTimeout(hideAlert, 10000);
 };

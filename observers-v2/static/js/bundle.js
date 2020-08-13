@@ -20348,7 +20348,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           document
             .querySelector('.container')
             .insertAdjacentHTML('afterbegin', markup);
-          window.setTimeout(hideAlert, 5000);
+          window.setTimeout(hideAlert, 10000);
         };
 
         exports.showAlert = showAlert;
@@ -20494,6 +20494,152 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         })();
 
         exports.login = login;
+      },
+      { axios: '../../node_modules/axios/index.js', './alert': 'alert.js' }
+    ],
+    'signup.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.signup = void 0;
+
+        var _axios = _interopRequireDefault(require('axios'));
+
+        var _alert = require('./alert');
+
+        function _interopRequireDefault(obj) {
+          return obj && obj.__esModule ? obj : { default: obj };
+        }
+
+        function asyncGeneratorStep(
+          gen,
+          resolve,
+          reject,
+          _next,
+          _throw,
+          key,
+          arg
+        ) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+          if (info.done) {
+            resolve(value);
+          } else {
+            Promise.resolve(value).then(_next, _throw);
+          }
+        }
+
+        function _asyncToGenerator(fn) {
+          return function() {
+            var self = this,
+              args = arguments;
+            return new Promise(function(resolve, reject) {
+              var gen = fn.apply(self, args);
+              function _next(value) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'next',
+                  value
+                );
+              }
+              function _throw(err) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'throw',
+                  err
+                );
+              }
+              _next(undefined);
+            });
+          };
+        }
+
+        var signup = /*#__PURE__*/ (function() {
+          var _ref = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(
+              name,
+              email,
+              password,
+              passwordConfirm
+            ) {
+              var res;
+              return regeneratorRuntime.wrap(
+                function _callee$(_context) {
+                  while (1) {
+                    switch ((_context.prev = _context.next)) {
+                      case 0:
+                        _context.prev = 0;
+                        _context.next = 3;
+                        return (0, _axios.default)({
+                          method: 'POST',
+                          url: 'http://127.0.0.1:3000/api/v1/users/signup',
+                          data: {
+                            name: name,
+                            email: email,
+                            password: password,
+                            passwordConfirm: passwordConfirm
+                          }
+                        });
+
+                      case 3:
+                        res = _context.sent;
+
+                        if (res.data.status === 'success') {
+                          (0, _alert.showAlert)(
+                            'success',
+                            'Logged in successfully'
+                          );
+                          window.setTimeout(function() {
+                            location.assign('/');
+                          }, 1500);
+                        }
+
+                        _context.next = 10;
+                        break;
+
+                      case 7:
+                        _context.prev = 7;
+                        _context.t0 = _context['catch'](0);
+                        (0, _alert.showAlert)(
+                          'failed',
+                          _context.t0.response.data.message
+                        );
+
+                      case 10:
+                      case 'end':
+                        return _context.stop();
+                    }
+                  }
+                },
+                _callee,
+                null,
+                [[0, 7]]
+              );
+            })
+          );
+
+          return function signup(_x, _x2, _x3, _x4) {
+            return _ref.apply(this, arguments);
+          };
+        })();
+
+        exports.signup = signup;
       },
       { axios: '../../node_modules/axios/index.js', './alert': 'alert.js' }
     ],
@@ -50251,6 +50397,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _login = require('./login');
 
+        var _signup = require('./signup');
+
         var _mapbox = require('./mapbox');
 
         var _choice = require('./choice');
@@ -50281,14 +50429,25 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var menuSidebarToggle = document.querySelector('.menu__checkbox');
         var menuSidebarLinks = document.querySelectorAll('.menu__link');
         var loginForm = document.querySelector('.form--signin');
+        var signUpForm = document.querySelector('.form--signup');
         var email = document.getElementById('email');
+        var username = document.getElementById('username');
         var password = document.getElementById('password');
+        var passwordConfirm = document.getElementById('passwordConfirm');
         var topics = document.querySelector('.map');
 
         if (loginForm) {
           loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             (0, _login.login)(email.value, password.value);
+          });
+        }
+
+        if (signUpForm) {
+          signUpForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            (0,
+            _signup.signup)(username.value, email.value, password.value, passwordConfirm.value);
           });
         }
 
@@ -50676,6 +50835,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           '../../node_modules/regenerator-runtime/runtime.js',
         simplebar: '../../node_modules/simplebar/dist/simplebar.esm.js',
         './login': 'login.js',
+        './signup': 'signup.js',
         './mapbox': 'mapbox.js',
         './choice': 'choice.js',
         './quill': 'quill.js'
