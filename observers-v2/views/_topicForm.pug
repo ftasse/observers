@@ -15,7 +15,8 @@
           span.form__message *
         select#select-category-create-topic-form.form-control(data-trigger='' name='choices-single-default' placeholder='Search category' required='')
           option(value='') Select category
-          option(value='Politics') # Politics
+          each category in categories
+            option(value='Politics')= category
       .form__group
         label#topicDescriptionLabel.form__label--title(for='topicDescription')
           | Topic&apos;s description

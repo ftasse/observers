@@ -108,9 +108,15 @@ block content
           include _smCard
           include _smCard
         .full-width
-          #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
-            svg.btn__icon
-              use(xlink:href='img/sprite.svg#icon-quill')
-            span Create a new topic
+          if user
+            #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
+              svg.btn__icon
+                use(xlink:href='img/sprite.svg#icon-quill')
+              span Create a new topic
+          else
+            a.full-width__btn.btn.btn-black(href='/login')
+              svg.btn__icon
+                use(xlink:href='img/sprite.svg#icon-quill')
+              span Log in and create topic
 
   include _footer
