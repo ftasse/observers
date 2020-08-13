@@ -3,12 +3,18 @@
     img(src='img/Group%2029@2x.png' alt='')
   ul.nav
     li.nav__item
-      a.nav__link.nav__link--baseline(href='/_index.html') Home
+      a.nav__link.nav__link--baseline.nav__link--active(href='/') Home
     li.nav__item
       a.nav__link.nav__link--baseline(href='/topic.html') Topics
     li.nav__item
-      a.nav__link.nav__link--baseline.nav__link--active(href='#') About
-    li.nav__item
-      a.nav__link.nav__link--cta(href='/signin.html') Sign in
-    li.nav__item
-      a.nav__link.nav__link--cta.nav__link--cta--secondary(href='/signup.html') Sign up
+      a.nav__link.nav__link--baseline(href='#') About
+    if user
+      li.nav__item
+        a.nav__link.nav__link--cta(href='#') Sign out
+      li.nav__item
+        a.nav__link.nav__link--baseline(href='#')= user.name.split(' ')[0]
+    else
+      li.nav__item
+        a.nav__link.nav__link--cta(href='/login') Sign in
+      li.nav__item
+        a.nav__link.nav__link--cta.nav__link--cta--secondary(href='/signup.html') Sign up

@@ -1,4 +1,7 @@
 const Topic = require('../models/topicModel');
+const Tag = require('../models/TagModel');
+const categories = require('../models/topicCategories');
+
 const catchAsync = require('../utils/catchAsync');
 const QueryHelper = require('../utils/queryHelper');
 
@@ -14,10 +17,13 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     .paginate();
 
   const topics = await query.query;
+  const tags = await Tag.find();
 
   res.status(200).render('overview', {
     title: 'Topics',
-    topics
+    topics,
+    tags,
+    categories
   });
 });
 

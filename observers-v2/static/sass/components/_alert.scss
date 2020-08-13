@@ -1,0 +1,33 @@
+.alert {
+  display: inline-flex;
+  align-items: center;
+  padding-right: 3.5rem;
+  padding-left: 3.5rem;
+  height: 5rem;
+  color: white;
+
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+
+  z-index: 10000;
+
+  animation: fadeInTop .4s ease-in;
+
+  &__icon {
+    width: 3rem;
+    height: 3rem;
+    fill: white;
+    margin-right: .5rem;
+  }
+  &--success{
+    background-color: var(--color-success);
+  }
+  &--warning {
+    background-color: var(--color-black-lighter);
+  }
+  &--failed {
+    background-color: var(--color-primary);
+  }
+}

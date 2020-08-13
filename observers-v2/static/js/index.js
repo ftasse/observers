@@ -1,9 +1,16 @@
+import '@babel/polyfill';
+import 'simplebar';
+import { login } from './login';
+import { displayMap } from './mapbox';
+import { createMultiSelectMenus } from './choice';
+import { createEditors } from './quill';
+
+// DOM elements
 const topicsListViewToggle = document.querySelector('#view-switch--list');
 const topicsMapViewToggle = document.querySelector('#view-switch--map');
 const topicsList = document.querySelector('.topic-cards');
 const topicsMap = document.querySelector('.topic-map');
 const topicsPagination = document.querySelector('.pagination');
-
 const clusterListClose = document.querySelector(
   '.topic-map__cluster-list--close'
 );
@@ -12,49 +19,83 @@ const clusterList = document.querySelector(
   '.topic-map__cluster-list--elements'
 );
 
-clusterListClose.addEventListener('click', function() {
-  clusterListContainer.classList.add('hide');
-});
-
-topicsListViewToggle.addEventListener('click', e => {
-  topicsMap.classList.add('hide');
-  topicsList.classList.remove('hide');
-  topicsPagination.classList.remove('hide');
-});
-
-topicsMapViewToggle.addEventListener('click', e => {
-  topicsList.classList.add('hide');
-  topicsPagination.classList.add('hide');
-  topicsMap.classList.remove('hide');
-
-  map.resize();
-  map.fitBounds(bounds, {
-    padding: {
-      top: 25,
-      bottom: 35,
-      right: 25,
-      left: 25
-    }
-  });
-});
-
 const createTopicButtons = document.querySelectorAll('.add-topic__btn');
 const createTopicFormContainer = document.querySelector('.create-topic-form');
 const createTopicClose = document.querySelector('.create-topic-close');
-
-createTopicButtons.forEach(b => {
-  b.addEventListener('click', function() {
-    createTopicFormContainer.style.transform = 'translateX(-50%) scaleX(1)';
-    createTopicFormContainer.style.opacity = '1';
-  });
-});
-
-createTopicClose.addEventListener('click', function() {
-  createTopicFormContainer.style.transform = 'translateX(-50%) scaleX(0)';
-  createTopicFormContainer.style.opacity = '0';
-});
-
 const selectGroups = document.querySelectorAll('.select-group');
+
+const menuSidebarToggle = document.querySelector('.menu__checkbox');
+const menuSidebarLinks = document.querySelectorAll('.menu__link');
+
+const loginForm = document.querySelector('.form--signin');
+
+const email = document.getElementById('email');
+const password = document.getElementById('password');
+
+const topics = document.querySelector('.map');
+
+if (loginForm) {
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    login(email.value, password.value);
+  });
+}
+
+let mapObj, bounds;
+if (topics) {
+  mapObj = new mapboxgl.Map({
+    container: 'mapbox-topics',
+    style: 'mapbox://styles/asnelchristian/ckawh4dvvehmi1io10tvsjvtk',
+    maxZoom: 7
+  });
+  bounds = new mapboxgl.LngLatBounds();
+  displayMap(mapObj, bounds, JSON.parse(topics.dataset.mapdata));
+}
+
+if (clusterListClose) {
+  clusterListClose.addEventListener('click', function() {
+    clusterListContainer.classList.add('hide');
+  });
+}
+
+if (topicsListViewToggle) {
+  topicsListViewToggle.addEventListener('click', e => {
+    topicsMap.classList.add('hide');
+    topicsList.classList.remove('hide');
+    topicsPagination.classList.remove('hide');
+  });
+
+  topicsMapViewToggle.addEventListener('click', e => {
+    topicsList.classList.add('hide');
+    topicsPagination.classList.add('hide');
+    topicsMap.classList.remove('hide');
+
+    mapObj.resize();
+    mapObj.fitBounds(bounds, {
+      padding: {
+        top: 25,
+        bottom: 35,
+        right: 25,
+        left: 25
+      }
+    });
+  });
+}
+
+if (createTopicButtons) {
+  createTopicButtons.forEach(b => {
+    b.addEventListener('click', function() {
+      createTopicFormContainer.style.transform = 'translateX(-50%) scaleX(1)';
+      createTopicFormContainer.style.opacity = '1';
+    });
+  });
+}
+if (createTopicClose) {
+  createTopicClose.addEventListener('click', function() {
+    createTopicFormContainer.style.transform = 'translateX(-50%) scaleX(0)';
+    createTopicFormContainer.style.opacity = '0';
+  });
+}
 
 document.onclick = function(e) {
   if (
@@ -69,45 +110,56 @@ document.onclick = function(e) {
     });
   }
 };
-selectGroups.forEach(g => {
-  const selected = g.querySelector('.selected');
-  const optionListContainer = g.querySelector('.option-container');
-  const optionList = optionListContainer.querySelectorAll('input');
+if (selectGroups) {
+  selectGroups.forEach(g => {
+    const selected = g.querySelector('.selected');
+    const optionListContainer = g.querySelector('.option-container');
+    const optionList = optionListContainer.querySelectorAll('input');
 
-  let selectedOptions = new Set();
+    let selectedOptions = new Set();
 
-  selected.addEventListener('click', () => {
-    // Close all other select list
-    const selects = document.querySelectorAll('.option-container');
-    selects.forEach(el => {
-      el.classList.remove('option-container--active');
+    selected.addEventListener('click', () => {
+      // Close all other select list
+      const selects = document.querySelectorAll('.option-container');
+      selects.forEach(el => {
+        el.classList.remove('option-container--active');
+      });
+      optionListContainer.classList.add('option-container--active');
     });
-    optionListContainer.classList.add('option-container--active');
-  });
 
-  optionList.forEach(o => {
-    o.addEventListener('click', () => {
-      if (!g.classList.contains('multi-select')) {
-        selectedOptions = new Set();
-      }
-      if (o.checked) {
-        selectedOptions.add(o.value);
-      } else {
-        selectedOptions.delete(o.value);
-      }
+    optionList.forEach(o => {
+      o.addEventListener('click', () => {
+        if (!g.classList.contains('multi-select')) {
+          selectedOptions = new Set();
+        }
+        if (o.checked) {
+          selectedOptions.add(o.value);
+        } else {
+          selectedOptions.delete(o.value);
+        }
 
-      selected.innerHTML = `(${
-        Array.from(selectedOptions).length
-      }) ${g.getAttribute('data-select')}`;
+        selected.innerHTML = `(${
+          Array.from(selectedOptions).length
+        }) ${g.getAttribute('data-select')}`;
+      });
     });
   });
-});
+}
 
-const menuSidebarToggle = document.querySelector('.menu__checkbox');
-const menuSidebarLinks = document.querySelectorAll('.menu__link');
-
-menuSidebarLinks.forEach(m => {
-  m.addEventListener('click', () => {
-    menuSidebarToggle.checked = false;
+if (menuSidebarLinks) {
+  menuSidebarLinks.forEach(m => {
+    m.addEventListener('click', () => {
+      menuSidebarToggle.checked = false;
+    });
   });
-});
+}
+
+// Create Multiselect menus
+try {
+  createMultiSelectMenus();
+  createEditors();
+} catch (err) {
+  console.log();
+}
+
+// Create rich text editors
