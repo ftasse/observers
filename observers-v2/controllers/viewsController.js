@@ -38,3 +38,9 @@ exports.login = (req, res, next) => {
     title: 'Log into your account'
   });
 };
+
+exports.signup = (req, res, next) => {
+  res.status(200).render('signup', {
+    title: 'Become an observer'
+  });
+};
