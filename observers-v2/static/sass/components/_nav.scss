@@ -17,9 +17,11 @@
     display: inline-block;
     padding: .8rem 2rem;
     color: var(--color-black-lighter);
-
+    &,
     &:link,
     &:visited {
+      cursor: pointer;
+      background-color: var(--color-white);
       text-decoration: none;
 
       font-family: 'Frank Ruhl Libre', sans-serif;
@@ -42,6 +44,11 @@
       background-color: var(--color-primary);
     }
 
+    & > span {
+      position: relative;
+      z-index: 1;
+    }
+
     &--baseline {
       &:hover {color: var(--color-primary);}
       &:hover::after { transform: scaleX(1);}
@@ -57,7 +64,6 @@
 
       &::after {
         height: 100%;
-        z-index: -1;
       }
       &--secondary::after {
         background-color: var(--color-secondary);

@@ -1,6 +1,6 @@
 import '@babel/polyfill';
 import 'simplebar';
-import { login } from './login';
+import { login, logout } from './login';
 import { signup } from './signup';
 import { displayMap } from './mapbox';
 import { createMultiSelectMenus } from './choice';
@@ -30,6 +30,7 @@ const menuSidebarLinks = document.querySelectorAll('.menu__link');
 
 const loginForm = document.querySelector('.form--signin');
 const signUpForm = document.querySelector('.form--signup');
+const logoutBtn = document.querySelectorAll('.sign-out');
 
 const email = document.getElementById('email');
 const username = document.getElementById('username');
@@ -49,6 +50,13 @@ if (signUpForm) {
   signUpForm.addEventListener('submit', e => {
     e.preventDefault();
     signup(username.value, email.value, password.value, passwordConfirm.value);
+  });
+}
+if (logoutBtn) {
+  logoutBtn.forEach(btn => {
+    btn.addEventListener('click', e => {
+      logout();
+    });
   });
 }
 

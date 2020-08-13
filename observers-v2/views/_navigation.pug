@@ -10,11 +10,14 @@
       a.nav__link.nav__link--baseline(href='#') About
     if user
       li.nav__item
-        a.nav__link.nav__link--cta(href='#') Sign out
+        button.sign-out.nav__link.nav__link--cta
+          span Sign out
       li.nav__item
-        a.nav__link.nav__link--baseline(href='#')= user.name.split(' ')[0]
+        a.nav__link.nav__link--baseline(href='#')= user.name
     else
       li.nav__item
-        a.nav__link.nav__link--cta(href='/login') Sign in
+        a.nav__link.nav__link--cta(href='/login')
+          span Sign in
       li.nav__item
-        a.nav__link.nav__link--cta.nav__link--cta--secondary(href='/signup') Sign up
+        a.nav__link.nav__link--cta.nav__link--cta--secondary(href='/signup')
+          span Sign up
