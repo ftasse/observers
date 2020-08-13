@@ -1338,6 +1338,9 @@ body {
   transform: rotate(135deg); }
 
 .menu__link {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
   display: block;
   padding: 1.5rem 4rem;
   margin-bottom: .1rem;
@@ -1381,7 +1384,9 @@ body {
     color: var(--color-black-lighter);
     transition: all .3s;
     position: relative; }
-    .nav__link:link, .nav__link:visited {
+    .nav__link, .nav__link:link, .nav__link:visited {
+      cursor: pointer;
+      background-color: var(--color-white);
       text-decoration: none;
       font-family: 'Frank Ruhl Libre', sans-serif;
       font-size: 1.4rem;
@@ -1397,6 +1402,9 @@ body {
       transform-origin: left;
       transition: all .3s .1s ease-in;
       background-color: var(--color-primary); }
+    .nav__link > span {
+      position: relative;
+      z-index: 1; }
     .nav__link--baseline:hover {
       color: var(--color-primary); }
     .nav__link--baseline:hover::after {
@@ -1408,8 +1416,7 @@ body {
     .nav__link--cta {
       border: 2px solid var(--color-black); }
       .nav__link--cta::after {
-        height: 100%;
-        z-index: -1; }
+        height: 100%; }
       .nav__link--cta--secondary::after {
         background-color: var(--color-secondary);
         transform-origin: right; }

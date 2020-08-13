@@ -110,6 +110,9 @@
   }
 
   &__link {
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
     display: block;
     padding: 1.5rem 4rem;
     margin-bottom: .1rem;
