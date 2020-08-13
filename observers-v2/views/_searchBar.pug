@@ -22,16 +22,18 @@
           | Select category
         .select-box
           .option-container.option-container--orient-left(data-simplebar='' data-simplebar-auto-hide='false')
-            .option
-              input#politics.option__radio(type='checkbox' value='Politics' name='category')
-              label.option__label.option__label--active(for='politics') Politics
+            each category in categories
+              .option
+                input#politics.option__radio(type='checkbox' value=`${category}` name='category')
+                label.option__label.option__label--active(for=`${category}`)= category
     .select-group.select-group--2.multi-select(data-select='tags')
       .select-container
         .selected
           | Select tags
         .select-box
           .option-container.option-container--orient-right(data-simplebar='' data-simplebar-auto-hide='false')
-            .option
-              input#covid-19.option__radio(type='checkbox' value='Covid-19' name='tags')
-              label.option__label.option__label--active(for='covid-19') Covid-19 outbreak
+            each tag in tags
+              .option
+                input#covid-19.option__radio(type='checkbox' value=`${tag.name}` name='tags')
+                label.option__label.option__label--active(for=`${tag.name}`)= tag.name
     span.btn.btn--small.btn-black Filter

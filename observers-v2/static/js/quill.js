@@ -1,18 +1,22 @@
-const toolbarOptions = [
-  [{ header: [3, 4, false] }],
+import Quill from 'quill';
 
-  ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-  ['link', 'blockquote'],
+export const createEditors = () => {
+  const toolbarOptions = [
+    [{ header: [3, 4, false] }],
 
-  [{ list: 'ordered' }, { list: 'bullet' }],
+    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+    ['link', 'blockquote'],
 
-  ['clean'] // remove formatting button
-];
+    [{ list: 'ordered' }, { list: 'bullet' }],
 
-const editor = new Quill('.editor', {
-  modules: {
-    toolbar: toolbarOptions
-  },
-  theme: 'snow',
-  placeholder: 'Describe your topic in details...'
-});
+    ['clean'] // remove formatting button
+  ];
+
+  const editor = new Quill('.editor', {
+    modules: {
+      toolbar: toolbarOptions
+    },
+    theme: 'snow',
+    placeholder: 'Describe your topic in details...'
+  });
+};

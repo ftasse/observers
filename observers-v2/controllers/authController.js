@@ -49,12 +49,12 @@ exports.signin = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new AppError('Please email and password', 400));
+    return next(new AppError('Please provide email and password', 400));
   }
 
   const user = await User.findOne({ email }).select('+password');
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError('Incorrect email or password', 404));
+    return next(new AppError('Incorrect email or password', 400));
   }
 
   createSendJWT(res, user, 200);
