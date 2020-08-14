@@ -6560,7 +6560,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         });
 
         for (
-          var es6Symbols = 'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'.split( // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
+          var es6Symbols = // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
+            'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'.split(
               ','
             ),
             j = 0;
@@ -24940,7 +24941,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     'Only values matching specific conditions can be added',
                   addItemText: function addItemText(value) {
                     return (
-                      ('Press Enter to add <b>"' + sanitise(value) + '"</b>')
+                      'Press Enter to add <b>"' + sanitise(value) + '"</b>'
                     );
                   },
                   maxItemText: function maxItemText(maxItemCount) {
@@ -50479,7 +50480,6 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var menuSidebarLinks = document.querySelectorAll('.menu__link');
         var loginForm = document.querySelector('.form--signin');
         var signUpForm = document.querySelector('.form--signup');
-        var logoutBtn = document.querySelectorAll('.sign-out');
         var email = document.getElementById('email');
         var username = document.getElementById('username');
         var password = document.getElementById('password');
@@ -50498,14 +50498,6 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             e.preventDefault();
             (0,
             _signup.signup)(username.value, email.value, password.value, passwordConfirm.value);
-          });
-        }
-
-        if (logoutBtn) {
-          logoutBtn.forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-              (0, _login.logout)();
-            });
           });
         }
 
@@ -50932,7 +50924,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '62815' + '/'
+            protocol + '://' + hostname + ':' + '50249' + '/'
           );
 
           ws.onmessage = function(event) {

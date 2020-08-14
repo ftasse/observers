@@ -19,11 +19,24 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   const topics = await query.query;
   const tags = await Tag.find();
 
+  const mostPopularTopicsQuery = new QueryHelper(Topic.find(), {
+    limit: 5,
+    sort: '+reportCount',
+    fields: 'title,category,createdAt,reportCount'
+  })
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const mostPopularTopics = await mostPopularTopicsQuery.query;
+
   res.status(200).render('overview', {
     title: 'Topics',
     topics,
     tags,
-    categories
+    categories,
+    mostPopularTopics
   });
 });
 
