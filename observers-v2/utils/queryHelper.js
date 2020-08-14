@@ -15,7 +15,16 @@ class QueryHelper {
       match => `$${match}`
     );
 
-    this.query = this.query.find(JSON.parse(queryString));
+    // Make case-insensitive queries
+    const queryStringWithPattern = JSON.parse(queryString);
+    Object.entries(queryStringWithPattern).forEach(([k, v]) => {
+      queryStringWithPattern[k] = new RegExp(
+        `.*${unescape(v.toString())}.*`,
+        'i'
+      );
+    });
+
+    this.query = this.query.find(queryStringWithPattern);
 
     return this;
   }
@@ -23,7 +32,6 @@ class QueryHelper {
     if (this.queryStr.search) {
       const searchText = this.queryStr.search;
       this.query = this.query.find({ $text: { $search: searchText } });
-      console.log(searchText);
     }
     return this;
   }

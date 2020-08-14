@@ -102,11 +102,19 @@ block content
 
         include _pagination
       .topic-stats
-        h3.section__title.margin-bottom-small Trending topics
+        h3.section__title.margin-bottom-small Most popular topics
         ul.topic-stats__list.margin-bottom-medium
-          include _smCard
-          include _smCard
-          include _smCard
+          each popularTopic, i in mostPopularTopics
+            li.sm-card
+              p.sm-card__rank
+                | 0#{i+1}
+              // <img src="img/politics.jpg" alt="" class="sm-card__img">
+              .sm-card__info
+                .sm-card__main
+                  a.link-info.link-info--normal(href=`/topics/${popularTopic.slug}`)= popularTopic.title
+                .sm-card__sub
+                  a.sm-card__category.sm-card__link.link-info.link-info--category.link-info--category--small(href=`/?category=${encodeURIComponent(popularTopic.category)}`)= popularTopic.category
+                  a.sm-card__link.link-info.link-info--small.link-info--small--sm(href='') Created on #{popularTopic.createdAt.toLocaleString('en-us', {month: 'long', day: 'numeric', year: 'numeric'})}
         .full-width
           if user
             #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
