@@ -18,12 +18,24 @@ class QueryHelper {
     // Make case-insensitive queries
     const queryStringWithPattern = JSON.parse(queryString);
     Object.entries(queryStringWithPattern).forEach(([k, v]) => {
-      queryStringWithPattern[k] = new RegExp(
-        `.*${unescape(v.toString())}.*`,
-        'i'
-      );
+      if (k !== 'createdAt')
+        queryStringWithPattern[k] = new RegExp(
+          `.*${unescape(v.toString())}.*`,
+          'i'
+        );
     });
 
+    if (queryStringWithPattern.createdAt) {
+      const queryDateDay = new Date(queryStringWithPattern.createdAt);
+      const queryDateNextDay = new Date(
+        queryDateDay.getTime() + 24 * 60 * 60 * 1000
+      );
+      queryStringWithPattern.createdAt = {
+        $gte: queryDateDay,
+        $lt: queryDateNextDay
+      };
+    }
+    console.log(queryStringWithPattern);
     this.query = this.query.find(queryStringWithPattern);
 
     return this;

@@ -58,14 +58,14 @@ block content
               .topic__info
                 .topic__info--basics
                   span.topic__info--time
-                    a.link-info.link-info--small(href='#')= topic.createdAt.toLocaleString('en-us', {month: 'long', day:'numeric', year:'numeric'})
+                    a.link-info.link-info--small(href=href=`/?createdAt=${topic.createdAt.toISOString().split('T')[0]}`)= topic.createdAt.toLocaleString('en-us', {month: 'long', day:'numeric', year:'numeric'})
                   span.topic__info--location
                     a.link-info.link-info--small(href='#')= topic.location.address
                   span.topic__info--category
-                    a.link-info.link-info--category(href='#')= topic.category
+                    a.link-info.link-info--category(href=href=`/?category=${encodeURIComponent(topic.category)}`)= topic.category
                 .topic__info--reports
                   span.topic__info--report-count
-                    a.link-info.link-info--small(href='#') #{topic.reportCount} report(s)
+                    span.link-info.link-info--small #{topic.reportCount} report(s)
               img.topic__img.margin-bottom-small(src=`img/${topic.imageCover}` alt=`${topic.title}`)
               p.topic__title
                 a(href='#')= topic.title
