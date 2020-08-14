@@ -50480,6 +50480,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var menuSidebarLinks = document.querySelectorAll('.menu__link');
         var loginForm = document.querySelector('.form--signin');
         var signUpForm = document.querySelector('.form--signup');
+        var logoutBtn = document.querySelectorAll('.sign-out');
         var email = document.getElementById('email');
         var username = document.getElementById('username');
         var password = document.getElementById('password');
@@ -50498,6 +50499,14 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             e.preventDefault();
             (0,
             _signup.signup)(username.value, email.value, password.value, passwordConfirm.value);
+          });
+        }
+
+        if (logoutBtn) {
+          logoutBtn.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+              (0, _login.logout)();
+            });
           });
         }
 
