@@ -58,7 +58,7 @@ block content
               .topic__info
                 .topic__info--basics
                   span.topic__info--time
-                    a.link-info.link-info--small(href=href=`/?createdAt=${topic.createdAt.toISOString().split('T')[0]}`)= topic.createdAt.toLocaleString('en-us', {month: 'long', day:'numeric', year:'numeric'})
+                    a.link-info.link-info--small(href=href=`/?createdAt=${topic.createdAt.toISOString().split('T')[0]}#topics`)= topic.createdAt.toLocaleString('en-us', {month: 'long', day:'numeric', year:'numeric'})
                   span.topic__info--location
                     a.link-info.link-info--small(href='#')= topic.location.address
                   span.topic__info--category
@@ -79,7 +79,7 @@ block content
                       span.text--secondary--important tags
                   each tag in topic.tags
                     .tags__item
-                      a.tag(href='#')= tag.name
+                      a.tag(href=`/?tags=${encodeURIComponent(tag.name)}#topics`)= tag.name
               p.topic__author.paragraph--small.text-italics.margin-bottom-medium &ndash; Author: #{topic.author.name}
 
 
@@ -113,7 +113,7 @@ block content
                 .sm-card__main
                   a.link-info.link-info--normal(href=`/topics/${popularTopic.slug}`)= popularTopic.title
                 .sm-card__sub
-                  a.sm-card__category.sm-card__link.link-info.link-info--category.link-info--category--small(href=`/?category=${encodeURIComponent(popularTopic.category)}`)= popularTopic.category
+                  a.sm-card__category.sm-card__link.link-info.link-info--category.link-info--category--small(href=`/?category=${encodeURIComponent(popularTopic.category)}#topics`)= popularTopic.category
                   a.sm-card__link.link-info.link-info--small.link-info--small--sm(href='') Created on #{popularTopic.createdAt.toLocaleString('en-us', {month: 'long', day: 'numeric', year: 'numeric'})}
         .full-width
           if user

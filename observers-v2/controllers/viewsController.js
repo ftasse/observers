@@ -6,6 +6,13 @@ const catchAsync = require('../utils/catchAsync');
 const QueryHelper = require('../utils/queryHelper');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
+  let tagsQuery;
+  if (req.query && req.query.tags) {
+    if (Array.isArray(req.query.tags))
+      tagsQuery = req.query.tags.map(t => t.toLowerCase());
+    else tagsQuery = req.query.tags.toLowerCase();
+    delete req.query.tags;
+  }
   const query = new QueryHelper(
     Topic.find().populate({ path: 'tags' }),
     req.query
@@ -16,7 +23,23 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate();
 
-  const topics = await query.query;
+  const _topics = await query.query;
+
+  // Filter topics by tags
+  let topics = [];
+  if (tagsQuery) {
+    _topics.forEach(topic => {
+      let intersection = topic.tags.filter(v =>
+        tagsQuery.includes(v.name.toLowerCase())
+      );
+      if (intersection.length > 0) {
+        topics.push(topic);
+      }
+    });
+  } else {
+    topics = _topics;
+  }
+
   const tags = await Tag.find();
 
   const mostPopularTopicsQuery = new QueryHelper(Topic.find(), {
