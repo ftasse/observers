@@ -35,7 +35,6 @@ class QueryHelper {
         $lt: queryDateNextDay
       };
     }
-    console.log(queryStringWithPattern);
     this.query = this.query.find(queryStringWithPattern);
 
     return this;
