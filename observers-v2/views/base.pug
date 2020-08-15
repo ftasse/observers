@@ -17,5 +17,9 @@ html
   body.container
     block content
 
-    script(src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js')
+    script(
+      src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+      integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+      crossorigin="")
+    script(src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js")
     script(src="/js/bundle.js")

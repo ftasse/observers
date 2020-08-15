@@ -5,6 +5,7 @@ import { signup } from './signup';
 import { displayMap } from './mapbox';
 import { createMultiSelectMenus } from './choice';
 import { createEditors } from './quill';
+import { filter } from './filter';
 
 // DOM elements
 const topicsListViewToggle = document.querySelector('#view-switch--list');
@@ -23,7 +24,7 @@ const clusterList = document.querySelector(
 const createTopicButtons = document.querySelectorAll('.add-topic__btn');
 const createTopicFormContainer = document.querySelector('.create-topic-form');
 const createTopicClose = document.querySelector('.create-topic-close');
-const selectGroups = document.querySelectorAll('.select-group');
+const selectGroups = document.querySelectorAll('.select-group--normal');
 
 const menuSidebarToggle = document.querySelector('.menu__checkbox');
 const menuSidebarLinks = document.querySelectorAll('.menu__link');
@@ -38,6 +39,23 @@ const password = document.getElementById('password');
 const passwordConfirm = document.getElementById('passwordConfirm');
 
 const topics = document.querySelector('.map');
+const filterTopicsBtn = document.querySelector('#filter-topics');
+
+const options = document.querySelectorAll('.option-container');
+options.forEach(el => {
+  el.classList.remove('option-container--active');
+});
+
+if (filterTopicsBtn) {
+  filterTopicsBtn.addEventListener('click', e => {
+    e.preventDefault();
+    const filters = Array.from(selectGroups)
+      .filter(g => g.dataset.selected !== undefined)
+      .map(g => `${g.dataset.select}=${g.dataset.selected}`)
+      .join('&');
+    filter(filters.replace(/categories/g, 'category'));
+  });
+}
 
 if (loginForm) {
   loginForm.addEventListener('submit', e => {
@@ -60,15 +78,11 @@ if (logoutBtn) {
   });
 }
 
-let mapObj, bounds;
+let map;
 if (topics) {
-  mapObj = new mapboxgl.Map({
-    container: 'mapbox-topics',
-    style: 'mapbox://styles/asnelchristian/ckawh4dvvehmi1io10tvsjvtk',
-    maxZoom: 7
-  });
-  bounds = new mapboxgl.LngLatBounds();
-  displayMap(mapObj, bounds, JSON.parse(topics.dataset.mapdata));
+  map = L.map('mapbox-topics').setView([0, 0], 2);
+
+  displayMap(map, JSON.parse(topics.dataset.mapdata));
 }
 
 if (clusterListClose) {
@@ -89,15 +103,7 @@ if (topicsListViewToggle) {
     topicsPagination.classList.add('hide');
     topicsMap.classList.remove('hide');
 
-    mapObj.resize();
-    mapObj.fitBounds(bounds, {
-      padding: {
-        top: 25,
-        bottom: 35,
-        right: 25,
-        left: 25
-      }
-    });
+    map.invalidateSize();
   });
 }
 
@@ -156,7 +162,7 @@ if (selectGroups) {
         } else {
           selectedOptions.delete(o.value);
         }
-
+        g.dataset.selected = Array.from(selectedOptions).join(`|`);
         selected.innerHTML = `(${
           Array.from(selectedOptions).length
         }) ${g.getAttribute('data-select')}`;

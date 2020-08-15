@@ -8,9 +8,12 @@ const QueryHelper = require('../utils/queryHelper');
 exports.getOverview = catchAsync(async (req, res, next) => {
   let tagsQuery;
   if (req.query && req.query.tags) {
-    if (Array.isArray(req.query.tags))
-      tagsQuery = req.query.tags.map(t => t.toLowerCase());
-    else tagsQuery = req.query.tags.toLowerCase();
+    if (Array.isArray(req.query.tags)) {
+      tagsQuery = req.query.tags.map(t => t.toLowerCase().split('|'));
+      tagsQuery = [].concat.apply([], tagsQuery);
+    } else {
+      tagsQuery = req.query.tags.toLowerCase().split('|');
+    }
     delete req.query.tags;
   }
   const query = new QueryHelper(
