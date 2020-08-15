@@ -3,7 +3,7 @@
     .create-topic-close.btn-close
       span.btn-close__icon
     h3.section__title.margin-bottom-small Create a new topic
-    form.form.form--create-topic(action='#')
+    form.form.form--create-topic
       .form__group
         input#title.form__input(type='text' placeholder='Title' required='')
         label.form__label(for='title')
@@ -16,19 +16,23 @@
         select#select-category-create-topic-form.form-control(data-trigger='' name='choices-single-default' placeholder='Search category' required='')
           option(value='') Select category
           each category in categories
-            option(value='Politics')= category
+            option(value=`${category}`)= category
       .form__group
         label#topicDescriptionLabel.form__label--title(for='topicDescription')
           | Topic&apos;s description
           span.form__message *
         input#topicDescription(name='description' type='hidden' required='')
-        .form__editor.editor
+        .form__editor.editor#topicEditor
       .form__group
         input#select-tags-create-topic-form.form-control.form__input(type='text' value='' placeholder='Enter something')
         label.form__label(for='select-tags-create-topic-form') Topic&apos;s tags
       .form__group.form-control--links
         input#select-mediaUrls-create-topic-form.form-control.form__input(type='text' value='' placeholder='Enter something')
         label.form__label(for='select-mediaUrls-create-topic-form') Topic&apos;s supporting links or sources
+      .form__group
+        input#location.form__input(type='text' placeholder="Topic's location or area of interest")
+        label.form__label(for='Location')
+          | Topic's location or area of interest
       .form__group.form__group--split
         input.btn.btn--small.btn-primary(type='Reset' value='Reset Form')
-        input.btn.btn--small.btn-black(type='submit' value='Create Topic')
+        input.btn.btn--small.btn-black(type='Submit' value='Create Topic')

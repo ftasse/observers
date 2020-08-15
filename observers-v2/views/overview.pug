@@ -63,7 +63,7 @@ block content
               .topic__info
                 .topic__info--basics
                   span.topic__info--time
-                    a.link-info.link-info--small(href=href=`/?createdAt=${topic.createdAt.toISOString().split('T')[0]}#topics`)= topic.createdAt.toLocaleString('en-us', {month: 'long', day:'numeric', year:'numeric'})
+                    a.link-info.link-info--small(href=`/?createdAt=${topic.createdAt.toISOString().split('T')[0]}#topics`)= topic.createdAt.toLocaleString('en-us', {month: 'long', day:'numeric', year:'numeric'})
                   span.topic__info--location
                     a.link-info.link-info--small(href='#')= topic.location.address
                   span.topic__info--category
@@ -74,7 +74,11 @@ block content
               img.topic__img.margin-bottom-small(src=`img/${topic.imageCover}` alt=`${topic.title}`)
               p.topic__title
                 a(href='#')= topic.title
-              p.topic__description #{topic.description.slice(0, 400)}...
+              if topic.descriptionHTML
+                - const descriptionObj = JSON.parse(topic.description)
+                p.topic__description #{descriptionObj.text}...
+              else
+                p.topic__description #{topic.description.slice(0, 400)}...
               .topic__read-more
                 a.btn.btn-black(href=`/topics/${topic.slug}`) Read more
               .topic__tags-container
@@ -116,7 +120,7 @@ block content
                   a.link-info.link-info--normal(href=`/topics/${popularTopic.slug}`)= popularTopic.title
                 .sm-card__sub
                   a.sm-card__category.sm-card__link.link-info.link-info--category.link-info--category--small(href=`/?category=${encodeURIComponent(popularTopic.category)}#topics`)= popularTopic.category
-                  a.sm-card__link.link-info.link-info--small.link-info--small--sm(href='') Created on #{popularTopic.createdAt.toLocaleString('en-us', {month: 'long', day: 'numeric', year: 'numeric'})}
+                  a.sm-card__link.link-info.link-info--small.link-info--small--sm(href=`/?createdAt=${popularTopic.createdAt.toISOString().split('T')[0]}#topics`) Created on #{popularTopic.createdAt.toLocaleString('en-us', {month: 'long', day: 'numeric', year: 'numeric'})}
         .full-width
           if user
             #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn

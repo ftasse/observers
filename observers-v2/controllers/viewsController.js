@@ -48,7 +48,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   const mostPopularTopicsQuery = new QueryHelper(Topic.find(), {
     limit: 5,
     sort: '+reportCount',
-    fields: 'title,category,createdAt,reportCount'
+    fields: 'title,category,createdAt,reportCount,slug'
   })
     .filter()
     .sort()

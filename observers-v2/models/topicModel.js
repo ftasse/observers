@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const slugify = require('slugify');
 
+const QuillDeltaToHtmlConverter = require('quill-delta-to-html')
+  .QuillDeltaToHtmlConverter;
+
 const topicCategories = require('./topicCategories');
 
 const topicSchema = new mongoose.Schema(
@@ -28,6 +31,9 @@ const topicSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A topic must have a description'],
       trim: true
+    },
+    descriptionHTML: {
+      type: String
     },
     category: {
       type: String,
@@ -97,6 +103,19 @@ topicSchema.virtual('reports', {
 
 topicSchema.pre('save', function(next) {
   this.slug = slugify(this.title, { lower: true });
+
+  const descriptionObj = JSON.parse(this.description);
+  if (descriptionObj.deltaOps) {
+    const cfg = {};
+    const converter = new QuillDeltaToHtmlConverter(
+      descriptionObj.deltaOps,
+      cfg
+    );
+    const html = converter.convert();
+
+    this.descriptionHTML = html ? html : this.description;
+  }
+
   next();
 });
 

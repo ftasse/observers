@@ -6,6 +6,7 @@ import { displayMap } from './mapbox';
 import { createMultiSelectMenus } from './choice';
 import { createEditors } from './quill';
 import { filter } from './filter';
+import { createTopic } from './createTopic';
 
 // DOM elements
 const topicsListViewToggle = document.querySelector('#view-switch--list');
@@ -197,7 +198,9 @@ if (menuSidebarLinks) {
 // Create Multiselect menus
 try {
   createMultiSelectMenus();
-  createEditors();
+  const editor = createEditors();
+
+  createTopic(editor);
 } catch (err) {
   console.log();
 }

@@ -565,11 +565,11 @@ body {
   padding-left: 3.5rem;
   height: 5rem;
   color: white;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 50%;
   transform: translateX(-50%) translateY(0);
-  z-index: 10000;
+  z-index: 10000000001;
   animation: fadeInTop .4s ease-in; }
   .alert__icon {
     width: 3rem;

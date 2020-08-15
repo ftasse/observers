@@ -13,6 +13,17 @@ export const createMultiSelectMenus = () => {
       maxItemCount: 5,
       placeholderValue: 'add tag',
       removeItemButton: true,
+      addItemFilter: function(value) {
+        if (!value) {
+          return false;
+        }
+
+        const regex = /[-a-zA-Z0-9@:%._+#]{1,256}/;
+        const expression = new RegExp(regex.source, 'i');
+        return expression.test(value);
+      },
+      customAddItemText:
+        'Please enter a valid tag. It should contains only alphanumeric and -%._+# characters are allowed.',
       maxItemText: function(maxItemCount) {
         return String(maxItemCount) + ' tags can be defined at most';
       },
@@ -34,7 +45,7 @@ export const createMultiSelectMenus = () => {
         const expression = new RegExp(regex.source, 'i');
         return expression.test(value);
       },
-      customAddItemText: 'Only valid links are allowed.',
+      customAddItemText: 'Please enter a valid link.',
       duplicateItemsAllowed: false,
       maxItemCount: 5,
       placeholderValue: 'add source',
