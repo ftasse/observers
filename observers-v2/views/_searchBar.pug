@@ -16,7 +16,7 @@
                 span.search__item--description.paragraph--small
                   | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti doloribus exercitationem laudantium minus nisi quaerat qui vero.
   .topics__search-bar--filters
-    .select-group.select-group--1.multi-select(data-select='categories')
+    .select-group.select-group--normal.select-group--1.multi-select(data-select='categories')
       .select-container
         .selected
           | Select category
@@ -24,9 +24,9 @@
           .option-container.option-container--orient-left(data-simplebar='' data-simplebar-auto-hide='false')
             each category in categories
               .option
-                input#politics.option__radio(type='checkbox' value=`${category}` name='category')
-                label.option__label.option__label--active(for=`${category}`)= category
-    .select-group.select-group--2.multi-select(data-select='tags')
+                input.option__radio(id=`${category}` type='checkbox' value=`${category}` name='category')
+                label.option__label(for=`${category}`)= category
+    .select-group.select-group--normal.select-group--2.multi-select(data-select='tags')
       .select-container
         .selected
           | Select tags
@@ -34,6 +34,6 @@
           .option-container.option-container--orient-right(data-simplebar='' data-simplebar-auto-hide='false')
             each tag in tags
               .option
-                input#covid-19.option__radio(type='checkbox' value=`${tag.name}` name='tags')
-                label.option__label.option__label--active(for=`${tag.name}`)= tag.name
-    span.btn.btn--small.btn-black Filter
+                input.option__radio(id=`${tag.name}` type='checkbox' value=`${tag.name}` name='tags')
+                label.option__label(for=`${tag.name}`)= tag.name
+    span.btn.btn--small.btn-black#filter-topics Filter

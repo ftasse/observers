@@ -2,7 +2,12 @@ extends base
 
 block prepend cssImports
   link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css')
-  link(href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet')
+  link(
+    rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="")
+  link(rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css")
+  link(rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css")
   link(rel='stylesheet' href='https://cdn.quilljs.com/1.3.6/quill.snow.css')
 
 
@@ -86,13 +91,10 @@ block content
         .topic-map.margin-bottom-medium.hide
           #mapbox-topics.map.margin-bottom-small(data-mapData=`${JSON.stringify(topics.map(el => {
             return {
-              geometry: el.location,
-              createdAt: el.createdAt.toLocaleString('en-us', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              }),
+              location: el.location,
+              createdAt: el.createdAt,
               title: el.title,
+              slug: el.slug,
               category: el.category
             }
           }))}`)
