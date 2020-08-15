@@ -34629,7 +34629,8 @@ var clusterList = document.querySelector('.topic-map__cluster-list--elements');
 var createTopicButtons = document.querySelectorAll('.add-topic__btn');
 var createTopicFormContainer = document.querySelector('.create-topic-form');
 var createTopicClose = document.querySelector('.create-topic-close');
-var selectGroups = document.querySelectorAll('.select-group--normal');
+var selectGroupsNormal = document.querySelectorAll('.select-group--normal');
+var selectGroupsRespond = document.querySelectorAll('.select-group--respond');
 var menuSidebarToggle = document.querySelector('.menu__checkbox');
 var menuSidebarLinks = document.querySelectorAll('.menu__link');
 var loginForm = document.querySelector('.form--signin');
@@ -34641,21 +34642,65 @@ var password = document.getElementById('password');
 var passwordConfirm = document.getElementById('passwordConfirm');
 var topics = document.querySelector('.map');
 var filterTopicsBtn = document.querySelector('#filter-topics');
+var filterTopicsBtnRespond = document.querySelector('#filter-topics--respond');
 var options = document.querySelectorAll('.option-container');
 options.forEach(function (el) {
   el.classList.remove('option-container--active');
 });
 
-if (filterTopicsBtn) {
-  filterTopicsBtn.addEventListener('click', function (e) {
+var configureSelectGroups = function configureSelectGroups(selectGroup) {
+  selectGroup.forEach(function (g) {
+    var selected = g.querySelector('.selected');
+    var optionListContainer = g.querySelector('.option-container');
+    var optionList = optionListContainer.querySelectorAll('input');
+    var selectedOptions = new Set();
+    selected.addEventListener('click', function () {
+      // Close all other select list
+      var selects = document.querySelectorAll('.option-container');
+      selects.forEach(function (el) {
+        el.classList.remove('option-container--active');
+      });
+      optionListContainer.classList.add('option-container--active');
+    });
+    optionList.forEach(function (o) {
+      o.addEventListener('click', function () {
+        if (!g.classList.contains('multi-select')) {
+          selectedOptions = new Set();
+        }
+
+        if (o.checked) {
+          selectedOptions.add(o.value);
+        } else {
+          selectedOptions.delete(o.value);
+        }
+
+        g.dataset.selected = Array.from(selectedOptions).join("|");
+        selected.innerHTML = "(".concat(Array.from(selectedOptions).length, ") ").concat(g.getAttribute('data-select'));
+      });
+    });
+  });
+};
+
+var filterTopics = function filterTopics(btn, btnSelectGroups) {
+  btn.addEventListener('click', function (e) {
     e.preventDefault();
-    var filters = Array.from(selectGroups).filter(function (g) {
+    var filters = Array.from(btnSelectGroups).filter(function (g) {
       return g.dataset.selected !== undefined;
     }).map(function (g) {
-      return "".concat(g.dataset.select, "=").concat(g.dataset.selected);
+      return "".concat(g.dataset.select, "=").concat(encodeURIComponent(g.dataset.selected));
     }).join('&');
     (0, _filter.filter)(filters.replace(/categories/g, 'category'));
   });
+};
+
+if (filterTopicsBtn) {
+  configureSelectGroups(selectGroupsNormal);
+  filterTopics(filterTopicsBtn, selectGroupsNormal);
+}
+
+if (filterTopicsBtnRespond) {
+  configureSelectGroups(selectGroupsRespond);
+  filterTopics(filterTopicsBtnRespond, selectGroupsRespond);
 }
 
 if (loginForm) {
@@ -34733,39 +34778,6 @@ document.onclick = function (e) {
   }
 };
 
-if (selectGroups) {
-  selectGroups.forEach(function (g) {
-    var selected = g.querySelector('.selected');
-    var optionListContainer = g.querySelector('.option-container');
-    var optionList = optionListContainer.querySelectorAll('input');
-    var selectedOptions = new Set();
-    selected.addEventListener('click', function () {
-      // Close all other select list
-      var selects = document.querySelectorAll('.option-container');
-      selects.forEach(function (el) {
-        el.classList.remove('option-container--active');
-      });
-      optionListContainer.classList.add('option-container--active');
-    });
-    optionList.forEach(function (o) {
-      o.addEventListener('click', function () {
-        if (!g.classList.contains('multi-select')) {
-          selectedOptions = new Set();
-        }
-
-        if (o.checked) {
-          selectedOptions.add(o.value);
-        } else {
-          selectedOptions.delete(o.value);
-        }
-
-        g.dataset.selected = Array.from(selectedOptions).join("|");
-        selected.innerHTML = "(".concat(Array.from(selectedOptions).length, ") ").concat(g.getAttribute('data-select'));
-      });
-    });
-  });
-}
-
 if (menuSidebarLinks) {
   menuSidebarLinks.forEach(function (m) {
     m.addEventListener('click', function () {
@@ -34809,7 +34821,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49986" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50367" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
