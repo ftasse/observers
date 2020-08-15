@@ -20,6 +20,7 @@
   //overflow-y: scroll;
   opacity: 0;
   visibility: hidden;
+  z-index: 1000001;
   transition: all 1s ease-in-out;
 
   &--orient-left {
