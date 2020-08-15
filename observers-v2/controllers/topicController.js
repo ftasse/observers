@@ -1,11 +1,28 @@
 const factory = require('./handlerFactory');
 const Topic = require('../models/topicModel');
+const Tag = require('../models/TagModel');
+
 const catchAsync = require('../utils/catchAsync');
 const Report = require('../models/reportModel');
 
 exports.getAllTopics = factory.getAll(Topic);
 exports.getTopic = factory.getOne(Topic, { path: 'reports' });
-exports.createTopic = factory.createOne(Topic);
+exports.createTopic = catchAsync(async (req, res, next) => {
+  if (req.body.tags) {
+    let tags = [];
+
+    for (const tagName of req.body.tags) {
+      let t = await Tag.findOne({ name: new RegExp(tagName, 'i') });
+      if (!t) {
+        t = await Tag.create({ name: tagName });
+      }
+      tags.push(t._id);
+    }
+    req.body.tags = tags;
+  }
+
+  await factory.createOne(Topic)(req, res, next);
+});
 exports.updateTopic = factory.updateOne(Topic);
 exports.deleteTopic = catchAsync(async (req, res, next) => {
   await Report.deleteMany({ topic: req.params.id });
