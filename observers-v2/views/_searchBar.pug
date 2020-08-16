@@ -1,20 +1,20 @@
 .topics__search-bar.margin-bottom-large
   .topics__search-box
-    form.search(action='#')
-      input.search__input(type='text' placeholder='Search topics')
-      button.search__button
+    form.search#searchTopicForm
+      input#searchTopicPattern.search__input(type='text' placeholder='Search topics' required='')
+      button.search__button(type='submit')
         svg.search__icon
           use(xlink:href='img/sprite.svg#icon-search')
-      .search__quick-results
-        .search__directives
-          p.search__results--count 50 results found...
-        ul.search__list
-          li.search__item
-            a.search__item--info(href='#')
-              .search__item--span
-                p.search__item--title.heading--tertiary.margin-bottom-extra-small Only one side gets to decide on everything. Is this really a democracy?
-                span.search__item--description.paragraph--small
-                  | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti doloribus exercitationem laudantium minus nisi quaerat qui vero.
+      //.search__quick-results
+      //  .search__directives
+      //    p.search__results--count 50 results found...
+      //  ul.search__list
+      //    li.search__item
+      //      a.search__item--info(href='#')
+      //        .search__item--span
+      //          p.search__item--title.heading--tertiary.margin-bottom-extra-small Only one side gets to decide on everything. Is this really a democracy?
+      //          span.search__item--description.paragraph--small
+      //            | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti doloribus exercitationem laudantium minus nisi quaerat qui vero.
   .topics__search-bar--filters
     .select-group.select-group--normal.select-group--1.multi-select(data-select='categories')
       .select-container

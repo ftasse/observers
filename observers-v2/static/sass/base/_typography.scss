@@ -168,3 +168,14 @@ body {
     }
   }
 }
+
+.nomatch__text {
+  align-self: center;
+  font-size: 3rem;
+
+  &--blur {
+    font-size: 8rem;
+    color: aliceblue;
+    margin-top: 5rem;
+  }
+}

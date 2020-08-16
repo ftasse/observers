@@ -67,7 +67,10 @@ const topicSchema = new mongoose.Schema(
         validate: [validator.isURL, 'Please provide a valid URL']
       }
     ],
-    reportCount: Number,
+    reportCount: {
+      type: Number,
+      default: 0
+    },
     location: {
       type: {
         type: String,
@@ -92,8 +95,7 @@ topicSchema.index({ category: 1 });
 topicSchema.index({ tags: 1 });
 topicSchema.index({ slug: 1 });
 topicSchema.index({ location: '2dsphere' });
-topicSchema.index({ description: 'text' });
-topicSchema.index({ title: 'text' });
+topicSchema.index({ '$**': 'text' });
 
 topicSchema.virtual('reports', {
   ref: 'Report',

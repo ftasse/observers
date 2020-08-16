@@ -62,7 +62,8 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     topics,
     tags,
     categories,
-    mostPopularTopics
+    mostPopularTopics,
+    nomatch: topics.length <= 0
   });
 });
 

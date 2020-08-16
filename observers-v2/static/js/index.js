@@ -8,6 +8,7 @@ import { createEditors } from './quill';
 import { filter } from './filter';
 import { createTopic } from './createTopic';
 import { showLoader } from './loader';
+import { searchTopics } from './search';
 
 // DOM elements
 const topicsListViewToggle = document.querySelector('#view-switch--list');
@@ -56,6 +57,8 @@ const newTopicMediaUrls = document.querySelector(
   '#select-mediaUrls-create-topic-form'
 );
 const createTopicForm = document.querySelector('.form--create-topic');
+const searchTopicForm = document.querySelector('#searchTopicForm');
+const searchTopicPattern = document.querySelector('#searchTopicPattern');
 
 const configureSelectGroups = selectGroup => {
   selectGroup.forEach(g => {
@@ -160,6 +163,10 @@ if (clusterListClose) {
   clusterListClose.addEventListener('click', function() {
     clusterListContainer.classList.add('hide');
   });
+}
+
+if (searchTopicForm) {
+  searchTopics(searchTopicForm, searchTopicPattern);
 }
 
 if (topicsListViewToggle) {
