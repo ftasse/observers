@@ -4,12 +4,14 @@ block content
   section.container--full
     .sign.container--full__col.container--full__col--1
       .sign__form
-        a.navigation__logo(href='/index.html')
-          img(src='img/Group%2029@2x.png' alt='')
+        a.navigation__logo(href='/')
+          img(src='img/Group%2029@2x.png' alt='logo')
         p.sign__message
           | Welcome, Create an account and start
-          span.text-italics.text-color-primary.text-bold reporting
-        form.form.form--signup(action='#')
+          span.text-italics.text-color-primary.text-bold
+            |
+            | reporting
+        form.form.form--signup
           .form__group.form__group--small-margin
             input#username.form__input(type='text' placeholder='Username' required='')
             label.form__label(for='username')

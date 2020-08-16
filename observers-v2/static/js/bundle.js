@@ -20355,6 +20355,35 @@ parcelRequire = (function(modules, cache, entry, globalName) {
       },
       {}
     ],
+    'loader.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.showLoader = exports.hideLoader = void 0;
+
+        var hideLoader = function hideLoader() {
+          var el = document.querySelector('.loader');
+          if (el) el.parentElement.removeChild(el);
+        };
+
+        exports.hideLoader = hideLoader;
+
+        var showLoader = function showLoader() {
+          hideLoader();
+          var markup =
+            '\n    <div class="loader">\n        <div class="lds-roller">\n            <div></div>\n            <div></div>\n            <div></div>\n            <div></div>\n            <div></div>\n            <div></div>\n            <div></div>\n            <div></div>\n          </div>\n     </div>';
+          document
+            .querySelector('.container')
+            .insertAdjacentHTML('afterbegin', markup);
+        };
+
+        exports.showLoader = showLoader;
+      },
+      {}
+    ],
     'login.js': [
       function(require, module, exports) {
         'use strict';
@@ -20367,6 +20396,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var _axios = _interopRequireDefault(require('axios'));
 
         var _alert = require('./alert');
+
+        var _loader = require('./loader');
 
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : { default: obj };
@@ -20441,7 +20472,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     switch ((_context.prev = _context.next)) {
                       case 0:
                         _context.prev = 0;
-                        _context.next = 3;
+                        (0, _loader.showLoader)();
+                        _context.next = 4;
                         return (0, _axios.default)({
                           method: 'POST',
                           url: 'http://127.0.0.1:3000/api/v1/users/signin',
@@ -20451,8 +20483,9 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           }
                         });
 
-                      case 3:
+                      case 4:
                         res = _context.sent;
+                        (0, _loader.hideLoader)();
 
                         if (res.data.status === 'success') {
                           (0, _alert.showAlert)(
@@ -20464,18 +20497,19 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           }, 1500);
                         }
 
-                        _context.next = 10;
+                        _context.next = 13;
                         break;
 
-                      case 7:
-                        _context.prev = 7;
+                      case 9:
+                        _context.prev = 9;
                         _context.t0 = _context['catch'](0);
+                        (0, _loader.hideLoader)();
                         (0, _alert.showAlert)(
                           'failed',
                           _context.t0.response.data.message
                         );
 
-                      case 10:
+                      case 13:
                       case 'end':
                         return _context.stop();
                     }
@@ -20483,7 +20517,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                 },
                 _callee,
                 null,
-                [[0, 7]]
+                [[0, 9]]
               );
             })
           );
@@ -20505,27 +20539,28 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     switch ((_context2.prev = _context2.next)) {
                       case 0:
                         _context2.prev = 0;
-                        _context2.next = 3;
+                        (0, _loader.showLoader)();
+                        _context2.next = 4;
                         return (0, _axios.default)({
                           method: 'GET',
                           url: 'http://127.0.0.1:3000/api/v1/users/signout'
                         });
 
-                      case 3:
+                      case 4:
                         res = _context2.sent;
                         if (res.data.status === 'success') location.reload();
-                        _context2.next = 10;
+                        _context2.next = 11;
                         break;
 
-                      case 7:
-                        _context2.prev = 7;
+                      case 8:
+                        _context2.prev = 8;
                         _context2.t0 = _context2['catch'](0);
                         (0, _alert.showAlert)(
                           'failed',
                           'Error logging out. Please try again!'
                         );
 
-                      case 10:
+                      case 11:
                       case 'end':
                         return _context2.stop();
                     }
@@ -20533,7 +20568,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                 },
                 _callee2,
                 null,
-                [[0, 7]]
+                [[0, 8]]
               );
             })
           );
@@ -20545,7 +20580,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         exports.logout = logout;
       },
-      { axios: '../../node_modules/axios/index.js', './alert': 'alert.js' }
+      {
+        axios: '../../node_modules/axios/index.js',
+        './alert': 'alert.js',
+        './loader': 'loader.js'
+      }
     ],
     'signup.js': [
       function(require, module, exports) {
@@ -20559,6 +20598,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var _axios = _interopRequireDefault(require('axios'));
 
         var _alert = require('./alert');
+
+        var _loader = require('./loader');
 
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : { default: obj };
@@ -20635,7 +20676,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     switch ((_context.prev = _context.next)) {
                       case 0:
                         _context.prev = 0;
-                        _context.next = 3;
+                        (0, _loader.showLoader)();
+                        _context.next = 4;
                         return (0, _axios.default)({
                           method: 'POST',
                           url: 'http://127.0.0.1:3000/api/v1/users/signup',
@@ -20647,8 +20689,9 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           }
                         });
 
-                      case 3:
+                      case 4:
                         res = _context.sent;
+                        (0, _loader.hideLoader)();
 
                         if (res.data.status === 'success') {
                           (0, _alert.showAlert)(
@@ -20660,18 +20703,19 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           }, 1500);
                         }
 
-                        _context.next = 10;
+                        _context.next = 13;
                         break;
 
-                      case 7:
-                        _context.prev = 7;
+                      case 9:
+                        _context.prev = 9;
                         _context.t0 = _context['catch'](0);
+                        (0, _loader.hideLoader)();
                         (0, _alert.showAlert)(
                           'failed',
                           _context.t0.response.data.message
                         );
 
-                      case 10:
+                      case 13:
                       case 'end':
                         return _context.stop();
                     }
@@ -20679,7 +20723,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                 },
                 _callee,
                 null,
-                [[0, 7]]
+                [[0, 9]]
               );
             })
           );
@@ -20691,7 +20735,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         exports.signup = signup;
       },
-      { axios: '../../node_modules/axios/index.js', './alert': 'alert.js' }
+      {
+        axios: '../../node_modules/axios/index.js',
+        './alert': 'alert.js',
+        './loader': 'loader.js'
+      }
     ],
     'mapbox.js': [
       function(require, module, exports) {
@@ -20700,7 +20748,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         Object.defineProperty(exports, '__esModule', {
           value: true
         });
-        exports.displayMap = void 0;
+        exports.initializeCreateTopicMap = exports.displayMap = void 0;
 
         var getPopupHTML = function getPopupHTML(topic) {
           return '\n    <div class="sm-card">\n        <img src="img/politics.jpg" alt="" class="sm-card__img">\n        <div class="sm-card__info">\n            <div class="sm-card__main">\n                <a href="/topics/'
@@ -20761,6 +20809,30 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         };
 
         exports.displayMap = displayMap;
+
+        var initializeCreateTopicMap = function initializeCreateTopicMap(
+          topicMap
+        ) {
+          var popup = L.popup({
+            closeOnClick: false
+          }).setContent("Default topic's location");
+          var markerIcon = L.divIcon({
+            className: 'marker marker--default'
+          });
+          var marker = L.marker([0, 0], {
+            icon: markerIcon
+          })
+            .bindPopup(popup)
+            .addTo(topicMap)
+            .openPopup();
+          topicMap.on('click', function(e) {
+            popup.setContent('Pick this location');
+            marker.setLatLng(new L.LatLng(e.latlng.lat, e.latlng.lng));
+          });
+          return marker;
+        };
+
+        exports.initializeCreateTopicMap = initializeCreateTopicMap;
       },
       {}
     ],
@@ -49167,6 +49239,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _alert = require('./alert');
 
+        var _loader = require('./loader');
+
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : { default: obj };
         }
@@ -49230,7 +49304,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var getLocation = /*#__PURE__*/ (function() {
           var _ref = _asyncToGenerator(
             /*#__PURE__*/ regeneratorRuntime.mark(function _callee(
-              locationStr
+              locationLatLng
             ) {
               var res, name;
               return regeneratorRuntime.wrap(
@@ -49242,10 +49316,9 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                         _context.next = 3;
                         return (0, _axios.default)({
                           method: 'GET',
-                          url: 'https://www.mapquestapi.com/geocoding/v1/address?key=qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1&inFormat=kvp&outFormat=json&location='.concat(
-                            locationStr,
-                            '&maxResults=1'
-                          )
+                          url: 'https://www.mapquestapi.com/geocoding/v1/reverse?key=qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1&inFormat=kvp&outFormat=json&location='
+                            .concat(locationLatLng.lat, ',')
+                            .concat(locationLatLng.lng, '&maxResults=1')
                         });
 
                       case 3:
@@ -49263,10 +49336,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           res.data.results[0].locations[0].adminArea5
                         ];
                         return _context.abrupt('return', {
-                          coordinates: [
-                            res.data.results[0].locations[0].latLng.lng,
-                            res.data.results[0].locations[0].latLng.lat
-                          ],
+                          coordinates: [locationLatLng.lng, locationLatLng.lat],
                           address: name.join('|')
                         });
 
@@ -49310,35 +49380,69 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     switch ((_context2.prev = _context2.next)) {
                       case 0:
                         _context2.prev = 0;
-                        console.log(topic);
-                        _context2.next = 4;
-                        return getLocation(topic.locationStr);
+                        _context2.next = 3;
+                        return getLocation(topic.locationLatLng);
 
-                      case 4:
+                      case 3:
                         topicLocation = _context2.sent;
+                        console.log(topic);
 
-                        if (!topicLocation) {
-                          _context2.next = 11;
+                        if (topic.category) {
+                          _context2.next = 9;
                           break;
                         }
 
-                        console.log(topicLocation);
-                        _context2.next = 9;
+                        return _context2.abrupt(
+                          'return',
+                          (0, _alert.showAlert)(
+                            'failed',
+                            'Please pick a category for your topic from the dropdown.'
+                          )
+                        );
+
+                      case 9:
+                        if (!(topic.description.text.trim().length < 30)) {
+                          _context2.next = 13;
+                          break;
+                        }
+
+                        return _context2.abrupt(
+                          'return',
+                          (0, _alert.showAlert)(
+                            'failed',
+                            "Your topic's description is too short.(< 30 characters)"
+                          )
+                        );
+
+                      case 13:
+                        if (topicLocation) {
+                          _context2.next = 17;
+                          break;
+                        }
+
+                        return _context2.abrupt(
+                          'return',
+                          (0, _alert.showAlert)(
+                            'failed',
+                            'Location address not found. Please try again'
+                          )
+                        );
+
+                      case 17:
+                        (0, _loader.showLoader)();
+                        topic.description = JSON.stringify(topic.description);
+                        topic.location = topicLocation;
+                        delete topic.locationLatLng;
+                        _context2.next = 23;
                         return (0, _axios.default)({
                           method: 'POST',
                           url: 'http://127.0.0.1:3000/api/v1/topics',
-                          data: {
-                            title: topic.title,
-                            tags: topic.tags,
-                            mediaUrls: topic.mediaUrls,
-                            category: topic.category,
-                            description: topic.description,
-                            location: topicLocation
-                          }
+                          data: topic
                         });
 
-                      case 9:
+                      case 23:
                         res = _context2.sent;
+                        (0, _loader.hideLoader)();
 
                         if (res.data.status === 'success') {
                           (0, _alert.showAlert)(
@@ -49350,20 +49454,21 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           }, 1500);
                         }
 
-                      case 11:
-                        _context2.next = 17;
+                      case 26:
+                        (0, _loader.hideLoader)();
+                        _context2.next = 33;
                         break;
 
-                      case 13:
-                        _context2.prev = 13;
+                      case 29:
+                        _context2.prev = 29;
                         _context2.t0 = _context2['catch'](0);
-                        console.log(_context2.t0.response.data.message);
+                        (0, _loader.hideLoader)();
                         (0, _alert.showAlert)(
                           'failed',
                           _context2.t0.response.data.message
                         );
 
-                      case 17:
+                      case 33:
                       case 'end':
                         return _context2.stop();
                     }
@@ -49371,7 +49476,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                 },
                 _callee2,
                 null,
-                [[0, 13]]
+                [[0, 29]]
               );
             })
           );
@@ -49381,44 +49486,88 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           };
         })();
 
-        var createTopic = function createTopic(editor) {
-          var title = document.querySelector('#title');
-          var category = document.querySelector(
-            '#select-category-create-topic-form'
+        var createTopic = function createTopic(
+          form,
+          title,
+          category,
+          tags,
+          mediaUrls,
+          marker,
+          editor
+        ) {
+          form.addEventListener(
+            'submit',
+            /*#__PURE__*/ (function() {
+              var _ref3 = _asyncToGenerator(
+                /*#__PURE__*/ regeneratorRuntime.mark(function _callee3(e) {
+                  var topic;
+                  return regeneratorRuntime.wrap(
+                    function _callee3$(_context3) {
+                      while (1) {
+                        switch ((_context3.prev = _context3.next)) {
+                          case 0:
+                            e.preventDefault();
+                            topic = {
+                              title: title.value,
+                              category: category.value,
+                              description: {
+                                text: editor
+                                  .getText()
+                                  .split('\n\n')
+                                  .join(),
+                                deltaOps: editor.getContents()
+                              },
+                              locationLatLng: marker.getLatLng()
+                            };
+
+                            if (tags.value) {
+                              topic.tags = tags.value.split(',');
+                            }
+
+                            if (mediaUrls.value) {
+                              topic.mediaUrls = mediaUrls.value.split(',');
+                            }
+
+                            _context3.prev = 4;
+                            _context3.next = 7;
+                            return submitTopic(topic);
+
+                          case 7:
+                            _context3.next = 12;
+                            break;
+
+                          case 9:
+                            _context3.prev = 9;
+                            _context3.t0 = _context3['catch'](4);
+                            console.log(_context3.t0);
+
+                          case 12:
+                          case 'end':
+                            return _context3.stop();
+                        }
+                      }
+                    },
+                    _callee3,
+                    null,
+                    [[4, 9]]
+                  );
+                })
+              );
+
+              return function(_x3) {
+                return _ref3.apply(this, arguments);
+              };
+            })()
           );
-          var tags = document.querySelector('#select-tags-create-topic-form');
-          var mediaUrls = document.querySelector(
-            '#select-mediaUrls-create-topic-form'
-          );
-          var locationStr = document.querySelector('#location');
-          var form = document.querySelector('.form--create-topic');
-          form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            var topic = {
-              title: title.value,
-              category: category.value,
-              description: JSON.stringify({
-                text: editor.getText(),
-                deltaOps: editor.getContents()
-              }),
-              locationStr: locationStr.value
-            };
-
-            if (tags.value) {
-              topic.tags = tags.value.split(',');
-            }
-
-            if (mediaUrls.value) {
-              topic.mediaUrls = mediaUrls.value.split(',');
-            }
-
-            submitTopic(topic);
-          });
         };
 
         exports.createTopic = createTopic;
       },
-      { axios: '../../node_modules/axios/index.js', './alert': 'alert.js' }
+      {
+        axios: '../../node_modules/axios/index.js',
+        './alert': 'alert.js',
+        './loader': 'loader.js'
+      }
     ],
     'index.js': [
       function(require, module, exports) {
@@ -49696,6 +49845,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _createTopic = require('./createTopic');
 
+        var _loader = require('./loader');
+
         // DOM elements
         var topicsListViewToggle = document.querySelector('#view-switch--list');
         var topicsMapViewToggle = document.querySelector('#view-switch--map');
@@ -49731,15 +49882,22 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var username = document.getElementById('username');
         var password = document.getElementById('password');
         var passwordConfirm = document.getElementById('passwordConfirm');
-        var topics = document.querySelector('.map');
+        var topics = document.querySelector('#mapbox-topics');
         var filterTopicsBtn = document.querySelector('#filter-topics');
         var filterTopicsBtnRespond = document.querySelector(
           '#filter-topics--respond'
         );
-        var options = document.querySelectorAll('.option-container');
-        options.forEach(function(el) {
-          el.classList.remove('option-container--active');
-        });
+        var newTopicTitle = document.querySelector('#title');
+        var newTopicCategory = document.querySelector(
+          '#select-category-create-topic-form'
+        );
+        var newTopicTags = document.querySelector(
+          '#select-tags-create-topic-form'
+        );
+        var newTopicMediaUrls = document.querySelector(
+          '#select-mediaUrls-create-topic-form'
+        );
+        var createTopicForm = document.querySelector('.form--create-topic');
 
         var configureSelectGroups = function configureSelectGroups(
           selectGroup
@@ -49791,8 +49949,23 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                   .concat(encodeURIComponent(g.dataset.selected));
               })
               .join('&');
+            (0, _loader.showLoader)();
             (0, _filter.filter)(filters.replace(/categories/g, 'category'));
           });
+        };
+
+        document.onclick = function(e) {
+          if (
+            !e.target.classList.contains('option-container') &&
+            !e.target.classList.contains('option__label') &&
+            !e.target.classList.contains('option__radio') &&
+            !e.target.classList.contains('selected')
+          ) {
+            var options = document.querySelectorAll('.option-container');
+            options.forEach(function(el) {
+              el.classList.remove('option-container--active');
+            });
+          }
         };
 
         if (filterTopicsBtn) {
@@ -49863,6 +50036,22 @@ parcelRequire = (function(modules, cache, entry, globalName) {
               createTopicFormContainer.style.opacity = '1';
             });
           });
+          (0, _choice.createMultiSelectMenus)();
+          var editor = (0, _quill.createEditors)();
+          var createTopicMap = L.map('createTopicMap').setView([0, 0], 2);
+          (0, _mapbox.displayMap)(createTopicMap, []);
+          var newTopicMarker = (0, _mapbox.initializeCreateTopicMap)(
+            createTopicMap
+          );
+          (0, _createTopic.createTopic)(
+            createTopicForm,
+            newTopicTitle,
+            newTopicCategory,
+            newTopicTags,
+            newTopicMediaUrls,
+            newTopicMarker,
+            editor
+          );
         }
 
         if (createTopicClose) {
@@ -49873,36 +50062,13 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           });
         }
 
-        document.onclick = function(e) {
-          if (
-            !e.target.classList.contains('option-container') &&
-            !e.target.classList.contains('option__label') &&
-            !e.target.classList.contains('option__radio') &&
-            !e.target.classList.contains('selected')
-          ) {
-            var _options = document.querySelectorAll('.option-container');
-
-            _options.forEach(function(el) {
-              el.classList.remove('option-container--active');
-            });
-          }
-        };
-
         if (menuSidebarLinks) {
           menuSidebarLinks.forEach(function(m) {
             m.addEventListener('click', function() {
               menuSidebarToggle.checked = false;
             });
           });
-        } // Create Multiselect menus
-
-        try {
-          (0, _choice.createMultiSelectMenus)();
-          var editor = (0, _quill.createEditors)();
-          (0, _createTopic.createTopic)(editor);
-        } catch (err) {
-          console.log();
-        } // Create rich text editors
+        }
       },
       {
         'core-js/modules/es6.array.copy-within':
@@ -50168,7 +50334,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './choice': 'choice.js',
         './quill': 'quill.js',
         './filter': 'filter.js',
-        './createTopic': 'createTopic.js'
+        './createTopic': 'createTopic.js',
+        './loader': 'loader.js'
       }
     ],
     '../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js': [
@@ -50204,7 +50371,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '52702' + '/'
+            protocol + '://' + hostname + ':' + '50733' + '/'
           );
 
           ws.onmessage = function(event) {

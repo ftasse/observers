@@ -4,14 +4,14 @@
   padding-right: 3.5rem;
   padding-left: 3.5rem;
   height: 5rem;
-  color: white;
+  color: var(--color-white);
 
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 50%;
   transform: translateX(-50%) translateY(0);
 
-  z-index: 10000;
+  z-index: 1000000000001;
 
   animation: fadeInTop .4s ease-in;
 

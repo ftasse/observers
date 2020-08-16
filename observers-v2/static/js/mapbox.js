@@ -58,3 +58,24 @@ export const displayMap = (mapObj, data) => {
 
   mapObj.addLayer(markers);
 };
+
+export const initializeCreateTopicMap = topicMap => {
+  const popup = L.popup({ closeOnClick: false }).setContent(
+    "Default topic's location"
+  );
+
+  const markerIcon = L.divIcon({ className: 'marker marker--default' });
+  const marker = L.marker([0, 0], {
+    icon: markerIcon
+  })
+    .bindPopup(popup)
+    .addTo(topicMap)
+    .openPopup();
+
+  topicMap.on('click', function(e) {
+    popup.setContent('Pick this location');
+    marker.setLatLng(new L.LatLng(e.latlng.lat, e.latlng.lng));
+  });
+
+  return marker;
+};

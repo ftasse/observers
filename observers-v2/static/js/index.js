@@ -2,11 +2,12 @@ import '@babel/polyfill';
 import 'simplebar';
 import { login, logout } from './login';
 import { signup } from './signup';
-import { displayMap } from './mapbox';
+import { displayMap, initializeCreateTopicMap } from './mapbox';
 import { createMultiSelectMenus } from './choice';
 import { createEditors } from './quill';
 import { filter } from './filter';
 import { createTopic } from './createTopic';
+import { showLoader } from './loader';
 
 // DOM elements
 const topicsListViewToggle = document.querySelector('#view-switch--list');
@@ -40,16 +41,21 @@ const username = document.getElementById('username');
 const password = document.getElementById('password');
 const passwordConfirm = document.getElementById('passwordConfirm');
 
-const topics = document.querySelector('.map');
+const topics = document.querySelector('#mapbox-topics');
 const filterTopicsBtn = document.querySelector('#filter-topics');
 const filterTopicsBtnRespond = document.querySelector(
   '#filter-topics--respond'
 );
 
-const options = document.querySelectorAll('.option-container');
-options.forEach(el => {
-  el.classList.remove('option-container--active');
-});
+const newTopicTitle = document.querySelector('#title');
+const newTopicCategory = document.querySelector(
+  '#select-category-create-topic-form'
+);
+const newTopicTags = document.querySelector('#select-tags-create-topic-form');
+const newTopicMediaUrls = document.querySelector(
+  '#select-mediaUrls-create-topic-form'
+);
+const createTopicForm = document.querySelector('.form--create-topic');
 
 const configureSelectGroups = selectGroup => {
   selectGroup.forEach(g => {
@@ -94,8 +100,23 @@ const filterTopics = (btn, btnSelectGroups) => {
       .filter(g => g.dataset.selected !== undefined)
       .map(g => `${g.dataset.select}=${encodeURIComponent(g.dataset.selected)}`)
       .join('&');
+    showLoader();
     filter(filters.replace(/categories/g, 'category'));
   });
+};
+
+document.onclick = function(e) {
+  if (
+    !e.target.classList.contains('option-container') &&
+    !e.target.classList.contains('option__label') &&
+    !e.target.classList.contains('option__radio') &&
+    !e.target.classList.contains('selected')
+  ) {
+    const options = document.querySelectorAll('.option-container');
+    options.forEach(el => {
+      el.classList.remove('option-container--active');
+    });
+  }
 };
 
 if (filterTopicsBtn) {
@@ -132,7 +153,6 @@ if (logoutBtn) {
 let map;
 if (topics) {
   map = L.map('mapbox-topics').setView([0, 0], 2);
-
   displayMap(map, JSON.parse(topics.dataset.mapdata));
 }
 
@@ -165,6 +185,23 @@ if (createTopicButtons) {
       createTopicFormContainer.style.opacity = '1';
     });
   });
+
+  createMultiSelectMenus();
+  const editor = createEditors();
+
+  const createTopicMap = L.map('createTopicMap').setView([0, 0], 2);
+  displayMap(createTopicMap, []);
+  const newTopicMarker = initializeCreateTopicMap(createTopicMap);
+
+  createTopic(
+    createTopicForm,
+    newTopicTitle,
+    newTopicCategory,
+    newTopicTags,
+    newTopicMediaUrls,
+    newTopicMarker,
+    editor
+  );
 }
 if (createTopicClose) {
   createTopicClose.addEventListener('click', function() {
@@ -173,20 +210,6 @@ if (createTopicClose) {
   });
 }
 
-document.onclick = function(e) {
-  if (
-    !e.target.classList.contains('option-container') &&
-    !e.target.classList.contains('option__label') &&
-    !e.target.classList.contains('option__radio') &&
-    !e.target.classList.contains('selected')
-  ) {
-    const options = document.querySelectorAll('.option-container');
-    options.forEach(el => {
-      el.classList.remove('option-container--active');
-    });
-  }
-};
-
 if (menuSidebarLinks) {
   menuSidebarLinks.forEach(m => {
     m.addEventListener('click', () => {
@@ -194,15 +217,3 @@ if (menuSidebarLinks) {
     });
   });
 }
-
-// Create Multiselect menus
-try {
-  createMultiSelectMenus();
-  const editor = createEditors();
-
-  createTopic(editor);
-} catch (err) {
-  console.log();
-}
-
-// Create rich text editors
