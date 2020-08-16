@@ -49569,6 +49569,31 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './loader': 'loader.js'
       }
     ],
+    'search.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.searchTopics = void 0;
+
+        var _loader = require('./loader');
+
+        var searchTopics = function searchTopics(form, pat) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            (0, _loader.showLoader)();
+            location.assign(
+              '/?search='.concat(encodeURIComponent(pat.value.trim()))
+            );
+          });
+        };
+
+        exports.searchTopics = searchTopics;
+      },
+      { './loader': 'loader.js' }
+    ],
     'index.js': [
       function(require, module, exports) {
         'use strict';
@@ -49847,6 +49872,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _loader = require('./loader');
 
+        var _search = require('./search');
+
         // DOM elements
         var topicsListViewToggle = document.querySelector('#view-switch--list');
         var topicsMapViewToggle = document.querySelector('#view-switch--map');
@@ -49898,6 +49925,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           '#select-mediaUrls-create-topic-form'
         );
         var createTopicForm = document.querySelector('.form--create-topic');
+        var searchTopicForm = document.querySelector('#searchTopicForm');
+        var searchTopicPattern = document.querySelector('#searchTopicPattern');
 
         var configureSelectGroups = function configureSelectGroups(
           selectGroup
@@ -50012,6 +50041,10 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           clusterListClose.addEventListener('click', function() {
             clusterListContainer.classList.add('hide');
           });
+        }
+
+        if (searchTopicForm) {
+          (0, _search.searchTopics)(searchTopicForm, searchTopicPattern);
         }
 
         if (topicsListViewToggle) {
@@ -50335,7 +50368,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './quill': 'quill.js',
         './filter': 'filter.js',
         './createTopic': 'createTopic.js',
-        './loader': 'loader.js'
+        './loader': 'loader.js',
+        './search': 'search.js'
       }
     ],
     '../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js': [
@@ -50371,7 +50405,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '50733' + '/'
+            protocol + '://' + hostname + ':' + '64313' + '/'
           );
 
           ws.onmessage = function(event) {

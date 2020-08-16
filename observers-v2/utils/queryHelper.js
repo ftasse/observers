@@ -41,8 +41,10 @@ class QueryHelper {
   }
   search() {
     if (this.queryStr.search) {
-      const searchText = this.queryStr.search;
-      this.query = this.query.find({ $text: { $search: searchText } });
+      const regex = new RegExp(escapeRegex(this.queryStr.search), 'gi');
+      this.query = this.query.find({
+        $text: { $search: this.queryStr.search }
+      });
     }
     return this;
   }
@@ -74,5 +76,9 @@ class QueryHelper {
     return this;
   }
 }
+
+const escapeRegex = text => {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+};
 
 module.exports = QueryHelper;

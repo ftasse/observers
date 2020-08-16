@@ -232,6 +232,14 @@ body {
       font-size: 20rem;
       letter-spacing: 1.2rem; } }
 
+.nomatch__text {
+  align-self: center;
+  font-size: 3rem; }
+  .nomatch__text--blur {
+    font-size: 8rem;
+    color: aliceblue;
+    margin-top: 5rem; }
+
 .text-italics {
   font-style: italic !important; }
 
