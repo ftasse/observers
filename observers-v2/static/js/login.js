@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { showAlert } from './alert';
+import { hideLoader, showLoader } from './loader';
 
 export const login = async (email, password) => {
   try {
+    showLoader();
     const res = await axios({
       method: 'POST',
       url: 'http://127.0.0.1:3000/api/v1/users/signin',
@@ -11,7 +13,7 @@ export const login = async (email, password) => {
         password
       }
     });
-
+    hideLoader();
     if (res.data.status === 'success') {
       showAlert('success', 'Logged in successfully');
       window.setTimeout(() => {
@@ -19,12 +21,14 @@ export const login = async (email, password) => {
       }, 1500);
     }
   } catch (err) {
+    hideLoader();
     showAlert('failed', err.response.data.message);
   }
 };
 
 export const logout = async () => {
   try {
+    showLoader();
     const res = await axios({
       method: 'GET',
       url: 'http://127.0.0.1:3000/api/v1/users/signout'

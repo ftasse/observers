@@ -103,17 +103,19 @@ topicSchema.virtual('reports', {
 
 topicSchema.pre('save', function(next) {
   this.slug = slugify(this.title, { lower: true });
+  this.imageCover = this.imageCover ? this.imageCover : 'nocover.jpg';
 
   const descriptionObj = JSON.parse(this.description);
   if (descriptionObj.deltaOps) {
     const cfg = {};
     const converter = new QuillDeltaToHtmlConverter(
-      descriptionObj.deltaOps,
+      descriptionObj.deltaOps.ops,
       cfg
     );
     const html = converter.convert();
-
-    this.descriptionHTML = html ? html : this.description;
+    this.descriptionHTML = html
+      ? html.split('<br/><br/>').join()
+      : this.description;
   }
 
   next();

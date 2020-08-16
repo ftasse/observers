@@ -9,11 +9,15 @@
         label.form__label(for='title')
           | Topic&apos;s title
           span.form__message
+            |
+            | *
       .form__group.form__group--small
         label.form__label--title(for='select-category-create-topic-form')
           | Topic&apos;s category
-          span.form__message *
-        select#select-category-create-topic-form.form-control(data-trigger='' name='choices-single-default' placeholder='Search category' required='')
+          span.form__message
+            |
+            | *
+        select#select-category-create-topic-form.form-control(data-trigger='' name='choices-single-default' placeholder='Search category')
           option(value='') Select category
           each category in categories
             option(value=`${category}`)= category
@@ -21,7 +25,7 @@
         label#topicDescriptionLabel.form__label--title(for='topicDescription')
           | Topic&apos;s description
           span.form__message *
-        input#topicDescription(name='description' type='hidden' required='')
+        input#topicDescription(name='description' type='hidden')
         .form__editor.editor#topicEditor
       .form__group
         input#select-tags-create-topic-form.form-control.form__input(type='text' value='' placeholder='Enter something')
@@ -30,9 +34,12 @@
         input#select-mediaUrls-create-topic-form.form-control.form__input(type='text' value='' placeholder='Enter something')
         label.form__label(for='select-mediaUrls-create-topic-form') Topic&apos;s supporting links or sources
       .form__group
-        input#location.form__input(type='text' placeholder="Topic's location or area of interest")
-        label.form__label(for='Location')
-          | Topic's location or area of interest
+        label.form__label(for='location')
+          | Topic's location
+          span.form__message *
+        input#location.form__input(type='hidden' placeholder="Topic's location" )
+        .form__map
+          .map#createTopicMap
       .form__group.form__group--split
         input.btn.btn--small.btn-primary(type='Reset' value='Reset Form')
         input.btn.btn--small.btn-black(type='Submit' value='Create Topic')

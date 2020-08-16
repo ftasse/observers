@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { showAlert } from './alert';
+import { showLoader, hideLoader } from './loader';
 
-const getLocation = async locationStr => {
+const getLocation = async locationLatLng => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `https://www.mapquestapi.com/geocoding/v1/address?key=qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1&inFormat=kvp&outFormat=json&location=${locationStr}&maxResults=1`
+
+      url: `https://www.mapquestapi.com/geocoding/v1/reverse?key=qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1&inFormat=kvp&outFormat=json&location=${locationLatLng.lat},${locationLatLng.lng}&maxResults=1`
     });
     console.log(res);
     if (res.status === 200) {
@@ -15,10 +17,7 @@ const getLocation = async locationStr => {
         res.data.results[0].locations[0].adminArea5
       ];
       return {
-        coordinates: [
-          res.data.results[0].locations[0].latLng.lng,
-          res.data.results[0].locations[0].latLng.lat
-        ],
+        coordinates: [locationLatLng.lng, locationLatLng.lat],
         address: name.join('|')
       };
     }
@@ -29,23 +28,37 @@ const getLocation = async locationStr => {
 
 const submitTopic = async topic => {
   try {
+    const topicLocation = await getLocation(topic.locationLatLng);
+
     console.log(topic);
-    const topicLocation = await getLocation(topic.locationStr);
-    if (topicLocation) {
-      console.log(topicLocation);
+    if (!topic.category) {
+      return showAlert(
+        'failed',
+        'Please pick a category for your topic from the dropdown.'
+      );
+    } else if (topic.description.text.trim().length < 30) {
+      return showAlert(
+        'failed',
+        "Your topic's description is too short.(< 30 characters)"
+      );
+    } else if (!topicLocation) {
+      return showAlert(
+        'failed',
+        'Location address not found. Please try again'
+      );
+    } else {
+      showLoader();
+
+      topic.description = JSON.stringify(topic.description);
+      topic.location = topicLocation;
+      delete topic.locationLatLng;
+
       const res = await axios({
         method: 'POST',
         url: 'http://127.0.0.1:3000/api/v1/topics',
-        data: {
-          title: topic.title,
-          tags: topic.tags,
-          mediaUrls: topic.mediaUrls,
-          category: topic.category,
-          description: topic.description,
-          location: topicLocation
-        }
+        data: topic
       });
-
+      hideLoader();
       if (res.data.status === 'success') {
         showAlert('success', 'Topic successfully created');
         window.setTimeout(() => {
@@ -53,32 +66,35 @@ const submitTopic = async topic => {
         }, 1500);
       }
     }
+    hideLoader();
   } catch (err) {
-    console.log(err.response.data.message);
+    hideLoader();
     showAlert('failed', err.response.data.message);
   }
 };
 
-export const createTopic = editor => {
-  const title = document.querySelector('#title');
-  const category = document.querySelector('#select-category-create-topic-form');
-  const tags = document.querySelector('#select-tags-create-topic-form');
-  const mediaUrls = document.querySelector(
-    '#select-mediaUrls-create-topic-form'
-  );
-  const locationStr = document.querySelector('#location');
-
-  const form = document.querySelector('.form--create-topic');
-  form.addEventListener('submit', e => {
+export const createTopic = (
+  form,
+  title,
+  category,
+  tags,
+  mediaUrls,
+  marker,
+  editor
+) => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const topic = {
       title: title.value,
       category: category.value,
-      description: JSON.stringify({
-        text: editor.getText(),
+      description: {
+        text: editor
+          .getText()
+          .split('\n\n')
+          .join(),
         deltaOps: editor.getContents()
-      }),
-      locationStr: locationStr.value
+      },
+      locationLatLng: marker.getLatLng()
     };
     if (tags.value) {
       topic.tags = tags.value.split(',');
@@ -86,6 +102,10 @@ export const createTopic = editor => {
     if (mediaUrls.value) {
       topic.mediaUrls = mediaUrls.value.split(',');
     }
-    submitTopic(topic);
+    try {
+      await submitTopic(topic);
+    } catch (err) {
+      console.log(err);
+    }
   });
 };

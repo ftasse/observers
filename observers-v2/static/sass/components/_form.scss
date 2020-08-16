@@ -239,19 +239,17 @@
     padding: .8rem 0;
     font-size: 1.5rem;
     transition: all .2s;
-    &:valid,
-    &:focus,
-    &:required {
-      border-bottom-color: var(--color-secondary) ;
-      outline: none;
-      box-shadow: none;
+    outline: none;
+    box-shadow: none;
+    &:focus {
+      border-bottom-color: lighten($color-primary, 40%) ;
     }
-    &:invalid {
-      border-bottom-color: var(---color-primary);
+    &:required:focus:valid {
+      border-bottom-color: var(--color-success) ;
     }
-  }
-  &__input:required + &__label > span:after {
-    content: "*";
+    &:focus:invalid {
+      border-bottom-color: var(--color-primary);
+    }
   }
   &__input {
     background-color: var(--color-white);
@@ -262,9 +260,13 @@
     &::-ms-input-placeholder {
       color: transparent;
     }
-    
   }
 
+  &__map {
+    height: 30rem;
+    position: relative;
+    margin-top: 2rem;
+  }
   &__textarea {
     margin-top: 2rem;
     padding: 1rem 1rem;
@@ -275,6 +277,18 @@
       color: var(--color-grey-light);
       font-style: italic;
     }
+  }
+
+  &__textarea:invalid + &__label &__message,
+  &__input:invalid + &__label &__message  {
+    color: var(--color-primary);
+  }
+  &__textarea:valid + &__label &__message,
+  &__input:valid + &__label &__message  {
+    color: var(--color-success);
+  }
+  &__message {
+    color: var(--color-grey-light);
   }
 
   &__label {
@@ -296,9 +310,6 @@
       position: relative;
       margin-bottom: .5rem;
     }
-  }
-  &__message {
-    color: var(--color-primary);
   }
   &__input:placeholder-shown + &__label {
     font-size: 1.5rem;
