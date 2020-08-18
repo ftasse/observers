@@ -1,16 +1,7 @@
 extends base
 
 block prepend cssImports
-  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css')
-  link(
-    rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-    crossorigin="")
-  link(rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css")
-  link(rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css")
-  link(rel='stylesheet' href='https://cdn.quilljs.com/1.3.6/quill.snow.css')
-
-
+  include _cssImports
 
 block content
   button.btn-respond.btn-respond--black.btn-respond--topic.add-topic__btn
@@ -60,7 +51,7 @@ block content
           p.nomatch__text.nomatch__text--blur We are sorry :(
         else
           include _listViewConfig
-          ul.topic-cards.margin-bottom-small
+          ul.list-view.list-view-container.margin-bottom-small
             each topic in topics
               li.topic.margin-bottom-extra-small
                 .topic__info
@@ -76,7 +67,7 @@ block content
                       span.link-info.link-info--small #{topic.reportCount} report(s)
                 img.topic__img.margin-bottom-small(src=`img/${topic.imageCover}` alt=`${topic.title}`)
                 p.topic__title
-                  a(href='#')= topic.title
+                  a(href=`/topics/${topic.slug}`)= topic.title
                 if topic.descriptionHTML
                   - const descriptionObj = JSON.parse(topic.description)
                   p.topic__description #{descriptionObj.text}...
@@ -95,14 +86,15 @@ block content
                 p.topic__author.paragraph--small.text-italics.margin-bottom-medium &ndash; Author: #{topic.author.name}
 
 
-          .topic-map.margin-bottom-medium.hide
-            #mapbox-topics.map.margin-bottom-small(data-mapData=`${JSON.stringify(topics.map(el => {
+          .topic-map.map-container.margin-bottom-medium.hide
+            #mapbox.map.margin-bottom-small(data-mapData=`${JSON.stringify(topics.map(el => {
               return {
                 location: el.location,
                 createdAt: el.createdAt,
                 title: el.title,
                 slug: el.slug,
-                category: el.category
+                category: el.category,
+                imageCover: el.imageCover
               }
             }))}`)
             .topic-map__cluster-list.hide(data-simplebar='' data-simplebar-auto-hide='false')

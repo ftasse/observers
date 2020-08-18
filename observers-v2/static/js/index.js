@@ -7,15 +7,17 @@ import { createMultiSelectMenus } from './choice';
 import { createEditors } from './quill';
 import { filter } from './filter';
 import { createTopic } from './createTopic';
+import { createReport } from './createReport';
 import { showLoader } from './loader';
 import { searchTopics } from './search';
+import { reportCharts } from './echarts';
 
 // DOM elements
-const topicsListViewToggle = document.querySelector('#view-switch--list');
-const topicsMapViewToggle = document.querySelector('#view-switch--map');
-const topicsList = document.querySelector('.topic-cards');
-const topicsMap = document.querySelector('.topic-map');
-const topicsPagination = document.querySelector('.pagination');
+const listViewToggle = document.querySelector('#view-switch--list');
+const mapViewToggle = document.querySelector('#view-switch--map');
+const listContainer = document.querySelector('.list-view-container');
+const mapContainer = document.querySelector('.map-container');
+const paginationDiv = document.querySelector('.pagination');
 const clusterListClose = document.querySelector(
   '.topic-map__cluster-list--close'
 );
@@ -27,6 +29,27 @@ const clusterList = document.querySelector(
 const createTopicButtons = document.querySelectorAll('.add-topic__btn');
 const createTopicFormContainer = document.querySelector('.create-topic-form');
 const createTopicClose = document.querySelector('.create-topic-close');
+const createTopicForm = document.querySelector('.form--create-topic');
+const searchTopicForm = document.querySelector('#searchTopicForm');
+const searchTopicPattern = document.querySelector('#searchTopicPattern');
+const newTopicTitle = document.querySelector('#title');
+const newTopicCategory = document.querySelector(
+  '#select-category-create-topic-form'
+);
+const newTopicTags = document.querySelector('#select-tags-create-topic-form');
+const newTopicMediaUrls = document.querySelector(
+  '#select-mediaUrls-create-topic-form'
+);
+
+const createReportButtons = document.querySelectorAll('.add-report__btn');
+const createReportFormContainer = document.querySelector('.create-report-form');
+const createReportClose = document.querySelector('.create-report-close');
+const createReportForm = document.querySelector('.form--create-report');
+const newReportContent = document.querySelector('#report-content');
+const newReportMediaUrls = document.querySelector(
+  '#select-mediaUrls-create-report-form'
+);
+
 const selectGroupsNormal = document.querySelectorAll('.select-group--normal');
 const selectGroupsRespond = document.querySelectorAll('.select-group--respond');
 
@@ -42,23 +65,14 @@ const username = document.getElementById('username');
 const password = document.getElementById('password');
 const passwordConfirm = document.getElementById('passwordConfirm');
 
-const topics = document.querySelector('#mapbox-topics');
+const mapDivEl = document.querySelector('#mapbox');
 const filterTopicsBtn = document.querySelector('#filter-topics');
 const filterTopicsBtnRespond = document.querySelector(
   '#filter-topics--respond'
 );
 
-const newTopicTitle = document.querySelector('#title');
-const newTopicCategory = document.querySelector(
-  '#select-category-create-topic-form'
-);
-const newTopicTags = document.querySelector('#select-tags-create-topic-form');
-const newTopicMediaUrls = document.querySelector(
-  '#select-mediaUrls-create-topic-form'
-);
-const createTopicForm = document.querySelector('.form--create-topic');
-const searchTopicForm = document.querySelector('#searchTopicForm');
-const searchTopicPattern = document.querySelector('#searchTopicPattern');
+const sentimentChartContainers = document.querySelectorAll('.sentiment-pie');
+const reportChartContainers = document.querySelectorAll('.report-freq');
 
 const configureSelectGroups = selectGroup => {
   selectGroup.forEach(g => {
@@ -154,9 +168,9 @@ if (logoutBtn) {
 }
 
 let map;
-if (topics) {
-  map = L.map('mapbox-topics').setView([0, 0], 2);
-  displayMap(map, JSON.parse(topics.dataset.mapdata));
+if (mapDivEl) {
+  map = L.map('mapbox').setView([0, 0], 2);
+  displayMap(map, JSON.parse(mapDivEl.dataset.mapdata));
 }
 
 if (clusterListClose) {
@@ -169,17 +183,25 @@ if (searchTopicForm) {
   searchTopics(searchTopicForm, searchTopicPattern);
 }
 
-if (topicsListViewToggle) {
-  topicsListViewToggle.addEventListener('click', e => {
-    topicsMap.classList.add('hide');
-    topicsList.classList.remove('hide');
-    topicsPagination.classList.remove('hide');
+const switchListView = (mapView, listView, paginationDiv) => {
+  mapView.classList.add('hide');
+  listView.classList.remove('hide');
+  paginationDiv.classList.remove('hide');
+};
+
+const switchMapView = (mapView, listView, paginationDiv) => {
+  mapView.classList.remove('hide');
+  listView.classList.add('hide');
+  paginationDiv.classList.add('hide');
+};
+
+if (listViewToggle) {
+  listViewToggle.addEventListener('click', e => {
+    switchListView(mapContainer, listContainer, paginationDiv);
   });
 
-  topicsMapViewToggle.addEventListener('click', e => {
-    topicsList.classList.add('hide');
-    topicsPagination.classList.add('hide');
-    topicsMap.classList.remove('hide');
+  mapViewToggle.addEventListener('click', e => {
+    switchMapView(mapContainer, listContainer, paginationDiv);
 
     map.invalidateSize();
   });
@@ -209,11 +231,28 @@ if (createTopicButtons) {
     newTopicMarker,
     editor
   );
-}
-if (createTopicClose) {
+
   createTopicClose.addEventListener('click', function() {
     createTopicFormContainer.style.transform = 'translateX(-50%) scaleX(0)';
     createTopicFormContainer.style.opacity = '0';
+  });
+}
+
+if (createReportButtons) {
+  createReportButtons.forEach(b => {
+    b.addEventListener('click', function() {
+      createReportFormContainer.style.transform = 'translateX(-50%) scaleX(1)';
+      createReportFormContainer.style.opacity = '1';
+    });
+  });
+
+  createMultiSelectMenus(true);
+
+  createReport(createReportForm, newReportContent, newReportMediaUrls);
+
+  createReportClose.addEventListener('click', function() {
+    createReportFormContainer.style.transform = 'translateX(-50%) scaleX(0)';
+    createReportFormContainer.style.opacity = '0';
   });
 }
 
@@ -223,4 +262,8 @@ if (menuSidebarLinks) {
       menuSidebarToggle.checked = false;
     });
   });
+}
+
+if (reportChartContainers || sentimentChartContainers) {
+  reportCharts(sentimentChartContainers, reportChartContainers);
 }

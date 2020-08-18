@@ -20338,7 +20338,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var markup = '\n    <div class="alert alert--'
             .concat(
               type,
-              '">\n        <svg class="alert__icon">\n            <use xlink:href="img/sprite.svg#icon-'
+              '">\n        <svg class="alert__icon">\n            <use xlink:href="/img/sprite.svg#icon-'
             )
             .concat(
               iconRefs[type],
@@ -20750,27 +20750,37 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         });
         exports.initializeCreateTopicMap = exports.displayMap = void 0;
 
-        var getPopupHTML = function getPopupHTML(topic) {
-          return '\n    <div class="sm-card">\n        <img src="img/politics.jpg" alt="" class="sm-card__img">\n        <div class="sm-card__info">\n            <div class="sm-card__main">\n                <a href="/topics/'
-            .concat(topic.slug, '" class="link-info link-info--normal">')
+        var getPopupHTML = function getPopupHTML(data) {
+          var imageTag = data.imageCover
+            ? '<img src="/img/'.concat(
+                data.imageCover,
+                '" alt="" class="sm-card__img">'
+              )
+            : '';
+          return '\n    <div class="sm-card">\n        '
             .concat(
-              topic.title,
+              imageTag,
+              '\n        <div class="sm-card__info">\n            <div class="sm-card__main">\n                <a href="/topics/'
+            )
+            .concat(data.slug, '" class="link-info link-info--normal">')
+            .concat(
+              data.title,
               '</a>\n            </div>\n            <div class="sm-card__sub">\n                <a href="/?category='
             )
             .concat(
-              encodeURIComponent(topic.category),
+              encodeURIComponent(data.category),
               '#topics" class="sm-card__category sm-card__link link-info link-info--category link-info--category--small">\n                    '
             )
             .concat(
-              topic.category,
+              data.category,
               '\n                 </a>\n                <a href="/?createdAt='
             )
             .concat(
-              new Date(topic.createdAt).toISOString().split('T')[0],
+              new Date(data.createdAt).toISOString().split('T')[0],
               '#topics" class="sm-card__link link-info link-info--small link-info--small--sm">\n                    Created on '
             )
             .concat(
-              new Date(topic.createdAt).toLocaleString('en-us', {
+              new Date(data.createdAt).toLocaleString('en-us', {
                 month: 'long',
                 day: 'numeric',
                 year: 'numeric'
@@ -28439,60 +28449,97 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         }
 
         var createMultiSelectMenus = function createMultiSelectMenus() {
-          var selectCategoryCreateTopicForm = new _choices.default(
-            '#select-category-create-topic-form'
-          );
-          var selectTagsCreateTopicForm = new _choices.default(
-            '#select-tags-create-topic-form',
-            {
-              delimiter: ',',
-              editItems: true,
-              duplicateItemsAllowed: false,
-              maxItemCount: 5,
-              placeholderValue: 'add tag',
-              removeItemButton: true,
-              addItemFilter: function addItemFilter(value) {
-                if (!value) {
-                  return false;
-                }
+          var report =
+            arguments.length > 0 && arguments[0] !== undefined
+              ? arguments[0]
+              : false;
 
-                var regex = /[-a-zA-Z0-9@:%._+#]{1,256}/;
-                var expression = new RegExp(regex.source, 'i');
-                return expression.test(value);
-              },
-              customAddItemText:
-                'Please enter a valid tag. It should contains only alphanumeric and -%._+# characters are allowed.',
-              maxItemText: function maxItemText(maxItemCount) {
-                return String(maxItemCount) + ' tags can be defined at most';
-              },
-              uniqueItemText: 'This is tag has already been added'
-            }
-          );
-          var selectMediaUrlsCreateTopicForm = new _choices.default(
-            '#select-mediaUrls-create-topic-form',
-            {
-              delimiter: ',',
-              editItems: true,
-              addItemFilter: function addItemFilter(value) {
-                if (!value) {
-                  return false;
-                }
+          if (!report) {
+            var selectCategoryCreateTopicForm = new _choices.default(
+              '#select-category-create-topic-form'
+            );
+            var selectTagsCreateTopicForm = new _choices.default(
+              '#select-tags-create-topic-form',
+              {
+                delimiter: ',',
+                editItems: true,
+                duplicateItemsAllowed: false,
+                maxItemCount: 5,
+                placeholderValue: 'add tag',
+                removeItemButton: true,
+                addItemFilter: function addItemFilter(value) {
+                  if (!value) {
+                    return false;
+                  }
 
-                var regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
-                var expression = new RegExp(regex.source, 'i');
-                return expression.test(value);
-              },
-              customAddItemText: 'Please enter a valid link.',
-              duplicateItemsAllowed: false,
-              maxItemCount: 5,
-              placeholderValue: 'add source',
-              removeItemButton: true,
-              maxItemText: function maxItemText(maxItemCount) {
-                return String(maxItemCount) + ' sources can be defined at most';
-              },
-              uniqueItemText: 'This source has already been provided'
-            }
-          );
+                  var regex = /[-a-zA-Z0-9@:%._+#]{1,256}/;
+                  var expression = new RegExp(regex.source, 'i');
+                  return expression.test(value);
+                },
+                customAddItemText:
+                  'Please enter a valid tag. It should contains only alphanumeric and -%._+# characters are allowed.',
+                maxItemText: function maxItemText(maxItemCount) {
+                  return String(maxItemCount) + ' tags can be defined at most';
+                },
+                uniqueItemText: 'This is tag has already been added'
+              }
+            );
+            var selectMediaUrlsCreateTopicForm = new _choices.default(
+              '#select-mediaUrls-create-topic-form',
+              {
+                delimiter: ',',
+                editItems: true,
+                addItemFilter: function addItemFilter(value) {
+                  if (!value) {
+                    return false;
+                  }
+
+                  var regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+                  var expression = new RegExp(regex.source, 'i');
+                  return expression.test(value);
+                },
+                customAddItemText: 'Please enter a valid link.',
+                duplicateItemsAllowed: false,
+                maxItemCount: 5,
+                placeholderValue: 'add source',
+                removeItemButton: true,
+                maxItemText: function maxItemText(maxItemCount) {
+                  return (
+                    String(maxItemCount) + ' sources can be defined at most'
+                  );
+                },
+                uniqueItemText: 'This source has already been provided'
+              }
+            );
+          } else {
+            var selectMediaUrlsCreateReportForm = new _choices.default(
+              '#select-mediaUrls-create-report-form',
+              {
+                delimiter: ',',
+                editItems: true,
+                addItemFilter: function addItemFilter(value) {
+                  if (!value) {
+                    return false;
+                  }
+
+                  var regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+                  var expression = new RegExp(regex.source, 'i');
+                  return expression.test(value);
+                },
+                customAddItemText: 'Only valid links are allowed.',
+                duplicateItemsAllowed: false,
+                maxItemCount: 5,
+                placeholderValue: 'add source',
+                removeItemButton: true,
+                maxItemText: function maxItemText(maxItemCount) {
+                  return (
+                    String(maxItemCount) + ' sources can be defined at most'
+                  );
+                },
+                uniqueItemText: 'This source has already been provided'
+              }
+            );
+          }
         };
 
         exports.createMultiSelectMenus = createMultiSelectMenus;
@@ -49226,20 +49273,18 @@ parcelRequire = (function(modules, cache, entry, globalName) {
       },
       {}
     ],
-    'createTopic.js': [
+    'geolocation.js': [
       function(require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, '__esModule', {
           value: true
         });
-        exports.createTopic = void 0;
+        exports.getLocation = exports.geoLocate = void 0;
 
         var _axios = _interopRequireDefault(require('axios'));
 
         var _alert = require('./alert');
-
-        var _loader = require('./loader');
 
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : { default: obj };
@@ -49301,19 +49346,60 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           };
         }
 
-        var getLocation = /*#__PURE__*/ (function() {
+        var geoLocate = /*#__PURE__*/ (function() {
           var _ref = _asyncToGenerator(
-            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee() {
+              var getPosition;
+              return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                  switch ((_context.prev = _context.next)) {
+                    case 0:
+                      getPosition = function getPosition(options) {
+                        return new Promise(function(resolve, reject) {
+                          navigator.geolocation.getCurrentPosition(
+                            resolve,
+                            reject,
+                            options
+                          );
+                        });
+                      };
+
+                      _context.next = 3;
+                      return getPosition();
+
+                    case 3:
+                      return _context.abrupt('return', _context.sent);
+
+                    case 4:
+                    case 'end':
+                      return _context.stop();
+                  }
+                }
+              }, _callee);
+            })
+          );
+
+          return function geoLocate() {
+            return _ref.apply(this, arguments);
+          };
+        })();
+
+        exports.geoLocate = geoLocate;
+
+        var getLocation = /*#__PURE__*/ (function() {
+          var _ref2 = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee2(
               locationLatLng
             ) {
               var res, name;
               return regeneratorRuntime.wrap(
-                function _callee$(_context) {
+                function _callee2$(_context2) {
                   while (1) {
-                    switch ((_context.prev = _context.next)) {
+                    switch ((_context2.prev = _context2.next)) {
                       case 0:
-                        _context.prev = 0;
-                        _context.next = 3;
+                        _context2.prev = 0;
+                        console.log(locationLatLng);
+                        _context2.next = 4;
                         return (0, _axios.default)({
                           method: 'GET',
                           url: 'https://www.mapquestapi.com/geocoding/v1/reverse?key=qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1&inFormat=kvp&outFormat=json&location='
@@ -49321,12 +49407,12 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                             .concat(locationLatLng.lng, '&maxResults=1')
                         });
 
-                      case 3:
-                        res = _context.sent;
+                      case 4:
+                        res = _context2.sent;
                         console.log(res);
 
                         if (!(res.status === 200)) {
-                          _context.next = 8;
+                          _context2.next = 9;
                           break;
                         }
 
@@ -49335,64 +49421,148 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           res.data.results[0].locations[0].adminArea3,
                           res.data.results[0].locations[0].adminArea5
                         ];
-                        return _context.abrupt('return', {
+                        return _context2.abrupt('return', {
                           coordinates: [locationLatLng.lng, locationLatLng.lat],
                           address: name.join('|')
                         });
 
-                      case 8:
-                        _context.next = 13;
+                      case 9:
+                        _context2.next = 15;
                         break;
 
-                      case 10:
-                        _context.prev = 10;
-                        _context.t0 = _context['catch'](0);
+                      case 11:
+                        _context2.prev = 11;
+                        _context2.t0 = _context2['catch'](0);
+                        console.log(_context2.t0);
                         (0, _alert.showAlert)(
                           'failed',
                           'Please provide a valid location'
                         );
 
-                      case 13:
+                      case 15:
                       case 'end':
-                        return _context.stop();
+                        return _context2.stop();
                     }
                   }
                 },
-                _callee,
+                _callee2,
                 null,
-                [[0, 10]]
+                [[0, 11]]
               );
             })
           );
 
           return function getLocation(_x) {
-            return _ref.apply(this, arguments);
+            return _ref2.apply(this, arguments);
           };
         })();
 
+        exports.getLocation = getLocation;
+      },
+      { axios: '../../node_modules/axios/index.js', './alert': 'alert.js' }
+    ],
+    'createTopic.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.createTopic = void 0;
+
+        var _axios = _interopRequireDefault(require('axios'));
+
+        var _alert = require('./alert');
+
+        var _loader = require('./loader');
+
+        var _geolocation = require('./geolocation');
+
+        function _interopRequireDefault(obj) {
+          return obj && obj.__esModule ? obj : { default: obj };
+        }
+
+        function asyncGeneratorStep(
+          gen,
+          resolve,
+          reject,
+          _next,
+          _throw,
+          key,
+          arg
+        ) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+          if (info.done) {
+            resolve(value);
+          } else {
+            Promise.resolve(value).then(_next, _throw);
+          }
+        }
+
+        function _asyncToGenerator(fn) {
+          return function() {
+            var self = this,
+              args = arguments;
+            return new Promise(function(resolve, reject) {
+              var gen = fn.apply(self, args);
+              function _next(value) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'next',
+                  value
+                );
+              }
+              function _throw(err) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'throw',
+                  err
+                );
+              }
+              _next(undefined);
+            });
+          };
+        }
+
         var submitTopic = /*#__PURE__*/ (function() {
-          var _ref2 = _asyncToGenerator(
-            /*#__PURE__*/ regeneratorRuntime.mark(function _callee2(topic) {
+          var _ref = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(topic) {
               var topicLocation, res;
               return regeneratorRuntime.wrap(
-                function _callee2$(_context2) {
+                function _callee$(_context) {
                   while (1) {
-                    switch ((_context2.prev = _context2.next)) {
+                    switch ((_context.prev = _context.next)) {
                       case 0:
-                        _context2.prev = 0;
-                        _context2.next = 3;
-                        return getLocation(topic.locationLatLng);
+                        _context.prev = 0;
+                        _context.next = 3;
+                        return (0, _geolocation.getLocation)(
+                          topic.locationLatLng
+                        );
 
                       case 3:
-                        topicLocation = _context2.sent;
+                        topicLocation = _context.sent;
                         console.log(topic);
 
                         if (topic.category) {
-                          _context2.next = 9;
+                          _context.next = 9;
                           break;
                         }
 
-                        return _context2.abrupt(
+                        return _context.abrupt(
                           'return',
                           (0, _alert.showAlert)(
                             'failed',
@@ -49402,11 +49572,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
                       case 9:
                         if (!(topic.description.text.trim().length < 30)) {
-                          _context2.next = 13;
+                          _context.next = 13;
                           break;
                         }
 
-                        return _context2.abrupt(
+                        return _context.abrupt(
                           'return',
                           (0, _alert.showAlert)(
                             'failed',
@@ -49416,11 +49586,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
                       case 13:
                         if (topicLocation) {
-                          _context2.next = 17;
+                          _context.next = 17;
                           break;
                         }
 
-                        return _context2.abrupt(
+                        return _context.abrupt(
                           'return',
                           (0, _alert.showAlert)(
                             'failed',
@@ -49433,7 +49603,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                         topic.description = JSON.stringify(topic.description);
                         topic.location = topicLocation;
                         delete topic.locationLatLng;
-                        _context2.next = 23;
+                        _context.next = 23;
                         return (0, _axios.default)({
                           method: 'POST',
                           url: 'http://127.0.0.1:3000/api/v1/topics',
@@ -49441,7 +49611,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                         });
 
                       case 23:
-                        res = _context2.sent;
+                        res = _context.sent;
                         (0, _loader.hideLoader)();
 
                         if (res.data.status === 'success') {
@@ -49456,33 +49626,33 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
                       case 26:
                         (0, _loader.hideLoader)();
-                        _context2.next = 33;
+                        _context.next = 33;
                         break;
 
                       case 29:
-                        _context2.prev = 29;
-                        _context2.t0 = _context2['catch'](0);
+                        _context.prev = 29;
+                        _context.t0 = _context['catch'](0);
                         (0, _loader.hideLoader)();
                         (0, _alert.showAlert)(
                           'failed',
-                          _context2.t0.response.data.message
+                          _context.t0.response.data.message
                         );
 
                       case 33:
                       case 'end':
-                        return _context2.stop();
+                        return _context.stop();
                     }
                   }
                 },
-                _callee2,
+                _callee,
                 null,
                 [[0, 29]]
               );
             })
           );
 
-          return function submitTopic(_x2) {
-            return _ref2.apply(this, arguments);
+          return function submitTopic(_x) {
+            return _ref.apply(this, arguments);
           };
         })();
 
@@ -49498,13 +49668,13 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           form.addEventListener(
             'submit',
             /*#__PURE__*/ (function() {
-              var _ref3 = _asyncToGenerator(
-                /*#__PURE__*/ regeneratorRuntime.mark(function _callee3(e) {
+              var _ref2 = _asyncToGenerator(
+                /*#__PURE__*/ regeneratorRuntime.mark(function _callee2(e) {
                   var topic;
                   return regeneratorRuntime.wrap(
-                    function _callee3$(_context3) {
+                    function _callee2$(_context2) {
                       while (1) {
-                        switch ((_context3.prev = _context3.next)) {
+                        switch ((_context2.prev = _context2.next)) {
                           case 0:
                             e.preventDefault();
                             topic = {
@@ -49528,34 +49698,34 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                               topic.mediaUrls = mediaUrls.value.split(',');
                             }
 
-                            _context3.prev = 4;
-                            _context3.next = 7;
+                            _context2.prev = 4;
+                            _context2.next = 7;
                             return submitTopic(topic);
 
                           case 7:
-                            _context3.next = 12;
+                            _context2.next = 12;
                             break;
 
                           case 9:
-                            _context3.prev = 9;
-                            _context3.t0 = _context3['catch'](4);
-                            console.log(_context3.t0);
+                            _context2.prev = 9;
+                            _context2.t0 = _context2['catch'](4);
+                            console.log(_context2.t0);
 
                           case 12:
                           case 'end':
-                            return _context3.stop();
+                            return _context2.stop();
                         }
                       }
                     },
-                    _callee3,
+                    _callee2,
                     null,
                     [[4, 9]]
                   );
                 })
               );
 
-              return function(_x3) {
-                return _ref3.apply(this, arguments);
+              return function(_x2) {
+                return _ref2.apply(this, arguments);
               };
             })()
           );
@@ -49566,7 +49736,241 @@ parcelRequire = (function(modules, cache, entry, globalName) {
       {
         axios: '../../node_modules/axios/index.js',
         './alert': 'alert.js',
-        './loader': 'loader.js'
+        './loader': 'loader.js',
+        './geolocation': 'geolocation.js'
+      }
+    ],
+    'createReport.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.createReport = void 0;
+
+        var _axios = _interopRequireDefault(require('axios'));
+
+        var _loader = require('./loader');
+
+        var _alert = require('./alert');
+
+        var _geolocation = require('./geolocation');
+
+        function _interopRequireDefault(obj) {
+          return obj && obj.__esModule ? obj : { default: obj };
+        }
+
+        function asyncGeneratorStep(
+          gen,
+          resolve,
+          reject,
+          _next,
+          _throw,
+          key,
+          arg
+        ) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+          if (info.done) {
+            resolve(value);
+          } else {
+            Promise.resolve(value).then(_next, _throw);
+          }
+        }
+
+        function _asyncToGenerator(fn) {
+          return function() {
+            var self = this,
+              args = arguments;
+            return new Promise(function(resolve, reject) {
+              var gen = fn.apply(self, args);
+              function _next(value) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'next',
+                  value
+                );
+              }
+              function _throw(err) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'throw',
+                  err
+                );
+              }
+              _next(undefined);
+            });
+          };
+        }
+
+        var submitReport = /*#__PURE__*/ (function() {
+          var _ref = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(
+              topicId,
+              reportContent,
+              reportMediaUrls
+            ) {
+              var position, reportLocation, report, res;
+              return regeneratorRuntime.wrap(
+                function _callee$(_context) {
+                  while (1) {
+                    switch ((_context.prev = _context.next)) {
+                      case 0:
+                        _context.prev = 0;
+                        _context.next = 3;
+                        return (0, _geolocation.geoLocate)();
+
+                      case 3:
+                        position = _context.sent;
+                        _context.next = 10;
+                        break;
+
+                      case 6:
+                        _context.prev = 6;
+                        _context.t0 = _context['catch'](0);
+                        (0, _alert.showAlert)(
+                          'warning',
+                          ''.concat(
+                            _context.t0.message,
+                            '. Default location of latitude 0 and longitude 0 will be used'
+                          )
+                        );
+                        position = {
+                          coords: {
+                            latitude: 0,
+                            longitude: 0
+                          }
+                        };
+
+                      case 10:
+                        _context.prev = 10;
+                        (0, _loader.showLoader)();
+                        _context.next = 14;
+                        return (0, _geolocation.getLocation)({
+                          lat: position.coords.latitude,
+                          lng: position.coords.longitude
+                        });
+
+                      case 14:
+                        reportLocation = _context.sent;
+
+                        if (reportLocation) {
+                          _context.next = 20;
+                          break;
+                        }
+
+                        (0, _loader.hideLoader)();
+                        return _context.abrupt(
+                          'return',
+                          (0, _alert.showAlert)(
+                            'failed',
+                            'Location address not found. Please try again'
+                          )
+                        );
+
+                      case 20:
+                        report = {
+                          topic: topicId,
+                          content: reportContent,
+                          location: reportLocation
+                        };
+
+                        if (reportMediaUrls) {
+                          report.mediaUrls = reportMediaUrls.split(',');
+                        }
+
+                        _context.next = 24;
+                        return (0, _axios.default)({
+                          method: 'POST',
+                          url: 'http://127.0.0.1:3000/api/v1/reports',
+                          data: report
+                        });
+
+                      case 24:
+                        res = _context.sent;
+
+                        if (res.data.status === 'success') {
+                          (0, _alert.showAlert)(
+                            'success',
+                            'Report successfully submitted'
+                          );
+                          window.setTimeout(function() {
+                            location.reload();
+                          }, 1500);
+                        }
+
+                      case 26:
+                        (0, _loader.hideLoader)();
+                        _context.next = 34;
+                        break;
+
+                      case 29:
+                        _context.prev = 29;
+                        _context.t1 = _context['catch'](10);
+                        (0, _loader.hideLoader)();
+                        console.log(_context.t1);
+                        (0, _alert.showAlert)(
+                          'failed',
+                          _context.t1.response.data.message
+                        );
+
+                      case 34:
+                      case 'end':
+                        return _context.stop();
+                    }
+                  }
+                },
+                _callee,
+                null,
+                [
+                  [0, 6],
+                  [10, 29]
+                ]
+              );
+            })
+          );
+
+          return function submitReport(_x, _x2, _x3) {
+            return _ref.apply(this, arguments);
+          };
+        })();
+
+        var createReport = function createReport(
+          createReportForm,
+          reportContentEl,
+          reportMediaUrlsEl
+        ) {
+          createReportForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitReport(
+              createReportForm.dataset.topic,
+              reportContentEl.value,
+              reportMediaUrlsEl.value
+            );
+          });
+        };
+
+        exports.createReport = createReport;
+      },
+      {
+        axios: '../../node_modules/axios/index.js',
+        './loader': 'loader.js',
+        './alert': 'alert.js',
+        './geolocation': 'geolocation.js'
       }
     ],
     'search.js': [
@@ -49593,6 +49997,189 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         exports.searchTopics = searchTopics;
       },
       { './loader': 'loader.js' }
+    ],
+    'echarts.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.reportCharts = void 0;
+        var sentimentChartOption = {
+          title: {
+            text: 'Sentiment analysis',
+            textStyle: {
+              fontFamily: 'Frank Ruhl Libre',
+              fontSize: 16,
+              fontWeight: 400
+            },
+            subtext: 'Most people feel positive about this',
+            subtextStyle: {
+              fontFamily: 'PT serif',
+              fontSize: 13,
+              fontWeight: 400,
+              color: '#ba9545'
+            }
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+          },
+          series: [
+            {
+              name: 'Sentiment',
+              type: 'pie',
+              center: ['50%', '58%'],
+              radius: '60%',
+              data: [],
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 5,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(122, 122, 122, .5)'
+                }
+              }
+            }
+          ]
+        };
+        var reportChartOption = {
+          tooltip: {
+            trigger: 'axis',
+            position: function position(pt) {
+              return [pt[0], '10%'];
+            }
+          },
+          title: {
+            text: 'Report graph',
+            textStyle: {
+              fontFamily: 'Frank Ruhl Libre',
+              fontSize: 16,
+              fontWeight: 400
+            },
+            subtext: 'There is a total of 200 reports',
+            subtextStyle: {
+              fontFamily: 'PT serif',
+              fontSize: 13,
+              fontWeight: 400,
+              color: '#ba9545',
+              paddingBottom: 15
+            }
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataZoom: {
+                yAxisIndex: 'none'
+              },
+              magicType: {
+                type: ['line', 'bar']
+              }
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: [],
+            axisLine: {
+              lineStyle: {
+                color: 'rgba(186, 149, 69, 1)'
+              }
+            },
+            axisLabel: {
+              fontFamily: 'PT serif',
+              margin: 10
+            }
+          },
+          yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            axisLine: {
+              lineStyle: {
+                color: 'rgba(186, 149, 69, 1)'
+              }
+            },
+            axisLabel: {
+              fontFamily: 'PT serif',
+              margin: 10
+            },
+            splitLine: {
+              lineStyle: {
+                type: 'dotted'
+              }
+            }
+          },
+          dataZoom: [
+            {
+              type: 'inside',
+              start: 0,
+              end: 10
+            },
+            {
+              start: 0,
+              end: 10,
+              handleIcon:
+                'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+              handleSize: '75%',
+              handleStyle: {
+                color: '#fff',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+              }
+            }
+          ],
+          series: [
+            {
+              name: 'Reports',
+              type: 'line',
+              smooth: true,
+              symbol: 'circle',
+              sampling: 'average',
+              itemStyle: {
+                color: 'rgba(186, 149, 69, 1)'
+              },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: 'rgba(186, 149, 69, .9)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(186, 149, 69, .9)'
+                  }
+                ])
+              },
+              data: []
+            }
+          ]
+        };
+
+        var reportCharts = function reportCharts(
+          sentimentChartContainers,
+          reportsChartContainers
+        ) {
+          reportsChartContainers.forEach(function(c) {
+            var reportChart = echarts.init(c);
+            var data = JSON.parse(c.dataset.reports);
+            reportChartOption.xAxis.data = data[0];
+            reportChartOption.series[0].data = data[1];
+            reportChart.setOption(reportChartOption);
+          });
+          sentimentChartContainers.forEach(function(c) {
+            var sentimentChart = echarts.init(c);
+            sentimentChartOption.series[0].data = JSON.parse(
+              c.dataset.sentiments
+            );
+            sentimentChart.setOption(sentimentChartOption);
+          });
+        };
+
+        exports.reportCharts = reportCharts;
+      },
+      {}
     ],
     'index.js': [
       function(require, module, exports) {
@@ -49870,16 +50457,20 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _createTopic = require('./createTopic');
 
+        var _createReport = require('./createReport');
+
         var _loader = require('./loader');
 
         var _search = require('./search');
 
+        var _echarts = require('./echarts');
+
         // DOM elements
-        var topicsListViewToggle = document.querySelector('#view-switch--list');
-        var topicsMapViewToggle = document.querySelector('#view-switch--map');
-        var topicsList = document.querySelector('.topic-cards');
-        var topicsMap = document.querySelector('.topic-map');
-        var topicsPagination = document.querySelector('.pagination');
+        var listViewToggle = document.querySelector('#view-switch--list');
+        var mapViewToggle = document.querySelector('#view-switch--map');
+        var listContainer = document.querySelector('.list-view-container');
+        var mapContainer = document.querySelector('.map-container');
+        var paginationDiv = document.querySelector('.pagination');
         var clusterListClose = document.querySelector(
           '.topic-map__cluster-list--close'
         );
@@ -49894,6 +50485,29 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           '.create-topic-form'
         );
         var createTopicClose = document.querySelector('.create-topic-close');
+        var createTopicForm = document.querySelector('.form--create-topic');
+        var searchTopicForm = document.querySelector('#searchTopicForm');
+        var searchTopicPattern = document.querySelector('#searchTopicPattern');
+        var newTopicTitle = document.querySelector('#title');
+        var newTopicCategory = document.querySelector(
+          '#select-category-create-topic-form'
+        );
+        var newTopicTags = document.querySelector(
+          '#select-tags-create-topic-form'
+        );
+        var newTopicMediaUrls = document.querySelector(
+          '#select-mediaUrls-create-topic-form'
+        );
+        var createReportButtons = document.querySelectorAll('.add-report__btn');
+        var createReportFormContainer = document.querySelector(
+          '.create-report-form'
+        );
+        var createReportClose = document.querySelector('.create-report-close');
+        var createReportForm = document.querySelector('.form--create-report');
+        var newReportContent = document.querySelector('#report-content');
+        var newReportMediaUrls = document.querySelector(
+          '#select-mediaUrls-create-report-form'
+        );
         var selectGroupsNormal = document.querySelectorAll(
           '.select-group--normal'
         );
@@ -49909,24 +50523,15 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var username = document.getElementById('username');
         var password = document.getElementById('password');
         var passwordConfirm = document.getElementById('passwordConfirm');
-        var topics = document.querySelector('#mapbox-topics');
+        var mapDivEl = document.querySelector('#mapbox');
         var filterTopicsBtn = document.querySelector('#filter-topics');
         var filterTopicsBtnRespond = document.querySelector(
           '#filter-topics--respond'
         );
-        var newTopicTitle = document.querySelector('#title');
-        var newTopicCategory = document.querySelector(
-          '#select-category-create-topic-form'
+        var sentimentChartContainers = document.querySelectorAll(
+          '.sentiment-pie'
         );
-        var newTopicTags = document.querySelector(
-          '#select-tags-create-topic-form'
-        );
-        var newTopicMediaUrls = document.querySelector(
-          '#select-mediaUrls-create-topic-form'
-        );
-        var createTopicForm = document.querySelector('.form--create-topic');
-        var searchTopicForm = document.querySelector('#searchTopicForm');
-        var searchTopicPattern = document.querySelector('#searchTopicPattern');
+        var reportChartContainers = document.querySelectorAll('.report-freq');
 
         var configureSelectGroups = function configureSelectGroups(
           selectGroup
@@ -50032,9 +50637,9 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var map;
 
-        if (topics) {
-          map = L.map('mapbox-topics').setView([0, 0], 2);
-          (0, _mapbox.displayMap)(map, JSON.parse(topics.dataset.mapdata));
+        if (mapDivEl) {
+          map = L.map('mapbox').setView([0, 0], 2);
+          (0, _mapbox.displayMap)(map, JSON.parse(mapDivEl.dataset.mapdata));
         }
 
         if (clusterListClose) {
@@ -50047,16 +50652,32 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           (0, _search.searchTopics)(searchTopicForm, searchTopicPattern);
         }
 
-        if (topicsListViewToggle) {
-          topicsListViewToggle.addEventListener('click', function(e) {
-            topicsMap.classList.add('hide');
-            topicsList.classList.remove('hide');
-            topicsPagination.classList.remove('hide');
+        var switchListView = function switchListView(
+          mapView,
+          listView,
+          paginationDiv
+        ) {
+          mapView.classList.add('hide');
+          listView.classList.remove('hide');
+          paginationDiv.classList.remove('hide');
+        };
+
+        var switchMapView = function switchMapView(
+          mapView,
+          listView,
+          paginationDiv
+        ) {
+          mapView.classList.remove('hide');
+          listView.classList.add('hide');
+          paginationDiv.classList.add('hide');
+        };
+
+        if (listViewToggle) {
+          listViewToggle.addEventListener('click', function(e) {
+            switchListView(mapContainer, listContainer, paginationDiv);
           });
-          topicsMapViewToggle.addEventListener('click', function(e) {
-            topicsList.classList.add('hide');
-            topicsPagination.classList.add('hide');
-            topicsMap.classList.remove('hide');
+          mapViewToggle.addEventListener('click', function(e) {
+            switchMapView(mapContainer, listContainer, paginationDiv);
             map.invalidateSize();
           });
         }
@@ -50085,13 +50706,31 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             newTopicMarker,
             editor
           );
-        }
-
-        if (createTopicClose) {
           createTopicClose.addEventListener('click', function() {
             createTopicFormContainer.style.transform =
               'translateX(-50%) scaleX(0)';
             createTopicFormContainer.style.opacity = '0';
+          });
+        }
+
+        if (createReportButtons) {
+          createReportButtons.forEach(function(b) {
+            b.addEventListener('click', function() {
+              createReportFormContainer.style.transform =
+                'translateX(-50%) scaleX(1)';
+              createReportFormContainer.style.opacity = '1';
+            });
+          });
+          (0, _choice.createMultiSelectMenus)(true);
+          (0, _createReport.createReport)(
+            createReportForm,
+            newReportContent,
+            newReportMediaUrls
+          );
+          createReportClose.addEventListener('click', function() {
+            createReportFormContainer.style.transform =
+              'translateX(-50%) scaleX(0)';
+            createReportFormContainer.style.opacity = '0';
           });
         }
 
@@ -50101,6 +50740,13 @@ parcelRequire = (function(modules, cache, entry, globalName) {
               menuSidebarToggle.checked = false;
             });
           });
+        }
+
+        if (reportChartContainers || sentimentChartContainers) {
+          (0, _echarts.reportCharts)(
+            sentimentChartContainers,
+            reportChartContainers
+          );
         }
       },
       {
@@ -50368,8 +51014,10 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './quill': 'quill.js',
         './filter': 'filter.js',
         './createTopic': 'createTopic.js',
+        './createReport': 'createReport.js',
         './loader': 'loader.js',
-        './search': 'search.js'
+        './search': 'search.js',
+        './echarts': 'echarts.js'
       }
     ],
     '../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js': [
@@ -50405,7 +51053,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '64313' + '/'
+            protocol + '://' + hostname + ':' + '54122' + '/'
           );
 
           ws.onmessage = function(event) {

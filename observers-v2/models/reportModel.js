@@ -36,6 +36,10 @@ const reportSchema = new mongoose.Schema({
     coordinates: [Number],
     description: String
   },
+  createdAt: {
+    type: Date,
+    default: Date.now()
+  },
   numLikes: {
     type: Number,
     default: 0

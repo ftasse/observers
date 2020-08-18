@@ -1,30 +1,7 @@
 import axios from 'axios';
 import { showAlert } from './alert';
 import { showLoader, hideLoader } from './loader';
-
-const getLocation = async locationLatLng => {
-  try {
-    const res = await axios({
-      method: 'GET',
-
-      url: `https://www.mapquestapi.com/geocoding/v1/reverse?key=qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1&inFormat=kvp&outFormat=json&location=${locationLatLng.lat},${locationLatLng.lng}&maxResults=1`
-    });
-    console.log(res);
-    if (res.status === 200) {
-      const name = [
-        res.data.results[0].locations[0].adminArea1,
-        res.data.results[0].locations[0].adminArea3,
-        res.data.results[0].locations[0].adminArea5
-      ];
-      return {
-        coordinates: [locationLatLng.lng, locationLatLng.lat],
-        address: name.join('|')
-      };
-    }
-  } catch (err) {
-    showAlert('failed', 'Please provide a valid location');
-  }
-};
+import { getLocation } from './geolocation';
 
 const submitTopic = async topic => {
   try {
