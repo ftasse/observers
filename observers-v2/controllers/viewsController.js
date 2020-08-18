@@ -2,6 +2,7 @@ const Topic = require('../models/topicModel');
 const Tag = require('../models/TagModel');
 const categories = require('../models/topicCategories');
 
+const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const QueryHelper = require('../utils/queryHelper');
 
@@ -67,11 +68,24 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTopic = (req, res, next) => {
+exports.getTopic = catchAsync(async (req, res, next) => {
+  const topic = await Topic.findOne({ slug: req.params.slug })
+    .populate({ path: 'tags' })
+    .populate({ path: 'reports' });
+
+  if (!topic) {
+    return new AppError('Topic not found', 404);
+  }
+
+  const tags = await Tag.find();
+
   res.status(200).render('topic', {
-    title: 'The consequences of deforestation in a region'
+    title: 'The consequences of deforestation in a region',
+    topic,
+    categories,
+    tags
   });
-};
+});
 
 exports.login = (req, res, next) => {
   res.status(200).render('login', {
@@ -84,3 +98,9 @@ exports.signup = (req, res, next) => {
     title: 'Become an observer'
   });
 };
+
+exports.getMe = catchAsync(async (req, res, next) => {
+  res.status(200).render('user', {
+    title: 'Become and observer'
+  });
+});

@@ -1,23 +1,26 @@
-const getPopupHTML = topic => {
+const getPopupHTML = data => {
+  const imageTag = data.imageCover
+    ? `<img src="/img/${data.imageCover}" alt="" class="sm-card__img">`
+    : '';
   return `
     <div class="sm-card">
-        <img src="img/politics.jpg" alt="" class="sm-card__img">
+        ${imageTag}
         <div class="sm-card__info">
             <div class="sm-card__main">
                 <a href="/topics/${
-                  topic.slug
-                }" class="link-info link-info--normal">${topic.title}</a>
+                  data.slug
+                }" class="link-info link-info--normal">${data.title}</a>
             </div>
             <div class="sm-card__sub">
                 <a href="/?category=${encodeURIComponent(
-                  topic.category
+                  data.category
                 )}#topics" class="sm-card__category sm-card__link link-info link-info--category link-info--category--small">
-                    ${topic.category}
+                    ${data.category}
                  </a>
                 <a href="/?createdAt=${
-                  new Date(topic.createdAt).toISOString().split('T')[0]
+                  new Date(data.createdAt).toISOString().split('T')[0]
                 }#topics" class="sm-card__link link-info link-info--small link-info--small--sm">
-                    Created on ${new Date(topic.createdAt).toLocaleString(
+                    Created on ${new Date(data.createdAt).toLocaleString(
                       'en-us',
                       {
                         month: 'long',

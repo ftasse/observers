@@ -549,7 +549,7 @@ body {
   .topic-stats__list {
     list-style: none; }
 
-.topic-cards {
+.list-view {
   animation: fadeInLeft 2s; }
 
 .full-width__btn {
@@ -868,9 +868,8 @@ body {
   .sm-card__img {
     height: 10rem;
     width: 10rem;
-    object-fit: cover; }
-  .sm-card__info {
-    margin-left: 1.5rem; }
+    object-fit: cover;
+    margin-right: 1.5rem; }
   .sm-card__main {
     margin-bottom: 2rem; }
   .sm-card__link {

@@ -1,0 +1,184 @@
+extends base
+
+block prepend cssImports
+  include _cssImports
+
+block content
+  button.btn-respond.btn-respond--topic.btn-respond--black.add-topic__btn
+    svg.btn-respond__icon
+      use(xlink:href='/img/sprite.svg#icon-quill')
+  button.btn-respond.btn-respond--report.btn-respond--brown.add-report__btn
+    svg.btn-respond__icon
+      use(xlink:href='/img/sprite.svg#icon-quill')
+
+  include _menu-respond
+
+  header.header
+    include _navigation
+
+  include _reportForm
+  include _topicForm
+
+  section.topic-view__header
+    a.topic-view__title.heading--primary--custom.heading--colored--secondary(href='#')= topic.title
+    ul.path.margin-top-medium
+      li.path__item
+        a.path__link(href='/') home
+      li.path__item
+        a.path__link(href='/#topics') topics
+      li.path__item
+        a.path__link.path__link--category(href=`/?category=${encodeURIComponent(topic.category)}`)= topic.category
+      li.path__item
+        a.path__link(href='#') ...
+
+
+  section.topic-view__info
+    .topic-view__description
+      img.topic-view__img.margin-bottom-medium(src=`/img/${topic.imageCover}` alt=`${topic.slug}`)
+      if topic.descriptionHTML && topic.descriptionHTML.length > 0
+        .topic-view__text.topic__description.margin-bottom-extra-small
+          p
+            | !{topic.descriptionHTML}
+      else
+        .topic-view__text.topic__description.margin-bottom-extra-small
+          p
+            | !{topic.description}
+
+      .info-line.margin-bottom-extra-small
+        span.info-line__item.info-line__item--1
+          a.link-info.link-info--small(href=`/?createdAt=${topic.createdAt.toISOString().split('T')[0]}#topics`)= topic.createdAt.toLocaleString('en-us', {month: 'long',day: 'numeric',year: 'numeric'})
+        span.info-line__item.info-line__item--2
+          a.link-info.link-info--small(href='#')= topic.location.address
+        span.info-line__item.info-line__item--2
+          a.link-info.link-info--category(href=href = `/?category=${encodeURIComponent(topic.category)}`)= topic.category
+        span.info-line__item
+          a.link-info.link-info--small(href='#') Written by #{topic.author.name}
+      .tags.margin-bottom-medium
+        if topic.tags.length > 0
+          .tags__title
+            span.text--secondary--important tags
+          each tag in topic.tags
+            .tags__item
+              a.tag(href=`/?tags=${encodeURIComponent(tag.name)}`)= tag.name
+      .topic-view__sources
+        .links.margin-bottom-medium
+          if topic.mediaUrls.length > 0
+            .tags__title
+              span.text--secondary--important Sources
+            each mediaUrl in topic.mediaUrls
+              .links__item
+                a.links__link(href=`${mediaUrl}`)
+                  svg.links__icon
+                    use(xlink:href='/img/sprite.svg#icon-link')
+                  | #{mediaUrl}
+      if topic.reports.length > 0
+        h3.section__title.margin-bottom-small What&apos;s been reported
+        .topic-list__configs
+          .topic-list__filter
+            input#topic-list__filter-button.form-button__input(type='checkbox')
+            label.form-button__label.form-button__label--button(for='topic-list__filter-button')
+              span.form-button__icon--close.create-topic-close.btn-close
+                span.btn-close__icon
+              svg.form-button__icon
+                use(xlink:href='/img/sprite.svg#icon-line-graph')
+            .topic-list__filter-container.menu-container.menu-container--left.menu-container--white
+              .menu.menu--left.menu--full.menu--white.menu--stats(data-simplebar='' data-simplebar-auto-hide='false')
+                h3.section__title.section__title--align-right.margin-bottom-small Statistics
+                include _reportCharts
+          div &nbsp;
+          form.view-switch.margin-bottom-extra-small(autocomplete='off')
+            input#view-switch--list.form-button__input.view-switch--list(type='radio' name='view-selector' checked='')
+            label.form-button__label.form-button__label--switch(for='view-switch--list')
+              svg.form-button__icon
+                use(xlink:href='/img/sprite.svg#icon-list')
+            input#view-switch--map.form-button__input.view-switch--map(type='radio' name='view-selector')
+            label.form-button__label.form-button__label--switch(for='view-switch--map')
+              svg.form-button__icon
+                use(xlink:href='/img/sprite.svg#icon-map')
+      .reports.list-view.list-view-container.margin-bottom-small
+        if topic.reports.length > 0
+          each report in topic.reports
+            .report
+              .report__info.info-line
+                span.info-line__item.info-line__item--1
+                  a.link-info.link-info--small(href='#') August 20, 2019
+                span.info-line__item.info-line__item--2
+                  a.link-info.link-info--small(href='#')= report.location.description
+                span.info-line__item
+                  if user._id.toString() === report.author.toString()
+                    a.link-info.link-info--small(href='#') Written by you: #{user.name}
+                  else
+                    a.link-info.link-info--small(href='#') Written by an anonymous
+              p.report__content= report.content
+              .report__links.links
+                if report.mediaUrls.length > 0
+                  .tags__title
+                    span.text--secondary--important Sources
+                  each reportMediaUrl in report.mediaUrls
+                    .links__item
+                      a.links__link(href=`${reportMediaUrl}`)
+                        svg.links__icon
+                          use(xlink:href='/img/sprite.svg#icon-link')
+                        | #{reportMediaUrl}
+              .report__feel-box
+                .report__feel
+                  span.report__feel-btn.report__feel-btn--like
+                    svg.report__icon
+                      use(xlink:href='/img/sprite.svg#icon-thumbs-up')
+                    span
+                      | #{report.numLikes}
+                  span.report__feel-btn.report__feel-btn--dislike
+                    svg.report__icon
+                      use(xlink:href='/img/sprite.svg#icon-thumbs-down')
+                    span
+                     | #{report.numDisLikes}
+      .topic-map.map-container.margin-bottom-medium.hide
+        #mapbox.map.margin-bottom-small(data-mapData=`${JSON.stringify(topic.reports.map(el => {
+          return {
+            location: el.location,
+            createdAt: el.createdAt,
+            title: el.content,
+            slug: '',
+            category: ''
+          }
+        }))}`)
+        .topic-map__cluster-list.hide(data-simplebar='' data-simplebar-auto-hide='false')
+          .topic-map__cluster-list--close &times;
+          ul.topic-map__cluster-list--elements
+      ul.reports__pagination.pagination
+        li.pagination__item
+          a(href='#')  &laquo;
+        li.pagination__item
+          a(href='#')  1
+        li.pagination__item
+          a(href='#')  2
+        li.pagination__item--active.pagination__item
+          a(href='#')  3
+        li.pagination__item
+          a(href='#')  4
+        li.pagination__item
+          a(href='#')  5
+        li.pagination__item
+          a(href='#')  6
+        li.pagination__item
+          a(href='#')  7
+        li.pagination__item
+          a(href='#')  8
+        li.pagination__item
+          a(href='#')  &raquo;
+    .topic-view__stats
+      h3.section__title.margin-bottom-small Statistics
+      include _reportCharts
+
+      .full-width.margin-bottom-medium
+        #add-report__btn.full-width__btn.btn.btn-primary.add-report__btn
+          svg.btn__icon
+            use(xlink:href='/img/sprite.svg#icon-quill')
+          span Write new report
+      .full-width
+        #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
+          svg.btn__icon
+            use(xlink:href='/img/sprite.svg#icon-quill')
+          span Create a new topic
+
+  include _footer

@@ -1,0 +1,15 @@
+.full-container.create-report-form
+  .form-container(data-simplebar='' data-simplebar-auto-hide='false')
+    .create-report-close.btn-close
+      span.btn-close__icon
+    h3.section__title.margin-bottom-small Report on this topic
+    form.form.form--create-report(data-topic=`${topic._id}`)
+      .form__group.margin-bottom-medium
+        label.form__label.form__label--title.margin-bottom-small(for='report-content') Report&apos;s content
+        textarea#report-content.form__textarea(rows='8' placeholder='Share your opinion on this topic...' required)
+      .form__group.form-control--links
+        input#select-mediaUrls-create-report-form.form-control.form__input(type='text' value='' placeholder='Enter something')
+        label.form__label(for='select-mediaUrls-create-report-form') Report&apos;s supporting links or sources
+      .form__group.form__group--split
+        input.btn.btn--small.btn-primary(type='Reset' value='Reset Form')
+        input.btn.btn--small.btn-black(type='submit' value='Submit your report')

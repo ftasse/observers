@@ -13,7 +13,7 @@ export const showAlert = (type, msg) => {
   const markup = `
     <div class="alert alert--${type}">
         <svg class="alert__icon">
-            <use xlink:href="img/sprite.svg#icon-${iconRefs[type]}"></use>
+            <use xlink:href="/img/sprite.svg#icon-${iconRefs[type]}"></use>
         </svg>
         <p class="alert__message">${msg}</p>
     </div>`;
