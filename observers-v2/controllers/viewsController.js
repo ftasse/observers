@@ -1,5 +1,6 @@
 const Topic = require('../models/topicModel');
 const Tag = require('../models/TagModel');
+const Report = require('../models/reportModel');
 const categories = require('../models/topicCategories');
 
 const AppError = require('../utils/appError');
@@ -71,7 +72,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 exports.getTopic = catchAsync(async (req, res, next) => {
   const topic = await Topic.findOne({ slug: req.params.slug })
     .populate({ path: 'tags' })
-    .populate({ path: 'reports' });
+    .populate({ path: 'reports', populate: 'votes' });
 
   if (!topic) {
     return new AppError('Topic not found', 404);
@@ -100,7 +101,18 @@ exports.signup = (req, res, next) => {
 };
 
 exports.getMe = catchAsync(async (req, res, next) => {
+  const topics = await Topic.find({ author: req.user._id });
+  const reports = await Report.find({ author: req.user._id }).populate({
+    path: 'topic',
+    select: 'title slug'
+  });
+  const tags = await Tag.find();
+
   res.status(200).render('user', {
-    title: 'Become and observer'
+    title: 'Become and observer',
+    tags,
+    categories,
+    topics,
+    reports
   });
 });

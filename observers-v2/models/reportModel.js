@@ -4,50 +4,59 @@ const validator = require('validator');
 const sentimentAnalyzer = require('../utils/sentimentAnalyzer');
 const Topic = require('../models/topicModel');
 
-const reportSchema = new mongoose.Schema({
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: [true, 'A report must have an author']
-  },
-  topic: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Topic',
-    required: [true, 'A report must be for a topic']
-  },
-  content: {
-    type: String,
-    required: [true, 'A report must have a description']
-  },
-  sentimentScore: Number,
-  mood: String,
-  mediaUrls: [
-    {
-      type: String,
-      validate: [validator.isURL, 'Please provide a valid URL']
-    }
-  ],
-  location: {
-    type: {
-      type: String,
-      default: 'Point',
-      enum: ['Point']
+const reportSchema = new mongoose.Schema(
+  {
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'A report must have an author']
     },
-    coordinates: [Number],
-    description: String
+    topic: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Topic',
+      required: [true, 'A report must be for a topic']
+    },
+    content: {
+      type: String,
+      required: [true, 'A report must have a description']
+    },
+    sentimentScore: Number,
+    mood: String,
+    mediaUrls: [
+      {
+        type: String,
+        validate: [validator.isURL, 'Please provide a valid URL']
+      }
+    ],
+    location: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point']
+      },
+      coordinates: [Number],
+      description: String
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now()
+    },
+    numLikes: {
+      type: Number,
+      default: 0
+    },
+    numDisLikes: {
+      type: Number,
+      default: 0
+    }
   },
-  createdAt: {
-    type: Date,
-    default: Date.now()
-  },
-  numLikes: {
-    type: Number,
-    default: 0
-  },
-  numDisLikes: {
-    type: Number,
-    default: 0
-  }
+  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+);
+
+reportSchema.virtual('votes', {
+  ref: 'Vote',
+  foreignField: 'report',
+  localField: '_id'
 });
 
 reportSchema.index({ content: 'text' });

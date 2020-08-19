@@ -1,0 +1,137 @@
+extends base
+
+block prepend cssImports
+  include _cssImports
+
+block content
+  include _menu-respond
+
+  header.header
+    include _navigation
+
+  section.user-view__container
+    -const topic = {_id: ''}
+    include _reportForm
+    include _topicForm
+
+    .container
+      .user-view__content
+        ul.user-view__menu
+          li.user-view__menu--item.user-view__menu--item--active.user-view__menu--item--1
+            svg.user-view__menu--icon
+              use(xlink:href='/img/sprite.svg#icon-settings')
+            span Settings
+          li.user-view__menu--item.user-view__menu--item--2
+            svg.user-view__menu--icon
+              use(xlink:href='/img/sprite.svg#icon-eye')
+            span My topics
+          li.user-view__menu--item.user-view__menu--item--3
+            svg.user-view__menu--icon
+              use(xlink:href='/img/sprite.svg#icon-sound')
+            span My reports
+        .user-view__info
+          .user-view__info--topics.user-view__info--block.hide
+            p.user-view__info--title Topics you created
+            .user-view__info--list
+              if topics.length > 0
+                each _topic in topics
+                  .user-view__info--item
+                    img.user-view__info--item--image(src=`/img/${_topic.imageCover}` alt='')
+                    .user-view__info--item--content
+                      .topic__info--basics.margin-bottom-small
+                        span.topic__info--time
+                          a.link-info.link-info--small(href=`/?createdAt=${_topic.createdAt.toISOString().split('T')[0]}#topics`)= _topic.createdAt.toLocaleString('en-us', {month: 'long',day: 'numeric',year: 'numeric'})
+                        span.topic__info--location
+                          a.link-info.link-info--small(href='#')= _topic.location.address
+                        span.topic__info--category
+                          a.link-info.link-info--category(href=href = `/?category=${encodeURIComponent(_topic.category)}`)= _topic.category
+                      a.margin-bottom-small(href=`/topics/${_topic.slug}`)= _topic.title
+                    .user-view__info--item--controls
+                      button.user-view__info--btn.btn.btn--small.btn-black
+                        svg.btn__icon
+                          use(xlink:href='/img/sprite.svg#icon-trashcan')
+                        span Delete
+                      button.user-view__info--btn.btn.btn--small.btn-white.add-topic__btn
+                        svg.btn__icon.user-view__info--icon
+                          use(xlink:href='/img/sprite.svg#icon-quill')
+                        span Update
+              else
+                p.nomatch__text.nomatch__text--blur Keep observing ;)
+          .user-view__info--settings.user-view__info--block
+            p.user-view__info--title Your account settings
+            form.form.user-view__info--form.user-view__info--profile
+              .form__profile-picture
+                if user.thumbnail
+                  img.form__profile-picture--image(src=`${user.thumbnail}` alt='')
+                else
+                  img.form__profile-picture--image(src=`/img/deforestation.jpg` alt='')
+                span.form__profile-picture--button
+                  span Update your profile picture
+              .form__group
+                input#username.form__input(type='text' placeholder='Username' value=`${user.name}` minlength='50' maxlength='150')
+                label.form__label(for='username') Username
+              .form__group
+                input#email.form__input(type='email' placeholder='Email address' value=`${user.email}` minlength='50' maxlength='150')
+                label.form__label(for='email') Email address
+              .form__group.form__group--split
+                div
+                input.btn.btn--small.btn-black(type='submit' value='Save settings')
+            .user-view__info--password
+              p.user-view__info--title Password
+              form.form.user-view__info--form.user-view__info--password-form
+                .form__group.form__group--small-margin
+                  input#current-password.form__input(type='password' placeholder='Password' value='**********' required='')
+                  label.form__label(for='current-password')
+                    | Password
+                    span.form__message
+                .form__group.form__group--small-margin
+                  input#password.form__input(type='password' placeholder='Password' required='')
+                  label.form__label(for='password')
+                    | Password
+                    span.form__message
+                .form__group.form__group--small-margin
+                  input#passwordConfirm.form__input(type='password' placeholder='ConfirmPassword' required='')
+                  label.form__label(for='passwordConfirm')
+                    | Confirm password
+                    span.form__message
+                .form__group.form__group--split
+                  div
+                  input.btn.btn--small.btn-black(type='submit' value='Update password')
+          .user-view__info--reports.user-view__info--block.hide
+            p.user-view__info--title Reports you submitted
+            .user-view__info--list.user-view__info--reports-list
+              if reports.length > 0
+                each report in reports
+                  .user-view__info--item
+                    .user-view__info--item-content
+                      .report.user-view__info--report
+                        .report__info.info-line
+                          span.info-line__item.info-line__item--1
+                            a.link-info.link-info--small(href=`#`)= report.createdAt.toLocaleString('en-us', {month: 'long',day: 'numeric',year: 'numeric'})
+                          span.info-line__item.info-line__item--2
+                            a.link-info.link-info--small(href='#')= report.location.description
+                          span.info-line__item
+                            a.link-info.link-info--small(href=`/topics/${report.topic.slug}`) Topic: #{report.topic.title}
+                        p.report__content= report.content
+                        .report__links.links
+                          if report.mediaUrls.length > 0
+                            .tags__title
+                              span.text--secondary--important Sources
+                            each reportMediaUrl in report.mediaUrls
+                              .links__item
+                                a.links__link(href=`${reportMediaUrl}`)
+                                  svg.links__icon
+                                    use(xlink:href='/img/sprite.svg#icon-link')
+                                  | #{reportMediaUrl}
+                    .user-view__info--item--controls
+                      button.user-view__info--btn.btn.btn--small.btn-black
+                        svg.btn__icon
+                          use(xlink:href='/img/sprite.svg#icon-trashcan')
+                        span Delete
+                      button.user-view__info--btn.btn.btn--small.btn--brown.btn--fill.add-report__btn
+                        svg.btn__icon.user-view__info--icon
+                          use(xlink:href='/img/sprite.svg#icon-quill')
+                        span Update
+              else
+                p.nomatch__text.nomatch__text--blur Your contributions are welcome :)
+  include _footer

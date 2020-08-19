@@ -11,6 +11,7 @@ import { createReport } from './createReport';
 import { showLoader } from './loader';
 import { searchTopics } from './search';
 import { reportCharts } from './echarts';
+import './vote';
 
 // DOM elements
 const listViewToggle = document.querySelector('#view-switch--list');
@@ -73,6 +74,55 @@ const filterTopicsBtnRespond = document.querySelector(
 
 const sentimentChartContainers = document.querySelectorAll('.sentiment-pie');
 const reportChartContainers = document.querySelectorAll('.report-freq');
+
+const userSettingsToggle = document.querySelector('.user-view__menu--item--1');
+const userTopicsToggle = document.querySelector('.user-view__menu--item--2');
+const userReportsToggle = document.querySelector('.user-view__menu--item--3');
+
+const userSettings = document.querySelector('.user-view__info--settings');
+const userTopics = document.querySelector('.user-view__info--topics');
+const userReports = document.querySelector('.user-view__info--reports');
+
+const tabulate = (tab, tabs) => {
+  tabs.forEach(t => {
+    t.classList.add('hide');
+  });
+  tab.classList.remove('hide');
+};
+const setActiveTabs = (item, items) => {
+  items.forEach(t => {
+    t.classList.remove('user-view__menu--item--active');
+  });
+  item.classList.add('user-view__menu--item--active');
+};
+
+if (userSettingsToggle) {
+  console.log('adding the event listeners');
+  userSettingsToggle.addEventListener('click', e => {
+    tabulate(userSettings, [userSettings, userTopics, userReports]);
+    setActiveTabs(userSettingsToggle, [
+      userSettingsToggle,
+      userTopicsToggle,
+      userReportsToggle
+    ]);
+  });
+  userTopicsToggle.addEventListener('click', e => {
+    tabulate(userTopics, [userSettings, userTopics, userReports]);
+    setActiveTabs(userTopicsToggle, [
+      userSettingsToggle,
+      userTopicsToggle,
+      userReportsToggle
+    ]);
+  });
+  userReportsToggle.addEventListener('click', e => {
+    tabulate(userReports, [userSettings, userTopics, userReports]);
+    setActiveTabs(userReportsToggle, [
+      userSettingsToggle,
+      userTopicsToggle,
+      userReportsToggle
+    ]);
+  });
+}
 
 const configureSelectGroups = selectGroup => {
   selectGroup.forEach(g => {
