@@ -22,38 +22,39 @@ const voteSchema = new mongoose.Schema({
 
 voteSchema.index({ author: 1, report: 1 });
 
-voteSchema.statics.calcLikes = async function(reportId) {
+voteSchema.statics.calcLikes = async function(reportId, value = 0) {
   const stats = await this.aggregate([
-    { $match: { report: reportId } },
+    { $match: { report: mongoose.Types.ObjectId(reportId) } },
     {
       $group: {
         _id: '$report',
         numLikes: {
           $sum: { $cond: [{ $eq: ['$value', 1] }, 1, 0] }
         },
-        numDislikes: {
+        numDisLikes: {
           $sum: { $cond: [{ $eq: ['$value', -1] }, 1, 0] }
         }
       }
     }
   ]);
 
+  console.log(stats);
+
   if (stats.length > 0) {
     await Report.findByIdAndUpdate(reportId, {
       numLikes: stats[0].numLikes,
-      numDislikes: stats[0].numDislikes
+      numDisLikes: stats[0].numDisLikes
     });
   } else {
     await Report.findByIdAndUpdate(reportId, {
-      numLikes: 0,
-      numDislikes: 0
+      numLikes: 1 ? value === 1 : 0,
+      numDisLikes: 1 ? value === -1 : 0
     });
   }
 };
 
-voteSchema.pre('save', async function(next) {
-  await this.constructor.calcLikes(this.report);
-  next();
+voteSchema.post('save', async function(doc) {
+  await doc.constructor.calcLikes(doc.report, doc.value);
 });
 
 voteSchema.pre(/^find(One|ById)And/, async function(next) {

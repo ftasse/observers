@@ -147,6 +147,8 @@ const reportChartOption = {
   ]
 };
 
+const charts = [];
+
 export const reportCharts = (
   sentimentChartContainers,
   reportsChartContainers
@@ -159,6 +161,7 @@ export const reportCharts = (
     reportChartOption.series[0].data = data[1];
 
     reportChart.setOption(reportChartOption);
+    charts.push(reportChart);
   });
 
   sentimentChartContainers.forEach(c => {
@@ -167,5 +170,10 @@ export const reportCharts = (
     sentimentChartOption.series[0].data = JSON.parse(c.dataset.sentiments);
 
     sentimentChart.setOption(sentimentChartOption);
+    charts.push(sentimentChart);
   });
 };
+
+window.addEventListener('resize', e => {
+  charts.forEach(c => c.resize());
+});

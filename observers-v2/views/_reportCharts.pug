@@ -4,5 +4,5 @@
 -
   const reportsByDate = reportsPublishedDates.reduce((acc, curr) => {acc[curr] = acc[curr] ? acc[curr] += 1 : 1; return acc}, {})
 
-#sentiment-pie--resp.sentiment-pie.margin-bottom-medium(data-sentiments = `${JSON.stringify(Object.values(reportsMoodShare))}`)
-#report-freq--resp.report-freq.margin-bottom-medium(data-reports = `${JSON.stringify([Object.keys(reportsByDate), Object.values(reportsByDate)])}`)
+#sentiment-pie--resp.apache-echart.sentiment-pie.margin-bottom-medium(data-sentiments = `${JSON.stringify(Object.values(reportsMoodShare))}`)
+#report-freq--resp.apache-echart.report-freq.margin-bottom-medium(data-reports = `${JSON.stringify([Object.keys(reportsByDate), Object.values(reportsByDate)])}`)

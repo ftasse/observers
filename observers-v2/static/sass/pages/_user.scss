@@ -1,0 +1,226 @@
+.user-view {
+
+  &__container {
+    grid-row: 2/4;
+    grid-column: full-start/full-end;
+    background-color: rgba(122, 122, 122, .1);
+    padding: 10rem 0;
+
+    margin-bottom: -5rem;
+  }
+
+  &__content {
+    grid-row: 1/-1;
+    grid-column: center-start/center-end;
+
+    display: flex;
+    @include respond(tab-port) {
+      flex-direction: column;
+      padding: 0 4rem;
+    }
+    min-height: 100rem;
+  }
+  &__menu {
+    list-style: none;
+    align-self: stretch;
+    flex: 2.5;
+
+    display: flex;
+    flex-direction: column;
+    @include respond(tab-port) {
+      flex-direction: row;
+      flex: 0;
+    }
+    background-color: var(--color-black-lighter);
+
+    &--icon {
+      width: 2rem;
+      height: 2rem;
+      fill: var(--color-white);
+      margin-right: 2rem;
+    }
+    &--item {
+      color: var(--color-white);
+      cursor: pointer;
+      position: relative;
+      height: 6rem;
+      padding: 0 2rem;
+      margin-bottom: 1rem;
+
+      display: flex;
+      align-items: center;
+
+      @include respond(tab-port) {
+        flex: 3;
+        margin-bottom: 0;
+      }
+
+      & > * {
+        position: relative;
+        z-index: 2;
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: .6rem;
+        height: 100%;
+        transform: scaleX(1);
+        background-color: var(--color-secondary);
+        transition: all .2s;
+        z-index: 1;
+
+        @include respond(tab-port) {
+          height: .6rem;
+          width: 100%;
+          transform: scaleX(0);
+        }
+      }
+      &::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 0;
+        transform: scaleX(.6);
+        background-color: var(--color-secondary);
+        z-index: 1;
+
+        @include respond(tab-port) {
+          height: .2rem;
+        }
+      }
+
+      &--active::after {
+        width: 100%;
+        @include respond(tab-port) {
+          transform: scaleX(1);
+        }
+      }
+
+      &--active {
+        @include respond(tab-port) {
+          background-color: var(--color-white);
+          color: var(--color-secondary);
+        }
+      }
+      &:hover {
+        @include respond(tab-port) {
+          background-color: lighten($color-black, 15%);
+        }
+      }
+      &:hover::after {
+        width: 100%;
+        @include respond(tab-port) {
+          transform: scaleX(1);
+        }
+      }
+      &--active:hover {
+        @include respond(tab-port) {
+          background-color: var(--color-white);
+        }
+      }
+    }
+    &--item--active &--icon {
+      @include respond(tab-port) {
+        fill: var(--color-secondary);
+      }
+    }
+  }
+  &__info {
+    flex: 7.5;
+    padding: 5rem 0 6rem 0;
+    background-color: var(--color-white);
+
+    @include respond(tab-port) {
+      padding: 11rem 0 6rem 0;
+    }
+
+    display: flex;
+    flex-direction: column;
+
+    &--block {
+      padding: 0 5rem;
+      animation: fadeInRight 2s;
+    }
+    &--title {
+      font-size: 3rem;
+    }
+    &--form {
+      margin: 6rem 0;
+    }
+    &--password {
+      margin-top: 2rem;
+      padding: 5rem 0;
+      border-top: .3rem solid var(--color-secondary);
+    }
+
+    &--icon {
+      fill: var(--color-secondary);
+    }
+    &--btn:hover &--icon {
+      fill: var(--color-white);
+    }
+    &--list {
+      margin-top: 5rem;
+      display: grid;
+      grid-template-rows: 1fr;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 6rem;
+
+      @include respond(tab-port) {
+        grid-template-columns: 1fr;
+        grid-template-rows: 43rem;
+      }
+
+      margin-bottom: 8rem;
+    }
+
+
+    &--reports-list {
+      grid-template-rows: 1fr;
+      grid-template-columns: 1fr;
+    }
+    &--report {
+      margin-bottom: -1.5rem;
+    }
+
+    &--item {
+      box-shadow: $box-shadow-normal;
+      display: flex;
+      flex-direction: column;
+      &--image {
+        height: 20rem;
+        margin-bottom: 2rem;
+        object-fit: cover;
+      }
+      &--content {
+        flex: 1;
+        padding: 2rem;
+
+        & > a {
+          display: block;
+          &:link,
+          &:visited {
+            text-decoration: none;
+            color: inherit;
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: 2rem;
+            font-weight: 400;
+          }
+          &:hover {
+            color: var(--color-secondary);
+          }
+        }
+      }
+      &--controls {
+        display: flex;
+      }
+    }
+    &--btn {
+      flex: 1;
+    }
+  }
+}

@@ -5,7 +5,7 @@
     li.nav__item
       a.nav__link.nav__link--baseline.nav__link--active(href='/') Home
     li.nav__item
-      a.nav__link.nav__link--baseline(href='/topic.html') Topics
+      a.nav__link.nav__link--baseline(href='/#topics') Topics
     li.nav__item
       a.nav__link.nav__link--baseline(href='#') About
     if user
@@ -13,7 +13,7 @@
         button.sign-out.nav__link.nav__link--cta
           span Sign out
       li.nav__item
-        a.nav__link.nav__link--baseline(href='#')= user.name
+        a.nav__link.nav__link--baseline(href='/me')= user.name
     else
       li.nav__item
         a.nav__link.nav__link--cta(href='/login')

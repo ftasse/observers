@@ -61,7 +61,7 @@ block content
                     span.topic__info--location
                       a.link-info.link-info--small(href='#')= topic.location.address
                     span.topic__info--category
-                      a.link-info.link-info--category(href=href = `/?category=${encodeURIComponent(topic.category)}`)= topic.category
+                      a.link-info.link-info--category(href=href = `/?category=${encodeURIComponent(topic.category)}#topics`)= topic.category
                   .topic__info--reports
                     span.topic__info--report-count
                       span.link-info.link-info--small #{topic.reportCount} report(s)

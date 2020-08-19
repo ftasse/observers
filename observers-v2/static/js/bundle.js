@@ -50156,6 +50156,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             }
           ]
         };
+        var charts = [];
 
         var reportCharts = function reportCharts(
           sentimentChartContainers,
@@ -50167,6 +50168,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             reportChartOption.xAxis.data = data[0];
             reportChartOption.series[0].data = data[1];
             reportChart.setOption(reportChartOption);
+            charts.push(reportChart);
           });
           sentimentChartContainers.forEach(function(c) {
             var sentimentChart = echarts.init(c);
@@ -50174,12 +50176,302 @@ parcelRequire = (function(modules, cache, entry, globalName) {
               c.dataset.sentiments
             );
             sentimentChart.setOption(sentimentChartOption);
+            charts.push(sentimentChart);
           });
         };
 
         exports.reportCharts = reportCharts;
+        window.addEventListener('resize', function(e) {
+          charts.forEach(function(c) {
+            return c.resize();
+          });
+        });
       },
       {}
+    ],
+    'vote.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        var _axios = _interopRequireDefault(require('axios'));
+
+        var _alert = require('./alert');
+
+        var _loader = require('./loader');
+
+        function _interopRequireDefault(obj) {
+          return obj && obj.__esModule ? obj : { default: obj };
+        }
+
+        function asyncGeneratorStep(
+          gen,
+          resolve,
+          reject,
+          _next,
+          _throw,
+          key,
+          arg
+        ) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+          if (info.done) {
+            resolve(value);
+          } else {
+            Promise.resolve(value).then(_next, _throw);
+          }
+        }
+
+        function _asyncToGenerator(fn) {
+          return function() {
+            var self = this,
+              args = arguments;
+            return new Promise(function(resolve, reject) {
+              var gen = fn.apply(self, args);
+              function _next(value) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'next',
+                  value
+                );
+              }
+              function _throw(err) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'throw',
+                  err
+                );
+              }
+              _next(undefined);
+            });
+          };
+        }
+
+        var voteBtns = document.querySelectorAll('.report__feel');
+
+        var getReport = /*#__PURE__*/ (function() {
+          var _ref = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(report) {
+              var res;
+              return regeneratorRuntime.wrap(
+                function _callee$(_context) {
+                  while (1) {
+                    switch ((_context.prev = _context.next)) {
+                      case 0:
+                        _context.prev = 0;
+                        _context.next = 3;
+                        return (0, _axios.default)({
+                          method: 'GET',
+                          url: 'http://127.0.0.1:3000/api/v1/reports/'.concat(
+                            report
+                          )
+                        });
+
+                      case 3:
+                        res = _context.sent;
+
+                        if (!(res.data.status === 'success')) {
+                          _context.next = 6;
+                          break;
+                        }
+
+                        return _context.abrupt('return', res.data);
+
+                      case 6:
+                        _context.next = 12;
+                        break;
+
+                      case 8:
+                        _context.prev = 8;
+                        _context.t0 = _context['catch'](0);
+                        (0, _alert.showAlert)(
+                          'failed',
+                          'Something went wrong. Please reload the page'
+                        );
+                        return _context.abrupt('return', null);
+
+                      case 12:
+                      case 'end':
+                        return _context.stop();
+                    }
+                  }
+                },
+                _callee,
+                null,
+                [[0, 8]]
+              );
+            })
+          );
+
+          return function getReport(_x) {
+            return _ref.apply(this, arguments);
+          };
+        })();
+
+        var vote = /*#__PURE__*/ (function() {
+          var _ref2 = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee3(
+              op,
+              assocatiedBtnOp,
+              associatedBtn,
+              btn,
+              report,
+              value
+            ) {
+              var res;
+              return regeneratorRuntime.wrap(
+                function _callee3$(_context3) {
+                  while (1) {
+                    switch ((_context3.prev = _context3.next)) {
+                      case 0:
+                        _context3.prev = 0;
+                        (0, _loader.showLoader)();
+                        _context3.next = 4;
+                        return (0, _axios.default)({
+                          method: 'POST',
+                          url: 'http://127.0.0.1:3000/api/v1/votes',
+                          data: {
+                            report: report,
+                            value: value
+                          }
+                        });
+
+                      case 4:
+                        res = _context3.sent;
+
+                        if (res.data.status === 'success') {
+                          window.setTimeout(
+                            /*#__PURE__*/ _asyncToGenerator(
+                              /*#__PURE__*/ regeneratorRuntime.mark(
+                                function _callee2() {
+                                  var updatedReport;
+                                  return regeneratorRuntime.wrap(
+                                    function _callee2$(_context2) {
+                                      while (1) {
+                                        switch (
+                                          (_context2.prev = _context2.next)
+                                        ) {
+                                          case 0:
+                                            _context2.next = 2;
+                                            return getReport(report);
+
+                                          case 2:
+                                            updatedReport = _context2.sent;
+                                            btn.classList.toggle(
+                                              'report__feel-btn--active'
+                                            );
+                                            associatedBtn.classList.remove(
+                                              'report__feel-btn--active'
+                                            );
+                                            associatedBtn.querySelector(
+                                              '.report__count'
+                                            ).innerText =
+                                              updatedReport.data.data[
+                                                assocatiedBtnOp
+                                              ];
+                                            btn.querySelector(
+                                              '.report__count'
+                                            ).innerText =
+                                              updatedReport.data.data[op];
+                                            console.log(updatedReport);
+                                            (0, _loader.hideLoader)();
+
+                                          case 9:
+                                          case 'end':
+                                            return _context2.stop();
+                                        }
+                                      }
+                                    },
+                                    _callee2
+                                  );
+                                }
+                              )
+                            ),
+                            1000
+                          );
+                        }
+
+                        _context3.next = 13;
+                        break;
+
+                      case 8:
+                        _context3.prev = 8;
+                        _context3.t0 = _context3['catch'](0);
+                        (0, _loader.hideLoader)();
+                        console.log(_context3.t0);
+                        (0, _alert.showAlert)(
+                          'failed',
+                          _context3.t0.response.data.message
+                        );
+
+                      case 13:
+                      case 'end':
+                        return _context3.stop();
+                    }
+                  }
+                },
+                _callee3,
+                null,
+                [[0, 8]]
+              );
+            })
+          );
+
+          return function vote(_x2, _x3, _x4, _x5, _x6, _x7) {
+            return _ref2.apply(this, arguments);
+          };
+        })();
+
+        voteBtns.forEach(function(g) {
+          var likeBtn = g.querySelector('.report__feel-btn--like');
+          var dislikeBtn = g.querySelector('.report__feel-btn--dislike');
+          likeBtn.addEventListener('click', function(e) {
+            var value;
+            if (likeBtn.classList.contains('report__feel-btn--active'))
+              value = 0;
+            else value = 1;
+            vote(
+              'numLikes',
+              'numDisLikes',
+              dislikeBtn,
+              likeBtn,
+              likeBtn.dataset.report,
+              value
+            );
+          });
+          dislikeBtn.addEventListener('click', function(e) {
+            var value;
+            if (dislikeBtn.classList.contains('report__feel-btn--active'))
+              value = 0;
+            else value = -1;
+            vote(
+              'numDisLikes',
+              'numLikes',
+              likeBtn,
+              dislikeBtn,
+              dislikeBtn.dataset.report,
+              value
+            );
+          });
+        });
+      },
+      {
+        axios: '../../node_modules/axios/index.js',
+        './alert': 'alert.js',
+        './loader': 'loader.js'
+      }
     ],
     'index.js': [
       function(require, module, exports) {
@@ -50465,6 +50757,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _echarts = require('./echarts');
 
+        require('./vote');
+
         // DOM elements
         var listViewToggle = document.querySelector('#view-switch--list');
         var mapViewToggle = document.querySelector('#view-switch--map');
@@ -50532,6 +50826,60 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           '.sentiment-pie'
         );
         var reportChartContainers = document.querySelectorAll('.report-freq');
+        var userSettingsToggle = document.querySelector(
+          '.user-view__menu--item--1'
+        );
+        var userTopicsToggle = document.querySelector(
+          '.user-view__menu--item--2'
+        );
+        var userReportsToggle = document.querySelector(
+          '.user-view__menu--item--3'
+        );
+        var userSettings = document.querySelector('.user-view__info--settings');
+        var userTopics = document.querySelector('.user-view__info--topics');
+        var userReports = document.querySelector('.user-view__info--reports');
+
+        var tabulate = function tabulate(tab, tabs) {
+          tabs.forEach(function(t) {
+            t.classList.add('hide');
+          });
+          tab.classList.remove('hide');
+        };
+
+        var setActiveTabs = function setActiveTabs(item, items) {
+          items.forEach(function(t) {
+            t.classList.remove('user-view__menu--item--active');
+          });
+          item.classList.add('user-view__menu--item--active');
+        };
+
+        if (userSettingsToggle) {
+          console.log('adding the event listeners');
+          userSettingsToggle.addEventListener('click', function(e) {
+            tabulate(userSettings, [userSettings, userTopics, userReports]);
+            setActiveTabs(userSettingsToggle, [
+              userSettingsToggle,
+              userTopicsToggle,
+              userReportsToggle
+            ]);
+          });
+          userTopicsToggle.addEventListener('click', function(e) {
+            tabulate(userTopics, [userSettings, userTopics, userReports]);
+            setActiveTabs(userTopicsToggle, [
+              userSettingsToggle,
+              userTopicsToggle,
+              userReportsToggle
+            ]);
+          });
+          userReportsToggle.addEventListener('click', function(e) {
+            tabulate(userReports, [userSettings, userTopics, userReports]);
+            setActiveTabs(userReportsToggle, [
+              userSettingsToggle,
+              userTopicsToggle,
+              userReportsToggle
+            ]);
+          });
+        }
 
         var configureSelectGroups = function configureSelectGroups(
           selectGroup
@@ -51017,7 +51365,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './createReport': 'createReport.js',
         './loader': 'loader.js',
         './search': 'search.js',
-        './echarts': 'echarts.js'
+        './echarts': 'echarts.js',
+        './vote': 'vote.js'
       }
     ],
     '../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js': [
@@ -51053,7 +51402,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '54122' + '/'
+            protocol + '://' + hostname + ':' + '55288' + '/'
           );
 
           ws.onmessage = function(event) {

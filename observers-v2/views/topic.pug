@@ -36,7 +36,7 @@ block content
     .topic-view__description
       img.topic-view__img.margin-bottom-medium(src=`/img/${topic.imageCover}` alt=`${topic.slug}`)
       if topic.descriptionHTML && topic.descriptionHTML.length > 0
-        .topic-view__text.topic__description.margin-bottom-extra-small
+        .topic-view__text.topic__description.margin-bottom-extra-small.ql-generated
           p
             | !{topic.descriptionHTML}
       else
@@ -50,7 +50,7 @@ block content
         span.info-line__item.info-line__item--2
           a.link-info.link-info--small(href='#')= topic.location.address
         span.info-line__item.info-line__item--2
-          a.link-info.link-info--category(href=href = `/?category=${encodeURIComponent(topic.category)}`)= topic.category
+          a.link-info.link-info--category(href=href = `/?category=${encodeURIComponent(topic.category)}#topics`)= topic.category
         span.info-line__item
           a.link-info.link-info--small(href='#') Written by #{topic.author.name}
       .tags.margin-bottom-medium
@@ -59,7 +59,7 @@ block content
             span.text--secondary--important tags
           each tag in topic.tags
             .tags__item
-              a.tag(href=`/?tags=${encodeURIComponent(tag.name)}`)= tag.name
+              a.tag(href=`/?tags=${encodeURIComponent(tag.name)}#topics`)= tag.name
       .topic-view__sources
         .links.margin-bottom-medium
           if topic.mediaUrls.length > 0
@@ -98,6 +98,12 @@ block content
       .reports.list-view.list-view-container.margin-bottom-small
         if topic.reports.length > 0
           each report in topic.reports
+            - let userVotes, likes = '', dislikes = ''
+            -
+              if (user)
+                userVotes = report.votes.filter(v => v.author.toString() === user._id.toString())
+              if (userVotes.length > 0 && (userVotes[0].value === 1)) likes = 'report__feel-btn--active'
+              if (userVotes.length > 0 && (userVotes[0].value === -1)) dislikes = 'report__feel-btn--active'
             .report
               .report__info.info-line
                 span.info-line__item.info-line__item--1
@@ -105,8 +111,8 @@ block content
                 span.info-line__item.info-line__item--2
                   a.link-info.link-info--small(href='#')= report.location.description
                 span.info-line__item
-                  if user._id.toString() === report.author.toString()
-                    a.link-info.link-info--small(href='#') Written by you: #{user.name}
+                  if user && user._id.toString() === report.author.toString()
+                    a.link-info.link-info--small(href='#') Written by you
                   else
                     a.link-info.link-info--small(href='#') Written by an anonymous
               p.report__content= report.content
@@ -122,15 +128,15 @@ block content
                         | #{reportMediaUrl}
               .report__feel-box
                 .report__feel
-                  span.report__feel-btn.report__feel-btn--like
+                  span(class=`report__feel-btn report__feel-btn--like ${likes}` data-report=`${report._id}`)
                     svg.report__icon
                       use(xlink:href='/img/sprite.svg#icon-thumbs-up')
-                    span
+                    span.report__count
                       | #{report.numLikes}
-                  span.report__feel-btn.report__feel-btn--dislike
+                  span(class=`report__feel-btn report__feel-btn--dislike ${dislikes}` data-report=`${report._id}`)
                     svg.report__icon
                       use(xlink:href='/img/sprite.svg#icon-thumbs-down')
-                    span
+                    span.report__count
                      | #{report.numDisLikes}
       .topic-map.map-container.margin-bottom-medium.hide
         #mapbox.map.margin-bottom-small(data-mapData=`${JSON.stringify(topic.reports.map(el => {
