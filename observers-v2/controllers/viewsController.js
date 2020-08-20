@@ -65,7 +65,8 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     tags,
     categories,
     mostPopularTopics,
-    nomatch: topics.length <= 0
+    nomatch: topics.length <= 0,
+    active: 'home'
   });
 });
 
@@ -84,7 +85,8 @@ exports.getTopic = catchAsync(async (req, res, next) => {
     title: 'The consequences of deforestation in a region',
     topic,
     categories,
-    tags
+    tags,
+    active: 'none'
   });
 });
 
@@ -115,6 +117,7 @@ exports.getMe = catchAsync(async (req, res, next) => {
     tags,
     categories,
     topics,
-    reports
+    reports,
+    active: 'me'
   });
 });
