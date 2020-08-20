@@ -224,7 +224,11 @@ if (logoutBtn) {
 
 let map;
 if (mapDivEl) {
-  map = L.map('mapbox').setView([0, 0], 2);
+  map = L.map('mapbox', {
+    maxBounds: L.latLngBounds([-90, -180], [90, 180]),
+    minZoom: 2,
+    maxZoom: 14
+  }).setView([0, 0], 2);
   displayMap(map, JSON.parse(mapDivEl.dataset.mapdata));
 }
 
@@ -267,7 +271,11 @@ const processTopicForm = (op = 'create', topics) => {
     const menus = createMultiSelectMenus();
     const editor = createEditors();
 
-    const createTopicMap = L.map('createTopicMap').setView([0, 0], 2);
+    const createTopicMap = L.map('createTopicMap', {
+      maxBounds: L.latLngBounds([-90, -180], [90, 180]),
+      minZoom: 2,
+      maxZoom: 14
+    }).setView([0, 0], 2);
     displayMap(createTopicMap, []);
     const newTopicMarker = initializeCreateTopicMap(createTopicMap);
 
