@@ -3,7 +3,14 @@ import { showLoader, hideLoader } from './loader';
 import { showAlert } from './alert';
 import { getLocation, geoLocate } from './geolocation';
 
-const submitReport = async (topicId, reportContent, reportMediaUrls) => {
+const submitReport = async (
+  topicId,
+  reportContent,
+  reportMediaUrls,
+  operation,
+  url,
+  msg
+) => {
   let position;
   try {
     position = await geoLocate();
@@ -29,23 +36,26 @@ const submitReport = async (topicId, reportContent, reportMediaUrls) => {
       );
     } else {
       reportLocation.description = reportLocation.address;
+      reportLocation.type = 'Point';
       delete reportLocation.address;
       const report = {
-        topic: topicId,
         content: reportContent,
         location: reportLocation
       };
+      if (operation === 'POST') {
+        report.topic = topicId;
+      }
       if (reportMediaUrls) {
         report.mediaUrls = reportMediaUrls.split(',');
       }
 
       const res = await axios({
-        method: 'POST',
-        url: 'http://127.0.0.1:3000/api/v1/reports',
+        method: operation,
+        url: url,
         data: report
       });
       if (res.data.status === 'success') {
-        showAlert('success', 'Report successfully submitted');
+        showAlert('success', msg);
         window.setTimeout(() => {
           location.reload();
         }, 1500);
@@ -62,14 +72,36 @@ const submitReport = async (topicId, reportContent, reportMediaUrls) => {
 export const createReport = (
   createReportForm,
   reportContentEl,
-  reportMediaUrlsEl
+  reportMediaUrlsEl,
+  op,
+  report,
+  mediaUrls
 ) => {
   createReportForm.addEventListener('submit', e => {
+    let url, msg, operation;
+    if (op === 'update') {
+      url = `http://127.0.0.1:3000/api/v1/reports/${report.value}`;
+      msg = 'Report successfully updated';
+      operation = 'PATCH';
+    } else {
+      url = 'http://127.0.0.1:3000/api/v1/reports';
+      msg = 'Report successfully submitted';
+      operation = 'POST';
+    }
+
     e.preventDefault();
     submitReport(
       createReportForm.dataset.topic,
       reportContentEl.value,
-      reportMediaUrlsEl.value
+      reportMediaUrlsEl.value,
+      operation,
+      url,
+      msg
     );
+  });
+  createReportForm.addEventListener('reset', e => {
+    e.preventDefault();
+    reportContentEl.value = report.report.content;
+    mediaUrls.removeActiveItems(0).setValue(report.report.mediaUrls);
   });
 };

@@ -11,8 +11,67 @@ block content
 
   section.user-view__container
     -const topic = {_id: ''}
-    include _reportForm
-    include _topicForm
+    .full-container.create-report-form
+      .form-container(data-simplebar='' data-simplebar-auto-hide='false')
+        .create-report-close.btn-close
+          span.btn-close__icon
+        h3.section__title.margin-bottom-small Update this report
+        form.form.form--create-report(data-topic=`${topic._id}`)
+          .form__group.margin-bottom-medium
+            label.form__label.form__label--title.margin-bottom-small(for='report-content') Report&apos;s content
+            textarea#report-content.form__textarea(rows='8' placeholder='Share your opinion on this topic...' required)
+          .form__group.form-control--links
+            input#select-mediaUrls-create-report-form.form-control.form__input(type='text' value='' placeholder='Enter something')
+            label.form__label(for='select-mediaUrls-create-report-form') Report&apos;s supporting links or sources
+          .form__group.form__group--split
+            input.btn.btn--small.btn-primary(type='Reset' value='Reset Form')
+            input.btn.btn--small.btn-black(type='submit' value='Update report')
+    .full-container.create-topic-form
+      .form-container(data-simplebar='' data-simplebar-auto-hide='false')
+        .create-topic-close.btn-close
+          span.btn-close__icon
+        h3.section__title.margin-bottom-small Update this topic
+        form.form.form--create-topic
+          .form__group
+            input#title.form__input(type='text' placeholder='Title' required='')
+            label.form__label(for='title')
+              | Topic&apos;s title
+              span.form__message
+                |
+                | *
+          .form__group.form__group--small
+            label.form__label--title(for='select-category-create-topic-form')
+              | Topic&apos;s category
+              span.form__message
+                |
+                | *
+            select#select-category-create-topic-form.form-control(data-trigger='' name='choices-single-default' placeholder='Search category')
+              option(value='') Select category
+              each category in categories
+                option(value=`${category}`)= category
+          .form__group
+            label#topicDescriptionLabel.form__label--title(for='topicDescription')
+              | Topic&apos;s description
+              span.form__message *
+            input#topicDescription(name='description' type='hidden')
+            .form__editor.editor#topicEditor
+          .form__group
+            input#select-tags-create-topic-form.form-control.form__input(type='text' value='' placeholder='Enter something')
+            label.form__label(for='select-tags-create-topic-form') Topic&apos;s tags
+          .form__group.form-control--links
+            input#select-mediaUrls-create-topic-form.form-control.form__input(type='text' value='' placeholder='Enter something')
+            label.form__label(for='select-mediaUrls-create-topic-form') Topic&apos;s supporting links or sources
+          .form__group
+            label.form__label(for='location')
+              | Topic's location
+              span.form__message *
+            input#location.form__input(type='hidden' placeholder="Topic's location" )
+            .form__map
+              .map#createTopicMap
+          .form__group.form__group--split
+            input.btn.btn--small.btn-primary(type='Reset' value='Reset Form')
+            input.btn.btn--small.btn-black(type='Submit' value='Update topic')
+
 
     .container
       .user-view__content
@@ -47,7 +106,7 @@ block content
                           a.link-info.link-info--category(href=href = `/?category=${encodeURIComponent(_topic.category)}`)= _topic.category
                       a.margin-bottom-small(href=`/topics/${_topic.slug}`)= _topic.title
                     .user-view__info--item--controls
-                      button.user-view__info--btn.btn.btn--small.btn-black
+                      button.user-view__info--btn.btn.btn--small.btn-black.delete-topic__btn(data-topic=_topic.id)
                         svg.btn__icon
                           use(xlink:href='/img/sprite.svg#icon-trashcan')
                         span Delete
@@ -102,7 +161,7 @@ block content
             .user-view__info--list.user-view__info--reports-list
               if reports.length > 0
                 each report in reports
-                  .user-view__info--item
+                  .user-view__info--item.user-view__report(data-report=`${JSON.stringify({id: report._id, content: report.content, mediaUrls: report.mediaUrls, location: report.location})}`)
                     .user-view__info--item-content
                       .report.user-view__info--report
                         .report__info.info-line
@@ -124,11 +183,11 @@ block content
                                     use(xlink:href='/img/sprite.svg#icon-link')
                                   | #{reportMediaUrl}
                     .user-view__info--item--controls
-                      button.user-view__info--btn.btn.btn--small.btn-black
+                      button.user-view__info--btn.btn.btn--small.btn-black.delete-report__btn(data-report=report.id)
                         svg.btn__icon
                           use(xlink:href='/img/sprite.svg#icon-trashcan')
                         span Delete
-                      button.user-view__info--btn.btn.btn--small.btn--brown.btn--fill.add-report__btn
+                      button.user-view__info--btn.btn.btn--small.btn-white.add-report__btn
                         svg.btn__icon.user-view__info--icon
                           use(xlink:href='/img/sprite.svg#icon-quill')
                         span Update

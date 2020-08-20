@@ -65,7 +65,6 @@ export const createTopic = (
 ) => {
   form.addEventListener('submit', async e => {
     let url, msg, operation;
-    console.log(topicId.value);
     if (op === 'update') {
       url = `http://127.0.0.1:3000/api/v1/topics/${topicId.value}`;
       msg = 'Topic successfully updated';

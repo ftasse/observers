@@ -4,12 +4,67 @@
     display: none;
     visibility: hidden;
   }
+  display: flex;
+  align-items: center;
 
   &__item {
     display: inline-block;
 
     &:not(:last-child) {
       margin-right: 2rem;
+    }
+  }
+
+  &__user {
+    cursor: pointer;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    margin-left: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    &--icon {
+      width: 4rem;
+      fill: aliceblue;
+      height: 4rem;
+      background-size: 4rem 4rem;
+      border-radius: 50%;
+    }
+    
+    &::after,
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: .3rem solid transparent;
+      transition: all .4s;
+      transform-origin: center;
+      transform: rotate(0);
+    }
+
+    &:hover::after {
+      border-top-color: var(--color-primary);
+      border-right-color: var(--color-primary);
+      transform: rotate(180deg)
+    }
+    &:hover::before {
+      border-bottom-color: var(--color-primary);
+      border-left-color: var(--color-primary);
+      transform: rotate(-180deg)
+    }
+
+    &--active {
+      &::after,
+      &::before {
+        border-color: var(--color-primary);
+      }
     }
   }
 

@@ -3,7 +3,10 @@
     img(src='/img/Group%2029@2x.png' alt='logo')
   ul.nav
     li.nav__item
-      a.nav__link.nav__link--baseline.nav__link--active(href='/') Home
+      if active === 'home'
+        a.nav__link.nav__link--baseline.nav__link--active(href='/') Home
+      else
+        a.nav__link.nav__link--baseline(href='/') Home
     li.nav__item
       a.nav__link.nav__link--baseline(href='/#topics') Topics
     li.nav__item
@@ -13,7 +16,22 @@
         button.sign-out.nav__link.nav__link--cta
           span Sign out
       li.nav__item
-        a.nav__link.nav__link--baseline(href='/me')= user.name
+        if active === 'me'
+          if user.thumbnail
+            a.nav__user.nav__user--active(href='/me')
+              img.nav__user--icon(src=user.thumbnail)
+          else
+            a.nav__user.nav__user--active(href='/me')
+              svg.nav__user--icon
+                use(xlink:href='/img/sprite.svg#icon-user-circle')
+        else
+          if user.thumbnail
+            a.nav__user(href='/me')
+              img.nav__user--icon(src=user.thumbnail)
+          else
+            a.nav__user(href='/me')
+              svg.nav__user--icon
+                use(xlink:href='/img/sprite.svg#icon-user-circle')
     else
       li.nav__item
         a.nav__link.nav__link--cta(href='/login')

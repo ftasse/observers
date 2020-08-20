@@ -12,6 +12,8 @@ import { showLoader } from './loader';
 import { searchTopics } from './search';
 import { reportCharts } from './echarts';
 import './vote';
+import './deleteTopic';
+import './deleteReport';
 
 // DOM elements
 const listViewToggle = document.querySelector('#view-switch--list');
@@ -84,6 +86,7 @@ const userTopics = document.querySelector('.user-view__info--topics');
 const userReports = document.querySelector('.user-view__info--reports');
 
 const userTopicsEls = document.querySelectorAll('.user-view__topic');
+const userReportEls = document.querySelectorAll('.user-view__report');
 
 const tabulate = (tab, tabs) => {
   tabs.forEach(t => {
@@ -259,7 +262,7 @@ if (listViewToggle) {
   });
 }
 
-const processTopicForm = (op = 'create', userTopicEls = []) => {
+const processTopicForm = (op = 'create', topics) => {
   if (createTopicButtons) {
     const menus = createMultiSelectMenus();
     const editor = createEditors();
@@ -270,8 +273,8 @@ const processTopicForm = (op = 'create', userTopicEls = []) => {
 
     let topicId = { value: '', topic: '' };
 
-    if ('update') {
-      userTopicsEls.forEach(el => {
+    if (op === 'update') {
+      topics.forEach(el => {
         const updateBtn = el.querySelector('.add-topic__btn');
         updateBtn.addEventListener('click', e => {
           createTopicFormContainer.style.transform =
@@ -339,27 +342,64 @@ const processTopicForm = (op = 'create', userTopicEls = []) => {
 };
 
 if (userTopicsEls.length > 0) {
-  processTopicForm('update');
+  processTopicForm('update', userTopicsEls);
 } else {
   processTopicForm('create');
 }
 
-if (createReportButtons) {
-  createReportButtons.forEach(b => {
-    b.addEventListener('click', function() {
-      createReportFormContainer.style.transform = 'translateX(-50%) scaleX(1)';
-      createReportFormContainer.style.opacity = '1';
+const processReportForm = (op = 'create', reports) => {
+  if (createReportButtons) {
+    const menus = createMultiSelectMenus(true);
+
+    let reportId = { value: '', report: '' };
+
+    if (op === 'update') {
+      reports.forEach(el => {
+        const updateBtn = el.querySelector('.add-report__btn');
+        updateBtn.addEventListener('click', e => {
+          createReportFormContainer.style.transform =
+            'translateX(-50%) scaleX(1)';
+          createReportFormContainer.style.opacity = '1';
+
+          const report = JSON.parse(el.dataset.report);
+
+          reportId.value = report.id;
+          reportId.report = report;
+
+          newReportContent.value = report.content;
+          menus.removeActiveItems(0).setValue(report.mediaUrls);
+        });
+      });
+    } else {
+      createReportButtons.forEach(b => {
+        b.addEventListener('click', function() {
+          createReportFormContainer.style.transform =
+            'translateX(-50%) scaleX(1)';
+          createReportFormContainer.style.opacity = '1';
+        });
+      });
+    }
+
+    createReport(
+      createReportForm,
+      newReportContent,
+      newReportMediaUrls,
+      op,
+      reportId,
+      menus
+    );
+
+    createReportClose.addEventListener('click', function() {
+      createReportFormContainer.style.transform = 'translateX(-50%) scaleX(0)';
+      createReportFormContainer.style.opacity = '0';
     });
-  });
+  }
+};
 
-  createMultiSelectMenus(true);
-
-  createReport(createReportForm, newReportContent, newReportMediaUrls);
-
-  createReportClose.addEventListener('click', function() {
-    createReportFormContainer.style.transform = 'translateX(-50%) scaleX(0)';
-    createReportFormContainer.style.opacity = '0';
-  });
+if (userReportEls.length > 0) {
+  processReportForm('update', userReportEls);
+} else {
+  processReportForm('create', []);
 }
 
 if (menuSidebarLinks) {

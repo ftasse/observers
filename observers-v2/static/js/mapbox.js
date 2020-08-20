@@ -43,7 +43,8 @@ export const displayMap = (mapObj, data) => {
       tileSize: 512,
       zoomOffset: -1,
       accessToken:
-        'pk.eyJ1IjoiYXNuZWxjaHJpc3RpYW4iLCJhIjoiY2thd2Z0aXJ1MDdteTJ0bXU5NDU2bHZ4MCJ9.kChV328HGtNtda8XQQc4tA'
+        'pk.eyJ1IjoiYXNuZWxjaHJpc3RpYW4iLCJhIjoiY2thd2Z0aXJ1MDdteTJ0bXU5NDU2bHZ4MCJ9.kChV328HGtNtda8XQQc4tA',
+      noWrap: true
     }
   ).addTo(mapObj);
 
