@@ -63,9 +63,7 @@ export const displayMap = (mapObj, data) => {
 };
 
 export const initializeCreateTopicMap = topicMap => {
-  const popup = L.popup({ closeOnClick: false }).setContent(
-    "Default topic's location"
-  );
+  const popup = L.popup({ closeOnClick: false }).setContent("Topic's location");
 
   const markerIcon = L.divIcon({ className: 'marker marker--default' });
   const marker = L.marker([0, 0], {

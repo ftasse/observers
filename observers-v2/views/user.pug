@@ -35,7 +35,7 @@ block content
             .user-view__info--list
               if topics.length > 0
                 each _topic in topics
-                  .user-view__info--item
+                  .user-view__info--item.user-view__topic(data-topic=`${JSON.stringify({id: _topic._id, title: _topic.title, category: _topic.category, description: _topic.description, tags: _topic.tags.map(t => t.name), mediaUrls: _topic.mediaUrls, location: _topic.location})}`)
                     img.user-view__info--item--image(src=`/img/${_topic.imageCover}` alt='')
                     .user-view__info--item--content
                       .topic__info--basics.margin-bottom-small

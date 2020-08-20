@@ -3,7 +3,7 @@ import { showAlert } from './alert';
 import { showLoader, hideLoader } from './loader';
 import { getLocation } from './geolocation';
 
-const submitTopic = async topic => {
+const submitTopic = async (topic, operation, url, msg) => {
   try {
     const topicLocation = await getLocation(topic.locationLatLng);
 
@@ -28,18 +28,19 @@ const submitTopic = async topic => {
 
       topic.description = JSON.stringify(topic.description);
       topic.location = topicLocation;
+      topic.location.type = 'Point';
       delete topic.locationLatLng;
 
       const res = await axios({
-        method: 'POST',
-        url: 'http://127.0.0.1:3000/api/v1/topics',
+        method: operation,
+        url: `${url}`,
         data: topic
       });
       hideLoader();
       if (res.data.status === 'success') {
-        showAlert('success', 'Topic successfully created');
+        showAlert('success', `${msg}`);
         window.setTimeout(() => {
-          location.assign('/');
+          location.reload();
         }, 1500);
       }
     }
@@ -57,9 +58,24 @@ export const createTopic = (
   tags,
   mediaUrls,
   marker,
-  editor
+  editor,
+  op,
+  topicId = { value: '' },
+  menus = []
 ) => {
   form.addEventListener('submit', async e => {
+    let url, msg, operation;
+    console.log(topicId.value);
+    if (op === 'update') {
+      url = `http://127.0.0.1:3000/api/v1/topics/${topicId.value}`;
+      msg = 'Topic successfully updated';
+      operation = 'PATCH';
+    } else {
+      url = 'http://127.0.0.1:3000/api/v1/topics';
+      msg = 'Topic successfully created';
+      operation = 'POST';
+    }
+
     e.preventDefault();
     const topic = {
       title: title.value,
@@ -80,9 +96,31 @@ export const createTopic = (
       topic.mediaUrls = mediaUrls.value.split(',');
     }
     try {
-      await submitTopic(topic);
+      await submitTopic(topic, operation, url, msg);
     } catch (err) {
       console.log(err);
     }
+  });
+  form.addEventListener('reset', e => {
+    e.preventDefault();
+    const topic = topicId.topic;
+    editor.setText('');
+
+    try {
+      const descriptionDelta = JSON.parse(topic.description);
+      editor.setContents(descriptionDelta.deltaOps);
+    } catch {
+      editor.setText(topic.description);
+    }
+
+    title.value = topic.title;
+    menus[0].setChoiceByValue(topic.category);
+    menus[0].unhighlightAll();
+    menus[1].removeActiveItems(0).setValue(topic.tags);
+    menus[2].removeActiveItems(0).setValue(topic.mediaUrls);
+
+    marker.setLatLng(
+      new L.LatLng(topic.location.coordinates[1], topic.location.coordinates[0])
+    );
   });
 };

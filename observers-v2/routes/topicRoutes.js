@@ -19,6 +19,7 @@ router
   .post(
     authController.protect,
     authController.restrictTo('user', 'moderator'),
+    topicController.getTopicTags,
     topicController.createTopic
   );
 
@@ -28,6 +29,7 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('admin', 'user'),
+    topicController.getTopicTags,
     topicController.updateTopic
   )
   .delete(

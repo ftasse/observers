@@ -101,7 +101,9 @@ exports.signup = (req, res, next) => {
 };
 
 exports.getMe = catchAsync(async (req, res, next) => {
-  const topics = await Topic.find({ author: req.user._id });
+  const topics = await Topic.find({ author: req.user._id }).populate({
+    path: 'tags'
+  });
   const reports = await Report.find({ author: req.user._id }).populate({
     path: 'topic',
     select: 'title slug'

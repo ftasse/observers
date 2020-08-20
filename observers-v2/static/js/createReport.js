@@ -28,6 +28,8 @@ const submitReport = async (topicId, reportContent, reportMediaUrls) => {
         'Location address not found. Please try again'
       );
     } else {
+      reportLocation.description = reportLocation.address;
+      delete reportLocation.address;
       const report = {
         topic: topicId,
         content: reportContent,

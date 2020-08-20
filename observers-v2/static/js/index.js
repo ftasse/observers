@@ -83,6 +83,8 @@ const userSettings = document.querySelector('.user-view__info--settings');
 const userTopics = document.querySelector('.user-view__info--topics');
 const userReports = document.querySelector('.user-view__info--reports');
 
+const userTopicsEls = document.querySelectorAll('.user-view__topic');
+
 const tabulate = (tab, tabs) => {
   tabs.forEach(t => {
     t.classList.add('hide');
@@ -257,35 +259,89 @@ if (listViewToggle) {
   });
 }
 
-if (createTopicButtons) {
-  createTopicButtons.forEach(b => {
-    b.addEventListener('click', function() {
-      createTopicFormContainer.style.transform = 'translateX(-50%) scaleX(1)';
-      createTopicFormContainer.style.opacity = '1';
+const processTopicForm = (op = 'create', userTopicEls = []) => {
+  if (createTopicButtons) {
+    const menus = createMultiSelectMenus();
+    const editor = createEditors();
+
+    const createTopicMap = L.map('createTopicMap').setView([0, 0], 2);
+    displayMap(createTopicMap, []);
+    const newTopicMarker = initializeCreateTopicMap(createTopicMap);
+
+    let topicId = { value: '', topic: '' };
+
+    if ('update') {
+      userTopicsEls.forEach(el => {
+        const updateBtn = el.querySelector('.add-topic__btn');
+        updateBtn.addEventListener('click', e => {
+          createTopicFormContainer.style.transform =
+            'translateX(-50%) scaleX(1)';
+          createTopicFormContainer.style.opacity = '1';
+
+          const topic = JSON.parse(el.dataset.topic);
+
+          console.log(topic);
+
+          topicId.value = topic.id;
+          topicId.topic = topic;
+
+          editor.setText('');
+
+          try {
+            const descriptionDelta = JSON.parse(topic.description);
+            editor.setContents(descriptionDelta.deltaOps);
+          } catch {
+            editor.setText(topic.description);
+          }
+
+          newTopicTitle.value = topic.title;
+
+          menus[0].setChoiceByValue(topic.category);
+          menus[0].unhighlightAll();
+          menus[1].removeActiveItems(0).setValue(topic.tags);
+          menus[2].removeActiveItems(0).setValue(topic.mediaUrls);
+
+          newTopicMarker.setLatLng(
+            new L.LatLng(
+              topic.location.coordinates[1],
+              topic.location.coordinates[0]
+            )
+          );
+        });
+      });
+    } else {
+      createTopicButtons.forEach(b => {
+        b.addEventListener('click', function() {
+          createTopicFormContainer.style.transform =
+            'translateX(-50%) scaleX(1)';
+          createTopicFormContainer.style.opacity = '1';
+        });
+      });
+    }
+
+    createTopic(
+      createTopicForm,
+      newTopicTitle,
+      newTopicCategory,
+      newTopicTags,
+      newTopicMediaUrls,
+      newTopicMarker,
+      editor,
+      op,
+      topicId,
+      menus
+    );
+    createTopicClose.addEventListener('click', function() {
+      createTopicFormContainer.style.transform = 'translateX(-50%) scaleX(0)';
+      createTopicFormContainer.style.opacity = '0';
     });
-  });
+  }
+};
 
-  createMultiSelectMenus();
-  const editor = createEditors();
-
-  const createTopicMap = L.map('createTopicMap').setView([0, 0], 2);
-  displayMap(createTopicMap, []);
-  const newTopicMarker = initializeCreateTopicMap(createTopicMap);
-
-  createTopic(
-    createTopicForm,
-    newTopicTitle,
-    newTopicCategory,
-    newTopicTags,
-    newTopicMediaUrls,
-    newTopicMarker,
-    editor
-  );
-
-  createTopicClose.addEventListener('click', function() {
-    createTopicFormContainer.style.transform = 'translateX(-50%) scaleX(0)';
-    createTopicFormContainer.style.opacity = '0';
-  });
+if (userTopicsEls.length > 0) {
+  processTopicForm('update');
+} else {
+  processTopicForm('create');
 }
 
 if (createReportButtons) {
