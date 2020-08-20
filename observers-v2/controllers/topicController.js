@@ -5,9 +5,7 @@ const Tag = require('../models/TagModel');
 const catchAsync = require('../utils/catchAsync');
 const Report = require('../models/reportModel');
 
-exports.getAllTopics = factory.getAll(Topic);
-exports.getTopic = factory.getOne(Topic, { path: 'reports' });
-exports.createTopic = catchAsync(async (req, res, next) => {
+exports.getTopicTags = catchAsync(async (req, res, next) => {
   if (req.body.tags) {
     let tags = [];
 
@@ -20,10 +18,14 @@ exports.createTopic = catchAsync(async (req, res, next) => {
     }
     req.body.tags = tags;
   }
-
-  await factory.createOne(Topic)(req, res, next);
+  next();
 });
+
+exports.getAllTopics = factory.getAll(Topic);
+exports.getTopic = factory.getOne(Topic, { path: 'reports' });
+exports.createTopic = factory.createOne(Topic);
 exports.updateTopic = factory.updateOne(Topic);
+
 exports.deleteTopic = catchAsync(async (req, res, next) => {
   await Report.deleteMany({ topic: req.params.id });
   await factory.deleteOne(Topic)(req, res, next);

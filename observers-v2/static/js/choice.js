@@ -57,6 +57,11 @@ export const createMultiSelectMenus = (report = false) => {
         uniqueItemText: 'This source has already been provided'
       }
     );
+    return [
+      selectCategoryCreateTopicForm,
+      selectTagsCreateTopicForm,
+      selectMediaUrlsCreateTopicForm
+    ];
   } else {
     const selectMediaUrlsCreateReportForm = new Choices(
       '#select-mediaUrls-create-report-form',
@@ -83,5 +88,7 @@ export const createMultiSelectMenus = (report = false) => {
         uniqueItemText: 'This source has already been provided'
       }
     );
+
+    return selectMediaUrlsCreateReportForm;
   }
 };

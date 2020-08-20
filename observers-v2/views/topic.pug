@@ -102,8 +102,8 @@ block content
             -
               if (user)
                 userVotes = report.votes.filter(v => v.author.toString() === user._id.toString())
-              if (userVotes.length > 0 && (userVotes[0].value === 1)) likes = 'report__feel-btn--active'
-              if (userVotes.length > 0 && (userVotes[0].value === -1)) dislikes = 'report__feel-btn--active'
+              if ( userVotes && userVotes.length > 0 && (userVotes[0].value === 1)) likes = 'report__feel-btn--active'
+              if ( userVotes && userVotes.length > 0 && (userVotes[0].value === -1)) dislikes = 'report__feel-btn--active'
             .report
               .report__info.info-line
                 span.info-line__item.info-line__item--1
@@ -152,26 +152,26 @@ block content
           .topic-map__cluster-list--close &times;
           ul.topic-map__cluster-list--elements
       ul.reports__pagination.pagination
-        li.pagination__item
-          a(href='#')  &laquo;
-        li.pagination__item
-          a(href='#')  1
-        li.pagination__item
-          a(href='#')  2
-        li.pagination__item--active.pagination__item
-          a(href='#')  3
-        li.pagination__item
-          a(href='#')  4
-        li.pagination__item
-          a(href='#')  5
-        li.pagination__item
-          a(href='#')  6
-        li.pagination__item
-          a(href='#')  7
-        li.pagination__item
-          a(href='#')  8
-        li.pagination__item
-          a(href='#')  &raquo;
+        //li.pagination__item
+        //  a(href='#')  &laquo;
+        //li.pagination__item
+        //  a(href='#')  1
+        //li.pagination__item
+        //  a(href='#')  2
+        //li.pagination__item--active.pagination__item
+        //  a(href='#')  3
+        //li.pagination__item
+        //  a(href='#')  4
+        //li.pagination__item
+        //  a(href='#')  5
+        //li.pagination__item
+        //  a(href='#')  6
+        //li.pagination__item
+        //  a(href='#')  7
+        //li.pagination__item
+        //  a(href='#')  8
+        //li.pagination__item
+        //  a(href='#')  &raquo;
     .topic-view__stats
       h3.section__title.margin-bottom-small Statistics
       include _reportCharts
