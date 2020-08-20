@@ -51427,7 +51427,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var map;
 
         if (mapDivEl) {
-          map = L.map('mapbox').setView([0, 0], 2);
+          map = L.map('mapbox', {
+            maxBounds: L.latLngBounds([-90, -180], [90, 180]),
+            minZoom: 1,
+            maxZoom: 14
+          }).setView([0, 0], 2);
           (0, _mapbox.displayMap)(map, JSON.parse(mapDivEl.dataset.mapdata));
         }
 
@@ -51481,7 +51485,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           if (createTopicButtons) {
             var menus = (0, _choice.createMultiSelectMenus)();
             var editor = (0, _quill.createEditors)();
-            var createTopicMap = L.map('createTopicMap').setView([0, 0], 2);
+            var createTopicMap = L.map('createTopicMap', {
+              maxBounds: L.latLngBounds([-90, -180], [90, 180]),
+              minZoom: 1,
+              maxZoom: 14
+            }).setView([0, 0], 2);
             (0, _mapbox.displayMap)(createTopicMap, []);
             var newTopicMarker = (0, _mapbox.initializeCreateTopicMap)(
               createTopicMap

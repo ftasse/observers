@@ -84,13 +84,15 @@ reportSchema.statics.calcAverageSentiment = async function(topicId) {
   }
 
   await Topic.findByIdAndUpdate(topicId, {
-    $inc: { reportCount: 1 },
     averageSentimentScore: avgSentiment,
     averageMood: avgMood
   });
 };
 
 reportSchema.post('save', async function() {
+  await Topic.findByIdAndUpdate(this.topic, {
+    $inc: { reportCount: -1 }
+  });
   await this.constructor.calcAverageSentiment(this.topic);
 });
 

@@ -33,7 +33,20 @@ const topicSchema = new mongoose.Schema(
       trim: true
     },
     descriptionHTML: {
-      type: String
+      type: String,
+      default: function() {
+        const descriptionObj = JSON.parse(this.description);
+        if (descriptionObj.deltaOps) {
+          const cfg = {};
+          const converter = new QuillDeltaToHtmlConverter(
+            descriptionObj.deltaOps.ops,
+            cfg
+          );
+          const html = converter.convert();
+          return html ? html.split('<br/><br/>').join() : this.description;
+        }
+        return this.description;
+      }
     },
     category: {
       type: String,
@@ -106,20 +119,6 @@ topicSchema.virtual('reports', {
 topicSchema.pre('save', function(next) {
   this.slug = slugify(this.title, { lower: true });
   this.imageCover = this.imageCover ? this.imageCover : 'nocover.jpg';
-
-  const descriptionObj = JSON.parse(this.description);
-  if (descriptionObj.deltaOps) {
-    const cfg = {};
-    const converter = new QuillDeltaToHtmlConverter(
-      descriptionObj.deltaOps.ops,
-      cfg
-    );
-    const html = converter.convert();
-    this.descriptionHTML = html
-      ? html.split('<br/><br/>').join()
-      : this.description;
-  }
-
   next();
 });
 
