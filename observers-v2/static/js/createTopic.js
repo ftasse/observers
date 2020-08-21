@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { showAlert } from './alert';
 import { showLoader, hideLoader } from './loader';
 import { getLocation } from './geolocation';
@@ -7,7 +8,6 @@ const submitTopic = async (topic, operation, url, msg) => {
   try {
     const topicLocation = await getLocation(topic.locationLatLng);
 
-    console.log(topic);
     if (!topic.category) {
       return showAlert(
         'failed',
@@ -27,14 +27,20 @@ const submitTopic = async (topic, operation, url, msg) => {
       showLoader();
 
       topic.description = JSON.stringify(topic.description);
-      topic.location = topicLocation;
-      topic.location.type = 'Point';
+
+      topicLocation.type = 'Point';
       delete topic.locationLatLng;
 
+      const data = new FormData();
+      Object.keys(topic).forEach(k => data.append(k, topic[k]));
+      data.append('location', JSON.stringify(topicLocation));
+      data.append('imageCover', document.getElementById('imageCover').files[0]);
+
+      console.log(data);
       const res = await axios({
         method: operation,
         url: `${url}`,
-        data: topic
+        data
       });
       hideLoader();
       if (res.data.status === 'success') {

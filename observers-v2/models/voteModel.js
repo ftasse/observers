@@ -38,8 +38,6 @@ voteSchema.statics.calcLikes = async function(reportId, value = 0) {
     }
   ]);
 
-  console.log(stats);
-
   if (stats.length > 0) {
     await Report.findByIdAndUpdate(reportId, {
       numLikes: stats[0].numLikes,

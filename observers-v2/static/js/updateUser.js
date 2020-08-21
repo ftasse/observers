@@ -2,16 +2,13 @@ import axios from 'axios';
 import { showConfirm, showAlert, hideAlert } from './alert';
 import { hideLoader, showLoader } from './loader';
 
-const updateUserInfo = async (username, email) => {
+const updateUserInfo = async data => {
   try {
     showLoader();
     const res = await axios({
       method: 'PATCH',
       url: 'http://127.0.0.1:3000/api/v1/users/updateme',
-      data: {
-        name: username,
-        email
-      }
+      data
     });
 
     if (res.data.status === 'success') {
@@ -31,11 +28,14 @@ export const updateUser = form => {
   form.addEventListener('submit', e => {
     e.preventDefault();
 
-    const username = form.querySelector('#username');
-    const email = form.querySelector('#email');
+    const photoForm = new FormData();
+    photoForm.append('name', document.getElementById('username').value);
+    photoForm.append('email', document.getElementById('email').value);
+    photoForm.append('photo', document.getElementById('photo').files[0]);
+    console.log(photoForm);
 
     showConfirm('Are you sure you want to update your information?', () => {
-      updateUserInfo(username.value, email.value);
+      updateUserInfo(photoForm);
     });
   });
 };

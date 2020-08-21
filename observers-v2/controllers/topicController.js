@@ -1,9 +1,37 @@
+const sharp = require('sharp');
+
 const factory = require('./handlerFactory');
 const Topic = require('../models/topicModel');
 const Tag = require('../models/TagModel');
 
 const catchAsync = require('../utils/catchAsync');
 const Report = require('../models/reportModel');
+
+const upload = require('../utils/multerHelper');
+
+exports.uploadTopicCoverImage = upload.single('imageCover');
+
+exports.resizeImageCover = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.filename = `topic-${req.user.id}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .resize(1000, 700)
+    .toFormat('jpeg')
+    .toFile(`static/img/topics/${req.file.filename}`);
+
+  next();
+});
+
+exports.setLocationAndImageCover = (req, res, next) => {
+  if (req.file) {
+    req.body.imageCover = `topics/${req.file.filename}`;
+  }
+  req.body.location = JSON.parse(req.body.location);
+
+  next();
+};
 
 exports.getTopicTags = catchAsync(async (req, res, next) => {
   if (req.body.tags) {

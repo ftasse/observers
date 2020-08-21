@@ -68,6 +68,15 @@ block content
             input#location.form__input(type='hidden' placeholder="Topic's location" )
             .form__map
               .map#createTopicMap
+          .form__group
+            input#imageCover.form__input.form__upload(type='file' accept='image/*' name='imageCover')
+            label.form__profile-picture--button(for='imageCover')
+              svg.form__profile-picture--button--icon
+                use(xlink:href='img/sprite.svg#icon-upload2')
+              span
+                | Please upload a cover image for your topic
+                em (A default will be used otherwise)
+                | .
           .form__group.form__group--split
             input.btn.btn--small.btn-primary(type='Reset' value='Reset Form')
             input.btn.btn--small.btn-black(type='Submit' value='Update topic')
@@ -124,7 +133,10 @@ block content
                   img.form__profile-picture--image(src=`${user.thumbnail}` alt='')
                 else
                   img.form__profile-picture--image(src=`/img/deforestation.jpg` alt='')
-                span.form__profile-picture--button
+                input.form__upload(type='file', accept='image/*', id='photo', name='photo')
+                label.form__profile-picture--button(for='photo')
+                  svg.form__profile-picture--button--icon
+                    use(xlink:href='img/sprite.svg#icon-upload2')
                   span Update your profile picture
               .form__group
                 input#username.form__input(type='text' placeholder='Username' value=`${user.name}` required)

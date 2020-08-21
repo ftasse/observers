@@ -94,6 +94,8 @@ const userPasswordFormEl = document.querySelector(
   '.user-view__info--password-form'
 );
 
+const fileUploadInputs = document.querySelectorAll('.form__upload');
+
 const tabulate = (tab, tabs) => {
   tabs.forEach(t => {
     t.classList.add('hide');
@@ -196,6 +198,23 @@ document.onclick = function(e) {
     });
   }
 };
+
+if (fileUploadInputs.length > 0) {
+  fileUploadInputs.forEach(btn => {
+    btn.addEventListener('change', e => {
+      const fileName = e.target.value.split('\\').pop();
+
+      if (fileName)
+        document
+          .querySelector(`label[for=${btn.getAttribute('id')}]`)
+          .querySelector('span').innerHTML = fileName;
+      else
+        document
+          .querySelector(`label[for=${btn.getAttribute('id')}]`)
+          .querySelector('span').innerHTML = 'Upload new image';
+    });
+  });
+}
 
 if (userInfoFormEl) {
   updateUser(userInfoFormEl);
