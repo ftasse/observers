@@ -211,6 +211,8 @@
     display: flex;
     align-items: center;
     &--image {
+      box-shadow: $box-shadow-subtle;
+      border: .3rem solid transparent;
       width: 10rem;
       height: 10rem;
       border-radius: 50%;

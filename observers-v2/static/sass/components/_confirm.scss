@@ -6,10 +6,13 @@
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-color: rgba($color-black, 0.2);
+    background-color: rgba($color-white, 0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
+
   }
   &__message {
     padding-bottom: 3rem;
@@ -23,6 +26,7 @@
     color: var(--color-secondary);
     padding: 4rem 3rem;
     position: relative;
+    animation: shakeX 200ms 4 linear;
   }
 
   &__close {
