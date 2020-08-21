@@ -127,10 +127,10 @@ block content
                 span.form__profile-picture--button
                   span Update your profile picture
               .form__group
-                input#username.form__input(type='text' placeholder='Username' value=`${user.name}` minlength='50' maxlength='150')
+                input#username.form__input(type='text' placeholder='Username' value=`${user.name}` required)
                 label.form__label(for='username') Username
               .form__group
-                input#email.form__input(type='email' placeholder='Email address' value=`${user.email}` minlength='50' maxlength='150')
+                input#email.form__input(type='email' placeholder='Email address' value=`${user.email}` required)
                 label.form__label(for='email') Email address
               .form__group.form__group--split
                 div
@@ -139,9 +139,9 @@ block content
               p.user-view__info--title Password
               form.form.user-view__info--form.user-view__info--password-form
                 .form__group.form__group--small-margin
-                  input#current-password.form__input(type='password' placeholder='Password' value='**********' required='')
+                  input#current-password.form__input(type='password' placeholder='Current Password' required='')
                   label.form__label(for='current-password')
-                    | Password
+                    | Current password
                     span.form__message
                 .form__group.form__group--small-margin
                   input#password.form__input(type='password' placeholder='Password' required='')
@@ -149,8 +149,8 @@ block content
                     | Password
                     span.form__message
                 .form__group.form__group--small-margin
-                  input#passwordConfirm.form__input(type='password' placeholder='ConfirmPassword' required='')
-                  label.form__label(for='passwordConfirm')
+                  input#password-confirm.form__input(type='password' placeholder='ConfirmPassword' required='')
+                  label.form__label(for='password-confirm')
                     | Confirm password
                     span.form__message
                 .form__group.form__group--split

@@ -57,6 +57,14 @@
     opacity: 1;
     transform: translate(-50%, 0); } }
 
+@keyframes shakeX {
+  0% {
+    transform: translateX(4px); }
+  50% {
+    transform: translateX(-4px); }
+  100% {
+    transform: translateX(0); } }
+
 :root {
   --color-primary: #D80C3D;
   --color-secondary: #ba9545;
@@ -810,7 +818,9 @@ body {
   left: 0;
   height: 100vh;
   width: 100vw;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center; }
@@ -826,7 +836,8 @@ body {
   background-color: var(--color-black-lighter);
   color: var(--color-secondary);
   padding: 4rem 3rem;
-  position: relative; }
+  position: relative;
+  animation: shakeX 200ms 4 linear; }
 
 .confirm__close {
   cursor: pointer;
@@ -1427,6 +1438,7 @@ body {
     .nav__item:not(:last-child) {
       margin-right: 2rem; }
   .nav__user {
+    box-shadow: rgba(0, 0, 0, 0.08) 0 0 3px 0;
     cursor: pointer;
     width: 4.5rem;
     height: 4.5rem;
@@ -1752,6 +1764,8 @@ body {
   display: flex;
   align-items: center; }
   .form__profile-picture--image {
+    box-shadow: rgba(0, 0, 0, 0.08) 0 0 3px 0;
+    border: .3rem solid transparent;
     width: 10rem;
     height: 10rem;
     border-radius: 50%;

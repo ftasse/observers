@@ -11,6 +11,8 @@ import { createReport } from './createReport';
 import { showLoader } from './loader';
 import { searchTopics } from './search';
 import { reportCharts } from './echarts';
+import { updateUser } from './updateUser';
+import { updatePassword } from './updatePassword';
 import './vote';
 import './deleteTopic';
 import './deleteReport';
@@ -87,6 +89,10 @@ const userReports = document.querySelector('.user-view__info--reports');
 
 const userTopicsEls = document.querySelectorAll('.user-view__topic');
 const userReportEls = document.querySelectorAll('.user-view__report');
+const userInfoFormEl = document.querySelector('.user-view__info--profile');
+const userPasswordFormEl = document.querySelector(
+  '.user-view__info--password-form'
+);
 
 const tabulate = (tab, tabs) => {
   tabs.forEach(t => {
@@ -190,6 +196,13 @@ document.onclick = function(e) {
     });
   }
 };
+
+if (userInfoFormEl) {
+  updateUser(userInfoFormEl);
+}
+if (userPasswordFormEl) {
+  updatePassword(userPasswordFormEl);
+}
 
 if (filterTopicsBtn) {
   configureSelectGroups(selectGroupsNormal);

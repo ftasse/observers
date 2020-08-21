@@ -50324,6 +50324,340 @@ parcelRequire = (function(modules, cache, entry, globalName) {
       },
       {}
     ],
+    'updateUser.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.updateUser = void 0;
+
+        var _axios = _interopRequireDefault(require('axios'));
+
+        var _alert = require('./alert');
+
+        var _loader = require('./loader');
+
+        function _interopRequireDefault(obj) {
+          return obj && obj.__esModule ? obj : { default: obj };
+        }
+
+        function asyncGeneratorStep(
+          gen,
+          resolve,
+          reject,
+          _next,
+          _throw,
+          key,
+          arg
+        ) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+          if (info.done) {
+            resolve(value);
+          } else {
+            Promise.resolve(value).then(_next, _throw);
+          }
+        }
+
+        function _asyncToGenerator(fn) {
+          return function() {
+            var self = this,
+              args = arguments;
+            return new Promise(function(resolve, reject) {
+              var gen = fn.apply(self, args);
+              function _next(value) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'next',
+                  value
+                );
+              }
+              function _throw(err) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'throw',
+                  err
+                );
+              }
+              _next(undefined);
+            });
+          };
+        }
+
+        var updateUserInfo = /*#__PURE__*/ (function() {
+          var _ref = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(
+              username,
+              email
+            ) {
+              var res;
+              return regeneratorRuntime.wrap(
+                function _callee$(_context) {
+                  while (1) {
+                    switch ((_context.prev = _context.next)) {
+                      case 0:
+                        _context.prev = 0;
+                        (0, _loader.showLoader)();
+                        _context.next = 4;
+                        return (0, _axios.default)({
+                          method: 'PATCH',
+                          url: 'http://127.0.0.1:3000/api/v1/users/updateme',
+                          data: {
+                            name: username,
+                            email: email
+                          }
+                        });
+
+                      case 4:
+                        res = _context.sent;
+
+                        if (res.data.status === 'success') {
+                          (0, _alert.hideAlert)('.confirm__container');
+                          (0, _alert.showAlert)(
+                            'success',
+                            'Information successfully updated'
+                          );
+                          window.setTimeout(function() {
+                            location.reload();
+                          }, 1500);
+                        }
+
+                        _context.next = 12;
+                        break;
+
+                      case 8:
+                        _context.prev = 8;
+                        _context.t0 = _context['catch'](0);
+                        (0, _loader.hideLoader)();
+                        (0, _alert.showAlert)(
+                          'failed',
+                          _context.t0.response.data.message
+                        );
+
+                      case 12:
+                      case 'end':
+                        return _context.stop();
+                    }
+                  }
+                },
+                _callee,
+                null,
+                [[0, 8]]
+              );
+            })
+          );
+
+          return function updateUserInfo(_x, _x2) {
+            return _ref.apply(this, arguments);
+          };
+        })();
+
+        var updateUser = function updateUser(form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var username = form.querySelector('#username');
+            var email = form.querySelector('#email');
+            (0,
+            _alert.showConfirm)('Are you sure you want to update your information?', function() {
+              updateUserInfo(username.value, email.value);
+            });
+          });
+        };
+
+        exports.updateUser = updateUser;
+      },
+      {
+        axios: '../../node_modules/axios/index.js',
+        './alert': 'alert.js',
+        './loader': 'loader.js'
+      }
+    ],
+    'updatePassword.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.updatePassword = void 0;
+
+        var _axios = _interopRequireDefault(require('axios'));
+
+        var _alert = require('./alert');
+
+        var _loader = require('./loader');
+
+        function _interopRequireDefault(obj) {
+          return obj && obj.__esModule ? obj : { default: obj };
+        }
+
+        function asyncGeneratorStep(
+          gen,
+          resolve,
+          reject,
+          _next,
+          _throw,
+          key,
+          arg
+        ) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+          if (info.done) {
+            resolve(value);
+          } else {
+            Promise.resolve(value).then(_next, _throw);
+          }
+        }
+
+        function _asyncToGenerator(fn) {
+          return function() {
+            var self = this,
+              args = arguments;
+            return new Promise(function(resolve, reject) {
+              var gen = fn.apply(self, args);
+              function _next(value) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'next',
+                  value
+                );
+              }
+              function _throw(err) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'throw',
+                  err
+                );
+              }
+              _next(undefined);
+            });
+          };
+        }
+
+        var updateUserPassword = /*#__PURE__*/ (function() {
+          var _ref = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(
+              currentPassword,
+              password,
+              passwordConfirm
+            ) {
+              var res;
+              return regeneratorRuntime.wrap(
+                function _callee$(_context) {
+                  while (1) {
+                    switch ((_context.prev = _context.next)) {
+                      case 0:
+                        _context.prev = 0;
+                        (0, _loader.showLoader)();
+                        _context.next = 4;
+                        return (0, _axios.default)({
+                          method: 'POST',
+                          url:
+                            'http://127.0.0.1:3000/api/v1/users/updatepassword',
+                          data: {
+                            currentPassword: currentPassword,
+                            password: password,
+                            passwordConfirm: passwordConfirm
+                          }
+                        });
+
+                      case 4:
+                        res = _context.sent;
+
+                        if (res.data.status === 'success') {
+                          (0, _alert.hideAlert)('.confirm__container');
+                          (0, _alert.showAlert)(
+                            'success',
+                            'Password successfully updated'
+                          );
+                          window.setTimeout(function() {
+                            location.reload();
+                          }, 1500);
+                        }
+
+                        _context.next = 12;
+                        break;
+
+                      case 8:
+                        _context.prev = 8;
+                        _context.t0 = _context['catch'](0);
+                        (0, _loader.hideLoader)();
+                        (0, _alert.showAlert)(
+                          'failed',
+                          _context.t0.response.data.message
+                        );
+
+                      case 12:
+                      case 'end':
+                        return _context.stop();
+                    }
+                  }
+                },
+                _callee,
+                null,
+                [[0, 8]]
+              );
+            })
+          );
+
+          return function updateUserPassword(_x, _x2, _x3) {
+            return _ref.apply(this, arguments);
+          };
+        })();
+
+        var updatePassword = function updatePassword(form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var currentPassword = form.querySelector('#current-password');
+            var password = form.querySelector('#password');
+            var passwordConfirm = form.querySelector('#password-confirm');
+            (0,
+            _alert.showConfirm)('Are you sure you want to update your password?', function() {
+              updateUserPassword(
+                currentPassword.value,
+                password.value,
+                passwordConfirm.value
+              );
+            });
+          });
+        };
+
+        exports.updatePassword = updatePassword;
+      },
+      {
+        axios: '../../node_modules/axios/index.js',
+        './alert': 'alert.js',
+        './loader': 'loader.js'
+      }
+    ],
     'vote.js': [
       function(require, module, exports) {
         'use strict';
@@ -51192,6 +51526,10 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _echarts = require('./echarts');
 
+        var _updateUser = require('./updateUser');
+
+        var _updatePassword = require('./updatePassword');
+
         require('./vote');
 
         require('./deleteTopic');
@@ -51279,6 +51617,12 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var userReports = document.querySelector('.user-view__info--reports');
         var userTopicsEls = document.querySelectorAll('.user-view__topic');
         var userReportEls = document.querySelectorAll('.user-view__report');
+        var userInfoFormEl = document.querySelector(
+          '.user-view__info--profile'
+        );
+        var userPasswordFormEl = document.querySelector(
+          '.user-view__info--password-form'
+        );
 
         var tabulate = function tabulate(tab, tabs) {
           tabs.forEach(function(t) {
@@ -51391,6 +51735,14 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           }
         };
 
+        if (userInfoFormEl) {
+          (0, _updateUser.updateUser)(userInfoFormEl);
+        }
+
+        if (userPasswordFormEl) {
+          (0, _updatePassword.updatePassword)(userPasswordFormEl);
+        }
+
         if (filterTopicsBtn) {
           configureSelectGroups(selectGroupsNormal);
           filterTopics(filterTopicsBtn, selectGroupsNormal);
@@ -51429,7 +51781,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         if (mapDivEl) {
           map = L.map('mapbox', {
             maxBounds: L.latLngBounds([-90, -180], [90, 180]),
-            minZoom: 1,
+            minZoom: 2,
             maxZoom: 14
           }).setView([0, 0], 2);
           (0, _mapbox.displayMap)(map, JSON.parse(mapDivEl.dataset.mapdata));
@@ -51487,7 +51839,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             var editor = (0, _quill.createEditors)();
             var createTopicMap = L.map('createTopicMap', {
               maxBounds: L.latLngBounds([-90, -180], [90, 180]),
-              minZoom: 1,
+              minZoom: 2,
               maxZoom: 14
             }).setView([0, 0], 2);
             (0, _mapbox.displayMap)(createTopicMap, []);
@@ -51912,6 +52264,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './loader': 'loader.js',
         './search': 'search.js',
         './echarts': 'echarts.js',
+        './updateUser': 'updateUser.js',
+        './updatePassword': 'updatePassword.js',
         './vote': 'vote.js',
         './deleteTopic': 'deleteTopic.js',
         './deleteReport': 'deleteReport.js'
@@ -51950,7 +52304,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '54603' + '/'
+            protocol + '://' + hostname + ':' + '59757' + '/'
           );
 
           ws.onmessage = function(event) {
