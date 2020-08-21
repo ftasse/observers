@@ -19,6 +19,9 @@ router
   .post(
     authController.protect,
     authController.restrictTo('user', 'moderator'),
+    topicController.uploadTopicCoverImage,
+    topicController.resizeImageCover,
+    topicController.setLocationAndImageCover,
     topicController.getTopicTags,
     topicController.createTopic
   );
@@ -29,6 +32,9 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('admin', 'user'),
+    topicController.uploadTopicCoverImage,
+    topicController.resizeImageCover,
+    topicController.setLocationAndImageCover,
     topicController.getTopicTags,
     topicController.updateTopic
   )

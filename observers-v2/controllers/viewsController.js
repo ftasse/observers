@@ -1,3 +1,5 @@
+const validator = require('validator');
+
 const Topic = require('../models/topicModel');
 const Tag = require('../models/TagModel');
 const Report = require('../models/reportModel');

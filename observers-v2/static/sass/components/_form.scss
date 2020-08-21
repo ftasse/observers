@@ -205,6 +205,14 @@
 }
 
 .form {
+  &__upload {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
 
   &__profile-picture {
     margin-bottom: 3rem;
@@ -220,12 +228,14 @@
       object-fit: cover;
     }
     &--button {
-      display: inline-block;
+      display: inline-flex;
       padding: 2rem;
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       cursor: pointer;
       position: relative;
       transition: all .2s;
+
+      align-items: center;
 
       & > * {
         position: relative;
@@ -249,6 +259,30 @@
       &:hover::after {
         height: 10%;
       }
+
+      &--icon {
+        height: 2rem;
+        width: 2rem;
+        margin-right: 1.5rem;
+        fill: var(--color-black-lighter);
+        transition: all .2s;
+      }
+
+      &:hover &--icon {
+        fill: var(--color-secondary)
+      }
+    }
+  }
+
+  &__upload:focus ~ &__profile-picture--button {
+    color: var(--color-secondary);
+
+    &::after {
+      background-color: var(--color-secondary);
+      height: 10%
+    }
+    &--icon {
+      fill: var(--color-secondary);
     }
   }
 

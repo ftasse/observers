@@ -40,6 +40,15 @@
         input#location.form__input(type='hidden' placeholder="Topic's location" )
         .form__map
           .map#createTopicMap
+      .form__group
+        input#imageCover.form__input.form__upload(type='file' accept='image/*' name='imageCover')
+        label.form__profile-picture--button(for='imageCover')
+          svg.form__profile-picture--button--icon
+            use(xlink:href='img/sprite.svg#icon-upload2')
+          span
+            | Please upload a cover image for your topic
+            em (A default will be used otherwise)
+            | .
       .form__group.form__group--split
         input.btn.btn--small.btn-primary(type='Reset' value='Reset Form')
         input.btn.btn--small.btn-black(type='Submit' value='Create Topic')

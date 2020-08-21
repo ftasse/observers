@@ -6560,8 +6560,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         });
 
         for (
-          var es6Symbols = // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
-            'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'.split(
+          var es6Symbols = 'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'.split( // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
               ','
             ),
             j = 0;
@@ -20595,7 +20594,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
                       case 4:
                         res = _context2.sent;
-                        if (res.data.status === 'success') location.reload();
+                        if (res.data.status === 'success')
+                          location.assign('/login');
                         _context2.next = 11;
                         break;
 
@@ -24014,7 +24014,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     'Only values matching specific conditions can be added',
                   addItemText: function addItemText(value) {
                     return (
-                      'Press Enter to add <b>"' + sanitise(value) + '"</b>'
+                      ('Press Enter to add <b>"' + sanitise(value) + '"</b>')
                     );
                   },
                   maxItemText: function maxItemText(maxItemCount) {
@@ -49327,6 +49327,105 @@ parcelRequire = (function(modules, cache, entry, globalName) {
       },
       {}
     ],
+    '../../node_modules/object-to-formdata/dist/index.module.js': [
+      function(require, module, exports) {
+        const isUndefined = value => value === undefined;
+
+        const isNull = value => value === null;
+
+        const isBoolean = value => typeof value === 'boolean';
+
+        const isObject = value => value === Object(value);
+
+        const isArray = value => Array.isArray(value);
+
+        const isDate = value => value instanceof Date;
+
+        const isBlob = value =>
+          value &&
+          typeof value.size === 'number' &&
+          typeof value.type === 'string' &&
+          typeof value.slice === 'function';
+
+        const isFile = value =>
+          isBlob(value) &&
+          typeof value.name === 'string' &&
+          (typeof value.lastModifiedDate === 'object' ||
+            typeof value.lastModified === 'number');
+
+        const serialize = (obj, cfg, fd, pre) => {
+          cfg = cfg || {};
+
+          cfg.indices = isUndefined(cfg.indices) ? false : cfg.indices;
+
+          cfg.nullsAsUndefineds = isUndefined(cfg.nullsAsUndefineds)
+            ? false
+            : cfg.nullsAsUndefineds;
+
+          cfg.booleansAsIntegers = isUndefined(cfg.booleansAsIntegers)
+            ? false
+            : cfg.booleansAsIntegers;
+
+          cfg.allowEmptyArrays = isUndefined(cfg.allowEmptyArrays)
+            ? false
+            : cfg.allowEmptyArrays;
+
+          fd = fd || new FormData();
+
+          if (isUndefined(obj)) {
+            return fd;
+          } else if (isNull(obj)) {
+            if (!cfg.nullsAsUndefineds) {
+              fd.append(pre, '');
+            }
+          } else if (isBoolean(obj)) {
+            if (cfg.booleansAsIntegers) {
+              fd.append(pre, obj ? 1 : 0);
+            } else {
+              fd.append(pre, obj);
+            }
+          } else if (isArray(obj)) {
+            if (obj.length) {
+              obj.forEach((value, index) => {
+                const key = pre + '[' + (cfg.indices ? index : '') + ']';
+
+                serialize(value, cfg, fd, key);
+              });
+            } else if (cfg.allowEmptyArrays) {
+              fd.append(pre + '[]', '');
+            }
+          } else if (isDate(obj)) {
+            fd.append(pre, obj.toISOString());
+          } else if (isObject(obj) && !isFile(obj) && !isBlob(obj)) {
+            Object.keys(obj).forEach(prop => {
+              const value = obj[prop];
+
+              if (isArray(value)) {
+                while (
+                  prop.length > 2 &&
+                  prop.lastIndexOf('[]') === prop.length - 2
+                ) {
+                  prop = prop.substring(0, prop.length - 2);
+                }
+              }
+
+              const key = pre ? pre + '[' + prop + ']' : prop;
+
+              serialize(value, cfg, fd, key);
+            });
+          } else {
+            fd.append(pre, obj);
+          }
+
+          return fd;
+        };
+
+        module.exports = {
+          serialize
+        };
+      },
+      {}
+    ],
     'geolocation.js': [
       function(require, module, exports) {
         'use strict';
@@ -49526,6 +49625,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _axios = _interopRequireDefault(require('axios'));
 
+        var _objectToFormdata = require('object-to-formdata');
+
         var _alert = require('./alert');
 
         var _loader = require('./loader');
@@ -49600,7 +49701,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
               url,
               msg
             ) {
-              var topicLocation, res;
+              var topicLocation, data, res;
               return regeneratorRuntime.wrap(
                 function _callee$(_context) {
                   while (1) {
@@ -49614,10 +49715,9 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
                       case 3:
                         topicLocation = _context.sent;
-                        console.log(topic);
 
                         if (topic.category) {
-                          _context.next = 9;
+                          _context.next = 8;
                           break;
                         }
 
@@ -49629,9 +49729,9 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           )
                         );
 
-                      case 9:
+                      case 8:
                         if (!(topic.description.text.trim().length < 30)) {
-                          _context.next = 13;
+                          _context.next = 12;
                           break;
                         }
 
@@ -49643,9 +49743,9 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           )
                         );
 
-                      case 13:
+                      case 12:
                         if (topicLocation) {
-                          _context.next = 17;
+                          _context.next = 16;
                           break;
                         }
 
@@ -49657,20 +49757,30 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           )
                         );
 
-                      case 17:
+                      case 16:
                         (0, _loader.showLoader)();
                         topic.description = JSON.stringify(topic.description);
-                        topic.location = topicLocation;
-                        topic.location.type = 'Point';
-                        delete topic.locationLatLng;
-                        _context.next = 24;
+                        topicLocation.type = 'Point';
+                        delete topic.locationLatLng; // topic.location = JSON.stringify(topicLocation);
+
+                        data = new FormData();
+                        Object.keys(topic).forEach(function(k) {
+                          return data.append(k, topic[k]);
+                        });
+                        data.append('location', JSON.stringify(topicLocation));
+                        data.append(
+                          'imageCover',
+                          document.getElementById('imageCover').files[0]
+                        );
+                        console.log(data);
+                        _context.next = 27;
                         return (0, _axios.default)({
                           method: operation,
                           url: ''.concat(url),
-                          data: topic
+                          data: data
                         });
 
-                      case 24:
+                      case 27:
                         res = _context.sent;
                         (0, _loader.hideLoader)();
 
@@ -49681,21 +49791,18 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           }, 1500);
                         }
 
-                      case 27:
+                      case 30:
                         (0, _loader.hideLoader)();
-                        _context.next = 34;
+                        _context.next = 37;
                         break;
 
-                      case 30:
-                        _context.prev = 30;
+                      case 33:
+                        _context.prev = 33;
                         _context.t0 = _context['catch'](0);
                         (0, _loader.hideLoader)();
-                        (0, _alert.showAlert)(
-                          'failed',
-                          _context.t0.response.data.message
-                        );
+                        console.log(_context.t0); // showAlert('failed', err.response.data.message);
 
-                      case 34:
+                      case 37:
                       case 'end':
                         return _context.stop();
                     }
@@ -49703,7 +49810,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                 },
                 _callee,
                 null,
-                [[0, 30]]
+                [[0, 33]]
               );
             })
           );
@@ -49839,6 +49946,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
       },
       {
         axios: '../../node_modules/axios/index.js',
+        'object-to-formdata':
+          '../../node_modules/object-to-formdata/dist/index.module.js',
         './alert': 'alert.js',
         './loader': 'loader.js',
         './geolocation': 'geolocation.js'
@@ -50401,10 +50510,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var updateUserInfo = /*#__PURE__*/ (function() {
           var _ref = _asyncToGenerator(
-            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(
-              username,
-              email
-            ) {
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(data) {
               var res;
               return regeneratorRuntime.wrap(
                 function _callee$(_context) {
@@ -50417,10 +50523,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                         return (0, _axios.default)({
                           method: 'PATCH',
                           url: 'http://127.0.0.1:3000/api/v1/users/updateme',
-                          data: {
-                            name: username,
-                            email: email
-                          }
+                          data: data
                         });
 
                       case 4:
@@ -50462,7 +50565,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             })
           );
 
-          return function updateUserInfo(_x, _x2) {
+          return function updateUserInfo(_x) {
             return _ref.apply(this, arguments);
           };
         })();
@@ -50470,11 +50573,17 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var updateUser = function updateUser(form) {
           form.addEventListener('submit', function(e) {
             e.preventDefault();
-            var username = form.querySelector('#username');
-            var email = form.querySelector('#email');
+            var photoForm = new FormData();
+            photoForm.append('name', document.getElementById('username').value);
+            photoForm.append('email', document.getElementById('email').value);
+            photoForm.append(
+              'photo',
+              document.getElementById('photo').files[0]
+            );
+            console.log(photoForm);
             (0,
             _alert.showConfirm)('Are you sure you want to update your information?', function() {
-              updateUserInfo(username.value, email.value);
+              updateUserInfo(photoForm);
             });
           });
         };
@@ -51623,6 +51732,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var userPasswordFormEl = document.querySelector(
           '.user-view__info--password-form'
         );
+        var fileUploadInputs = document.querySelectorAll('.form__upload');
 
         var tabulate = function tabulate(tab, tabs) {
           tabs.forEach(function(t) {
@@ -51734,6 +51844,26 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             });
           }
         };
+
+        if (fileUploadInputs.length > 0) {
+          fileUploadInputs.forEach(function(btn) {
+            btn.addEventListener('change', function(e) {
+              var fileName = e.target.value.split('\\').pop();
+              if (fileName)
+                document
+                  .querySelector(
+                    'label[for='.concat(btn.getAttribute('id'), ']')
+                  )
+                  .querySelector('span').innerHTML = fileName;
+              else
+                document
+                  .querySelector(
+                    'label[for='.concat(btn.getAttribute('id'), ']')
+                  )
+                  .querySelector('span').innerHTML = 'Upload new image';
+            });
+          });
+        }
 
         if (userInfoFormEl) {
           (0, _updateUser.updateUser)(userInfoFormEl);
@@ -52304,7 +52434,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '59757' + '/'
+            protocol + '://' + hostname + ':' + '50028' + '/'
           );
 
           ws.onmessage = function(event) {
