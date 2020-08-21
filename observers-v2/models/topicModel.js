@@ -72,7 +72,10 @@ const topicSchema = new mongoose.Schema(
       type: Date,
       default: Date.now()
     },
-    imageCover: String,
+    imageCover: {
+      type: String,
+      default: 'nocover.jpeg'
+    },
     mediaUploads: [String],
     mediaUrls: [
       {
