@@ -3,6 +3,17 @@
     font-size: 1.4rem;
     text-align: center;
   }
+  &__link--forgot {
+    &:link,
+    &:visited {
+      color: var(--color-black-lighter);
+      transition: all .2s
+    }
+    &:hover,
+    &:active {
+      color: var(--color-secondary);
+    }
+  }
   &__message {
     text-align: left;
     font-size: 2rem;

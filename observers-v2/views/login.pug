@@ -25,7 +25,9 @@ block content
               span.form__message
           .form__group.form__group--small-margin
             input.form__submit--full.form__submit--full--black(type='submit' value='Sign in dear observer')
-        p.sign__text.text-italics or
+        p.sign__text.text-italics.margin-bottom-extra-small or
+        p.sign__text.text-italics.margin-bottom-extra-small
+          a.sign__link--forgot(href='/users/forgotpassword') forgot password
         .sign__alt-operation
           a.sign__alt-operation--el.btn__font--default.btn.btn--brown.btn--fill(href='/api/v1/users/auth/google')
             svg.btn__icon

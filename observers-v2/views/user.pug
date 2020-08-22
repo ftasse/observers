@@ -129,10 +129,11 @@ block content
             p.user-view__info--title Your account settings
             form.form.user-view__info--form.user-view__info--profile
               .form__profile-picture
-                if user.thumbnail
+                if user.thumbnail !== 'none'
                   img.form__profile-picture--image(src=`${user.thumbnail}` alt='')
                 else
-                  img.form__profile-picture--image(src=`/img/deforestation.jpg` alt='')
+                  svg.form__profile-picture--image
+                    use(xlink:href='/img/sprite.svg#icon-user-circle')
                 input.form__upload(type='file', accept='image/*', id='photo', name='photo')
                 label.form__profile-picture--button(for='photo')
                   svg.form__profile-picture--button--icon

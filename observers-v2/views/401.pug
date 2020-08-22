@@ -1,0 +1,16 @@
+extend base
+
+block content
+  section.container--full
+    .sign.container--full__col.container--full__col--1
+      .sign__form.sign__form--404
+        a.navigation__logo(href='/')
+          img(src='/img/Group%2029@2x.png' alt='')
+        p.text__404 401
+        br
+        p.text-italics
+          | ...
+          span.text__primary Oops!
+          |  we are unable to authenticate you. Please register properly.
+    .container--full__col.container--full__col--2
+      img(src='/img/unauthorized.jpg' alt='')

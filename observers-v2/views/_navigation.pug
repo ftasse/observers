@@ -17,7 +17,7 @@
           span Sign out
       li.nav__item
         if active === 'me'
-          if user.thumbnail
+          if user.thumbnail !== 'none'
             a.nav__user.nav__user--active(href='/me')
               img.nav__user--icon(src=user.thumbnail)
           else
@@ -25,7 +25,7 @@
               svg.nav__user--icon
                 use(xlink:href='/img/sprite.svg#icon-user-circle')
         else
-          if user.thumbnail
+          if user.thumbnail !== 'none'
             a.nav__user(href='/me')
               img.nav__user--icon(src=user.thumbnail)
           else
