@@ -91,7 +91,7 @@ reportSchema.statics.calcAverageSentiment = async function(topicId) {
 
 reportSchema.post('save', async function() {
   await Topic.findByIdAndUpdate(this.topic, {
-    $inc: { reportCount: -1 }
+    $inc: { reportCount: 1 }
   });
   await this.constructor.calcAverageSentiment(this.topic);
 });
@@ -102,15 +102,15 @@ reportSchema.pre(/^find(One|ById)And/, async function(next) {
   next();
 });
 
-reportSchema.post(/^find(One|ById)And/, async function() {
-  await this.r.constructor.calcAverageSentiment(this.r.topic);
-});
-
-reportSchema.pre(/^delete/, async function(next) {
-  await Topic.findByIdAndUpdate(this.topic, {
+reportSchema.post(/^find(One|ById)AndDelete/, async function(doc, next) {
+  await Topic.findByIdAndUpdate(this.r.topic, {
     $inc: { reportCount: -1 }
   });
   next();
+});
+
+reportSchema.post(/^find(One|ById)And/, async function() {
+  await this.r.constructor.calcAverageSentiment(this.r.topic);
 });
 
 const Report = mongoose.model('Report', reportSchema);

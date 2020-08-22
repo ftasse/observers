@@ -1,4 +1,3 @@
-const multer = require('multer');
 const sharp = require('sharp');
 
 const User = require('../models/userModel');

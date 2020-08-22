@@ -6560,7 +6560,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         });
 
         for (
-          var es6Symbols = 'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'.split( // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
+          var es6Symbols = // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
+            'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'.split(
               ','
             ),
             j = 0;
@@ -24014,7 +24015,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     'Only values matching specific conditions can be added',
                   addItemText: function addItemText(value) {
                     return (
-                      ('Press Enter to add <b>"' + sanitise(value) + '"</b>')
+                      'Press Enter to add <b>"' + sanitise(value) + '"</b>'
                     );
                   },
                   maxItemText: function maxItemText(maxItemCount) {
@@ -49327,105 +49328,6 @@ parcelRequire = (function(modules, cache, entry, globalName) {
       },
       {}
     ],
-    '../../node_modules/object-to-formdata/dist/index.module.js': [
-      function(require, module, exports) {
-        const isUndefined = value => value === undefined;
-
-        const isNull = value => value === null;
-
-        const isBoolean = value => typeof value === 'boolean';
-
-        const isObject = value => value === Object(value);
-
-        const isArray = value => Array.isArray(value);
-
-        const isDate = value => value instanceof Date;
-
-        const isBlob = value =>
-          value &&
-          typeof value.size === 'number' &&
-          typeof value.type === 'string' &&
-          typeof value.slice === 'function';
-
-        const isFile = value =>
-          isBlob(value) &&
-          typeof value.name === 'string' &&
-          (typeof value.lastModifiedDate === 'object' ||
-            typeof value.lastModified === 'number');
-
-        const serialize = (obj, cfg, fd, pre) => {
-          cfg = cfg || {};
-
-          cfg.indices = isUndefined(cfg.indices) ? false : cfg.indices;
-
-          cfg.nullsAsUndefineds = isUndefined(cfg.nullsAsUndefineds)
-            ? false
-            : cfg.nullsAsUndefineds;
-
-          cfg.booleansAsIntegers = isUndefined(cfg.booleansAsIntegers)
-            ? false
-            : cfg.booleansAsIntegers;
-
-          cfg.allowEmptyArrays = isUndefined(cfg.allowEmptyArrays)
-            ? false
-            : cfg.allowEmptyArrays;
-
-          fd = fd || new FormData();
-
-          if (isUndefined(obj)) {
-            return fd;
-          } else if (isNull(obj)) {
-            if (!cfg.nullsAsUndefineds) {
-              fd.append(pre, '');
-            }
-          } else if (isBoolean(obj)) {
-            if (cfg.booleansAsIntegers) {
-              fd.append(pre, obj ? 1 : 0);
-            } else {
-              fd.append(pre, obj);
-            }
-          } else if (isArray(obj)) {
-            if (obj.length) {
-              obj.forEach((value, index) => {
-                const key = pre + '[' + (cfg.indices ? index : '') + ']';
-
-                serialize(value, cfg, fd, key);
-              });
-            } else if (cfg.allowEmptyArrays) {
-              fd.append(pre + '[]', '');
-            }
-          } else if (isDate(obj)) {
-            fd.append(pre, obj.toISOString());
-          } else if (isObject(obj) && !isFile(obj) && !isBlob(obj)) {
-            Object.keys(obj).forEach(prop => {
-              const value = obj[prop];
-
-              if (isArray(value)) {
-                while (
-                  prop.length > 2 &&
-                  prop.lastIndexOf('[]') === prop.length - 2
-                ) {
-                  prop = prop.substring(0, prop.length - 2);
-                }
-              }
-
-              const key = pre ? pre + '[' + prop + ']' : prop;
-
-              serialize(value, cfg, fd, key);
-            });
-          } else {
-            fd.append(pre, obj);
-          }
-
-          return fd;
-        };
-
-        module.exports = {
-          serialize
-        };
-      },
-      {}
-    ],
     'geolocation.js': [
       function(require, module, exports) {
         'use strict';
@@ -49562,10 +49464,9 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
                       case 4:
                         res = _context2.sent;
-                        console.log(res);
 
                         if (!(res.status === 200)) {
-                          _context2.next = 9;
+                          _context2.next = 8;
                           break;
                         }
 
@@ -49579,20 +49480,19 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           address: name.join('|')
                         });
 
-                      case 9:
-                        _context2.next = 15;
+                      case 8:
+                        _context2.next = 13;
                         break;
 
-                      case 11:
-                        _context2.prev = 11;
+                      case 10:
+                        _context2.prev = 10;
                         _context2.t0 = _context2['catch'](0);
-                        console.log(_context2.t0);
                         (0, _alert.showAlert)(
                           'failed',
                           'Please provide a valid location'
                         );
 
-                      case 15:
+                      case 13:
                       case 'end':
                         return _context2.stop();
                     }
@@ -49600,7 +49500,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                 },
                 _callee2,
                 null,
-                [[0, 11]]
+                [[0, 10]]
               );
             })
           );
@@ -49624,8 +49524,6 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         exports.createTopic = void 0;
 
         var _axios = _interopRequireDefault(require('axios'));
-
-        var _objectToFormdata = require('object-to-formdata');
 
         var _alert = require('./alert');
 
@@ -49761,8 +49659,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                         (0, _loader.showLoader)();
                         topic.description = JSON.stringify(topic.description);
                         topicLocation.type = 'Point';
-                        delete topic.locationLatLng; // topic.location = JSON.stringify(topicLocation);
-
+                        delete topic.locationLatLng;
                         data = new FormData();
                         Object.keys(topic).forEach(function(k) {
                           return data.append(k, topic[k]);
@@ -49800,7 +49697,10 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                         _context.prev = 33;
                         _context.t0 = _context['catch'](0);
                         (0, _loader.hideLoader)();
-                        console.log(_context.t0); // showAlert('failed', err.response.data.message);
+                        (0, _alert.showAlert)(
+                          'failed',
+                          _context.t0.response.data.message
+                        );
 
                       case 37:
                       case 'end':
@@ -49946,8 +49846,6 @@ parcelRequire = (function(modules, cache, entry, globalName) {
       },
       {
         axios: '../../node_modules/axios/index.js',
-        'object-to-formdata':
-          '../../node_modules/object-to-formdata/dist/index.module.js',
         './alert': 'alert.js',
         './loader': 'loader.js',
         './geolocation': 'geolocation.js'
@@ -51351,6 +51249,226 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './loader': 'loader.js'
       }
     ],
+    'resetPassword.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.resetPassword = exports.forgotPassword = void 0;
+
+        var _loader = require('./loader');
+
+        var _axios = _interopRequireDefault(require('axios'));
+
+        var _alert = require('./alert');
+
+        function _interopRequireDefault(obj) {
+          return obj && obj.__esModule ? obj : { default: obj };
+        }
+
+        function asyncGeneratorStep(
+          gen,
+          resolve,
+          reject,
+          _next,
+          _throw,
+          key,
+          arg
+        ) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+          if (info.done) {
+            resolve(value);
+          } else {
+            Promise.resolve(value).then(_next, _throw);
+          }
+        }
+
+        function _asyncToGenerator(fn) {
+          return function() {
+            var self = this,
+              args = arguments;
+            return new Promise(function(resolve, reject) {
+              var gen = fn.apply(self, args);
+              function _next(value) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'next',
+                  value
+                );
+              }
+              function _throw(err) {
+                asyncGeneratorStep(
+                  gen,
+                  resolve,
+                  reject,
+                  _next,
+                  _throw,
+                  'throw',
+                  err
+                );
+              }
+              _next(undefined);
+            });
+          };
+        }
+
+        var forgotPassword = /*#__PURE__*/ (function() {
+          var _ref = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee(email) {
+              var res;
+              return regeneratorRuntime.wrap(
+                function _callee$(_context) {
+                  while (1) {
+                    switch ((_context.prev = _context.next)) {
+                      case 0:
+                        _context.prev = 0;
+                        (0, _loader.showLoader)();
+                        _context.next = 4;
+                        return (0, _axios.default)({
+                          method: 'POST',
+                          url:
+                            'http://127.0.0.1:3000/api/v1/users/forgotPassword',
+                          data: {
+                            email: email
+                          }
+                        });
+
+                      case 4:
+                        res = _context.sent;
+
+                        if (res.data.status === 'success') {
+                          (0, _loader.hideLoader)();
+                          (0, _alert.showAlert)(
+                            'success',
+                            'Please check your email, a reset token has been sent.'
+                          );
+                        }
+
+                        (0, _loader.hideLoader)();
+                        _context.next = 13;
+                        break;
+
+                      case 9:
+                        _context.prev = 9;
+                        _context.t0 = _context['catch'](0);
+                        (0, _loader.hideLoader)();
+                        (0, _alert.showAlert)(
+                          'failed',
+                          _context.t0.response.data.message
+                        );
+
+                      case 13:
+                      case 'end':
+                        return _context.stop();
+                    }
+                  }
+                },
+                _callee,
+                null,
+                [[0, 9]]
+              );
+            })
+          );
+
+          return function forgotPassword(_x) {
+            return _ref.apply(this, arguments);
+          };
+        })();
+
+        exports.forgotPassword = forgotPassword;
+
+        var resetPassword = /*#__PURE__*/ (function() {
+          var _ref2 = _asyncToGenerator(
+            /*#__PURE__*/ regeneratorRuntime.mark(function _callee2(
+              token,
+              password,
+              passwordConfirm
+            ) {
+              var res;
+              return regeneratorRuntime.wrap(
+                function _callee2$(_context2) {
+                  while (1) {
+                    switch ((_context2.prev = _context2.next)) {
+                      case 0:
+                        _context2.prev = 0;
+                        (0, _loader.showLoader)();
+                        _context2.next = 4;
+                        return (0, _axios.default)({
+                          method: 'POST',
+                          url: 'http://127.0.0.1:3000/api/v1/users/resetPassword/'.concat(
+                            token
+                          ),
+                          data: {
+                            password: password,
+                            passwordConfirm: passwordConfirm
+                          }
+                        });
+
+                      case 4:
+                        res = _context2.sent;
+
+                        if (res.data.status === 'success') {
+                          (0, _alert.showAlert)(
+                            'success',
+                            'Your password has been reset successfully'
+                          );
+                          window.setTimeout(function() {
+                            location.assign('/');
+                            (0, _loader.hideLoader)();
+                          }, 1500);
+                        }
+
+                        (0, _loader.hideLoader)();
+                        _context2.next = 13;
+                        break;
+
+                      case 9:
+                        _context2.prev = 9;
+                        _context2.t0 = _context2['catch'](0);
+                        (0, _loader.hideLoader)();
+                        (0, _alert.showAlert)(
+                          'failed',
+                          _context2.t0.response.data.message
+                        );
+
+                      case 13:
+                      case 'end':
+                        return _context2.stop();
+                    }
+                  }
+                },
+                _callee2,
+                null,
+                [[0, 9]]
+              );
+            })
+          );
+
+          return function resetPassword(_x2, _x3, _x4) {
+            return _ref2.apply(this, arguments);
+          };
+        })();
+
+        exports.resetPassword = resetPassword;
+      },
+      {
+        './loader': 'loader.js',
+        axios: '../../node_modules/axios/index.js',
+        './alert': 'alert.js'
+      }
+    ],
     'index.js': [
       function(require, module, exports) {
         'use strict';
@@ -51645,6 +51763,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         require('./deleteReport');
 
+        var _resetPassword = require('./resetPassword');
+
         // DOM elements
         var listViewToggle = document.querySelector('#view-switch--list');
         var mapViewToggle = document.querySelector('#view-switch--map');
@@ -51698,6 +51818,10 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var menuSidebarLinks = document.querySelectorAll('.menu__link');
         var loginForm = document.querySelector('.form--signin');
         var signUpForm = document.querySelector('.form--signup');
+        var forgotPasswordForm = document.querySelector(
+          '.form--forgotpassword'
+        );
+        var resetPasswordForm = document.querySelector('.form--resetpassword');
         var logoutBtn = document.querySelectorAll('.sign-out');
         var email = document.getElementById('email');
         var username = document.getElementById('username');
@@ -51895,6 +52019,21 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             e.preventDefault();
             (0,
             _signup.signup)(username.value, email.value, password.value, passwordConfirm.value);
+          });
+        }
+
+        if (forgotPasswordForm) {
+          forgotPasswordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            (0, _resetPassword.forgotPassword)(email.value);
+          });
+        }
+
+        if (resetPasswordForm) {
+          resetPasswordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            (0,
+            _resetPassword.resetPassword)(resetPasswordForm.dataset.token, password.value, passwordConfirm.value);
           });
         }
 
@@ -52398,7 +52537,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './updatePassword': 'updatePassword.js',
         './vote': 'vote.js',
         './deleteTopic': 'deleteTopic.js',
-        './deleteReport': 'deleteReport.js'
+        './deleteReport': 'deleteReport.js',
+        './resetPassword': 'resetPassword.js'
       }
     ],
     '../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js': [
@@ -52434,7 +52574,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '50028' + '/'
+            protocol + '://' + hostname + ':' + '50283' + '/'
           );
 
           ws.onmessage = function(event) {

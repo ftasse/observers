@@ -12,5 +12,10 @@ router.get('/topics/:slug', viewsController.getTopic);
 router.get('/login', viewsController.login);
 router.get('/signup', viewsController.signup);
 router.get('/me', authController.protect, viewsController.getMe);
+router.get('/users/forgotpassword', viewsController.forgotPassword);
+router.get(
+  '/users/resetPassword/:resetToken',
+  viewsController.resetUserPassword
+);
 
 module.exports = router;

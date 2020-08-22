@@ -1,5 +1,6 @@
-const validator = require('validator');
+const crypto = require('crypto');
 
+const User = require('../models/userModel');
 const Topic = require('../models/topicModel');
 const Tag = require('../models/TagModel');
 const Report = require('../models/reportModel');
@@ -121,5 +122,31 @@ exports.getMe = catchAsync(async (req, res, next) => {
     topics,
     reports,
     active: 'me'
+  });
+});
+
+exports.forgotPassword = (req, res, next) => {
+  res.status(200).render('forgotPassword', {
+    title: 'Forgot password'
+  });
+};
+
+exports.resetUserPassword = catchAsync(async (req, res, next) => {
+  const passwordResetToken = await crypto
+    .createHash('sha256')
+    .update(req.params.resetToken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken,
+    passwordResetTokenExpires: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    return next(new AppError('Token is invalid or has expired.', 400));
+  }
+
+  res.status(200).render('resetPassword', {
+    resetToken: req.params.resetToken
   });
 });

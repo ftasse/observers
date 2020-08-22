@@ -16,6 +16,7 @@ import { updatePassword } from './updatePassword';
 import './vote';
 import './deleteTopic';
 import './deleteReport';
+import { forgotPassword, resetPassword } from './resetPassword';
 
 // DOM elements
 const listViewToggle = document.querySelector('#view-switch--list');
@@ -63,6 +64,8 @@ const menuSidebarLinks = document.querySelectorAll('.menu__link');
 
 const loginForm = document.querySelector('.form--signin');
 const signUpForm = document.querySelector('.form--signup');
+const forgotPasswordForm = document.querySelector('.form--forgotpassword');
+const resetPasswordForm = document.querySelector('.form--resetpassword');
 const logoutBtn = document.querySelectorAll('.sign-out');
 
 const email = document.getElementById('email');
@@ -246,6 +249,23 @@ if (signUpForm) {
     signup(username.value, email.value, password.value, passwordConfirm.value);
   });
 }
+if (forgotPasswordForm) {
+  forgotPasswordForm.addEventListener('submit', e => {
+    e.preventDefault();
+    forgotPassword(email.value);
+  });
+}
+if (resetPasswordForm) {
+  resetPasswordForm.addEventListener('submit', e => {
+    e.preventDefault();
+    resetPassword(
+      resetPasswordForm.dataset.token,
+      password.value,
+      passwordConfirm.value
+    );
+  });
+}
+
 if (logoutBtn) {
   logoutBtn.forEach(btn => {
     btn.addEventListener('click', e => {

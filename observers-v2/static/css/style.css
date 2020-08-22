@@ -1778,7 +1778,8 @@ body {
     height: 10rem;
     border-radius: 50%;
     margin-right: 2rem;
-    object-fit: cover; }
+    object-fit: cover;
+    fill: aliceblue; }
   .form__profile-picture--button {
     display: inline-flex;
     padding: 2rem;
@@ -2428,6 +2429,13 @@ body {
 .sign__text {
   font-size: 1.4rem;
   text-align: center; }
+
+.sign__link--forgot:link, .sign__link--forgot:visited {
+  color: var(--color-black-lighter);
+  transition: all .2s; }
+
+.sign__link--forgot:hover, .sign__link--forgot:active {
+  color: var(--color-secondary); }
 
 .sign__message {
   text-align: left;

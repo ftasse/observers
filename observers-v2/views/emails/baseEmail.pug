@@ -1,0 +1,34 @@
+doctype html
+html
+  head
+    meta(name="viewport" content="width=device-width")
+    meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
+    title=subject
+
+    include _style
+
+  body
+    span.preheader= subject
+    table.body(role="presentation" border="0" cellpadding="0" cellspacing="0")
+      tr
+        td
+        td.container
+          .content
+            block content
+            // START FOOTER
+            .footer
+              table(role="presentation" border="0" cellpadding="0" cellspacing="0")
+                tr
+                  td.content-block
+                    span.apple-link The observers, we gladly observe and share!
+                    //br
+                    //|  Don't like these emails?
+                    //a(href="http://i.imgur.com/CScmqnj.gif") Unsubscribe
+                    //| .
+                tr
+                  //td.content-block.powered-by
+                  //  | Powered by
+                  //  a(href="http://htmlemail.io") HTMLemail
+                  //  | .
+            // END FOOTER
+        td
