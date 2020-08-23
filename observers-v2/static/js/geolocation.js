@@ -13,7 +13,6 @@ export const geoLocate = async () => {
 
 export const getLocation = async locationLatLng => {
   try {
-    console.log(locationLatLng);
     const res = await axios({
       method: 'GET',
       url: `https://www.mapquestapi.com/geocoding/v1/reverse?key=${dataQuestToken}&inFormat=kvp&outFormat=json&location=${locationLatLng.lat},${locationLatLng.lng}&maxResults=1`
