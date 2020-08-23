@@ -8,7 +8,7 @@ const getReport = async report => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `http://127.0.0.1:3000/api/v1/reports/${report}`
+      url: `/api/v1/reports/${report}`
     });
     if (res.data.status === 'success') {
       return res.data;
@@ -19,12 +19,12 @@ const getReport = async report => {
   }
 };
 
-const vote = async (op, assocatiedBtnOp, associatedBtn, btn, report, value) => {
+const vote = async (op, associatedBtnOp, associatedBtn, btn, report, value) => {
   try {
     showLoader();
     const res = await axios({
       method: 'POST',
-      url: 'http://127.0.0.1:3000/api/v1/votes',
+      url: '/api/v1/votes',
       data: {
         report,
         value
@@ -37,7 +37,7 @@ const vote = async (op, assocatiedBtnOp, associatedBtn, btn, report, value) => {
         btn.classList.toggle('report__feel-btn--active');
         associatedBtn.classList.remove('report__feel-btn--active');
         associatedBtn.querySelector('.report__count').innerText =
-          updatedReport.data.data[assocatiedBtnOp];
+          updatedReport.data.data[associatedBtnOp];
         btn.querySelector('.report__count').innerText =
           updatedReport.data.data[op];
         console.log(updatedReport);

@@ -9,7 +9,7 @@ const deleteReport = async reportId => {
     showLoader();
     const res = await axios({
       method: 'DELETE',
-      url: `http://127.0.0.1:3000/api/v1/reports/${reportId}`
+      url: `/api/v1/reports/${reportId}`
     });
     if (res.status === 204) {
       showAlert('success', 'Report successfully deleted');
