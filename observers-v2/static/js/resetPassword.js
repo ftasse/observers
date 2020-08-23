@@ -23,6 +23,7 @@ export const forgotPassword = async email => {
     hideLoader();
   } catch (err) {
     hideLoader();
+    console.log(res);
     showAlert('failed', err.response.data.message);
   }
 };
