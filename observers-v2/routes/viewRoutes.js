@@ -9,6 +9,7 @@ router.use(authController.isLoggedIn);
 
 router.get('/', viewsController.getOverview);
 router.get('/topics/:slug', viewsController.getTopic);
+router.get('/about', viewsController.about);
 router.get('/login', viewsController.login);
 router.get('/signup', viewsController.signup);
 router.get('/me', authController.protect, viewsController.getMe);

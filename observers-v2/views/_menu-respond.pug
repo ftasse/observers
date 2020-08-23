@@ -5,19 +5,28 @@ label.menu__button(for='menu__checkbox')
   .menu(data-simplebar='' data-simplebar-auto-hide='false')
     ul.menu-list
       li.menu__item.menu__item--1
-        a.menu__link.menu__link--active(href='/') Home
+        if active === 'home'
+          a.menu__link.menu__link--active(href='/') Home
+        else
+          a.menu__link(href='/') Home
       li.menu__item.menu__item--2
         a.menu__link(href='/#topics') See topics
       if user
         li.menu__item.menu__item--2.add-topic__btn
           button.menu__link Create new topic
       li.menu__item.menu__item--3
-        a.menu__link(href='#') About
+        if active === 'about'
+          a.menu__link.menu__link--active(href='/about') About
+        else
+          a.menu__link(href='/about') About
       if user
         li.menu__item.menu__item--4
           button.sign-out.menu__link Sign out
         li.menu__item.menu__item--5
-          a.menu__link(href='#') #{user.name.split(' ')[0]} account
+          if active === 'me'
+            a.menu__link.menu__link--active(href='/me') Your account
+          else
+            a.menu__link(href='/me') Your account
       else
         li.menu__item.menu__item--4
           a.menu__link(href='/login') Sign in to create topics
