@@ -2,7 +2,7 @@ const sharp = require('sharp');
 
 const factory = require('./handlerFactory');
 const Topic = require('../models/topicModel');
-const Tag = require('../models/TagModel');
+const Tag = require('../models/tagModel');
 
 const catchAsync = require('../utils/catchAsync');
 const Report = require('../models/reportModel');
