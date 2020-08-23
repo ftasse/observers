@@ -2,7 +2,7 @@ const crypto = require('crypto');
 
 const User = require('../models/userModel');
 const Topic = require('../models/topicModel');
-const Tag = require('../models/TagModel');
+const Tag = require('../models/tagModel');
 const Report = require('../models/reportModel');
 const categories = require('../models/topicCategories');
 
