@@ -48,14 +48,16 @@ const sendErrorDevelopment = (err, res) => {
 
 const sendErrorProduction = (err, res) => {
   if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message
-    });
+    if (err.statusCode === 404) {
+      res.status(err.statusCode).render('404');
+    } else if (err.statusCode === 401) {
+      res.status(err.statusCode).render('401', {
+        message: err.message
+      });
+    }
   } else {
-    res.status(500).json({
-      status: 'error',
-      message: 'Something went wrong!!!'
+    res.status(err.statusCode).render('500', {
+      message: 'Something went very wrong'
     });
   }
 };
