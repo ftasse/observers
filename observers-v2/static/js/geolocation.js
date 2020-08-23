@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { showAlert } from './alert';
+import { dataQuestToken } from './apiKeys';
 
 export const geoLocate = async () => {
   const getPosition = function(options) {
@@ -15,7 +16,7 @@ export const getLocation = async locationLatLng => {
     console.log(locationLatLng);
     const res = await axios({
       method: 'GET',
-      url: `https://www.mapquestapi.com/geocoding/v1/reverse?key=qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1&inFormat=kvp&outFormat=json&location=${locationLatLng.lat},${locationLatLng.lng}&maxResults=1`
+      url: `https://www.mapquestapi.com/geocoding/v1/reverse?key=${dataQuestToken}&inFormat=kvp&outFormat=json&location=${locationLatLng.lat},${locationLatLng.lng}&maxResults=1`
     });
     if (res.status === 200) {
       const name = [

@@ -1,3 +1,5 @@
+import { mapboxToken } from './apiKeys';
+
 const getPopupHTML = data => {
   const imageTag = data.imageCover
     ? `<img src="/img/${data.imageCover}" alt="" class="sm-card__img">`
@@ -42,8 +44,7 @@ export const displayMap = (mapObj, data) => {
       id: 'asnelchristian/ckawh4dvvehmi1io10tvsjvtk',
       tileSize: 512,
       zoomOffset: -1,
-      accessToken:
-        'pk.eyJ1IjoiYXNuZWxjaHJpc3RpYW4iLCJhIjoiY2thd2Z0aXJ1MDdteTJ0bXU5NDU2bHZ4MCJ9.kChV328HGtNtda8XQQc4tA',
+      accessToken: mapboxToken,
       noWrap: true
     }
   ).addTo(mapObj);

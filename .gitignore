@@ -28,3 +28,4 @@ typings/
 
 */.cache/*
 
+observers-v2/static/js/apiKeys.js
