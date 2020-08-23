@@ -37,7 +37,13 @@ const createTopicFormContainer = document.querySelector('.create-topic-form');
 const createTopicClose = document.querySelector('.create-topic-close');
 const createTopicForm = document.querySelector('.form--create-topic');
 const searchTopicForm = document.querySelector('#searchTopicForm');
+const searchTopicFormRespond = document.querySelector(
+  '#searchTopicFormRespond'
+);
 const searchTopicPattern = document.querySelector('#searchTopicPattern');
+const searchTopicPatternRespond = document.querySelector(
+  '#searchTopicPatternRespond'
+);
 const newTopicTitle = document.querySelector('#title');
 const newTopicCategory = document.querySelector(
   '#select-category-create-topic-form'
@@ -292,6 +298,9 @@ if (clusterListClose) {
 
 if (searchTopicForm) {
   searchTopics(searchTopicForm, searchTopicPattern);
+}
+if (searchTopicFormRespond) {
+  searchTopics(searchTopicFormRespond, searchTopicPatternRespond);
 }
 
 const switchListView = (mapView, listView, paginationDiv) => {

@@ -51818,7 +51818,13 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         var createTopicClose = document.querySelector('.create-topic-close');
         var createTopicForm = document.querySelector('.form--create-topic');
         var searchTopicForm = document.querySelector('#searchTopicForm');
+        var searchTopicFormRespond = document.querySelector(
+          '#searchTopicFormRespond'
+        );
         var searchTopicPattern = document.querySelector('#searchTopicPattern');
+        var searchTopicPatternRespond = document.querySelector(
+          '#searchTopicPatternRespond'
+        );
         var newTopicTitle = document.querySelector('#title');
         var newTopicCategory = document.querySelector(
           '#select-category-create-topic-form'
@@ -52095,6 +52101,13 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         if (searchTopicForm) {
           (0, _search.searchTopics)(searchTopicForm, searchTopicPattern);
+        }
+
+        if (searchTopicFormRespond) {
+          (0, _search.searchTopics)(
+            searchTopicFormRespond,
+            searchTopicPatternRespond
+          );
         }
 
         var switchListView = function switchListView(

@@ -1,0 +1,42 @@
+extends base
+
+
+block content
+  include _menu-respond
+  header.header
+    include _navigation
+  section.about__main
+    .about__main--container
+      span.about__element--title.about__element--title--big About the Observers
+      p
+        br
+        | Observers is an easy, accessible and smart platform that shows the world what people are feeling about an issue, where they are and what are their concerns. Here, you can see reports about various topics, send your own report, or even create a topic you are passionate about!
+        br
+        br
+        | Often, the news are not the true reflection of what is going on around us. People are. So, Observers is a platform that allows people, to share their stories and attach media to support it.
+  section.about
+    .about__element
+      .about__element--container
+        .about__element--header
+          span.about__element--title Our motivation
+        .about__element--content
+          p
+            | Often, the news are not the true reflection of what is going on around us. People are. So, Observers is a platform that allows people, to share their stories and attach media to support it. Not-for-profit organizations can leverage this tool for advocacy campaigns, to persuade policy makers of a nation to take action to solve a given problem. Topics or problems are infinite, in the Global South and in the rest of the world.
+    .about__element
+      .about__element--container
+        .about__element--content
+          p
+            | There are a few existing platforms that allow citizens to submit reports about issues that concern them. However, Observers allow anyone with a Google account to create a topic in one click. So whether, the issue is localized to a small community or affecting a whole continent, starting a topic to collect reports and testimonies is easy. We have also made the website responsive to different devices. So whether you are using a phone, a tablet or a PC, you will still get a great experience.
+        .about__element--header
+          span.about__element--title How does it work?
+    .about__element
+      .about__element--container
+        .about__element--header
+          span.about__element--title Sentiment Analysis and Geolocation
+        .about__element--content
+          p
+            | Understanding the sentiment of the crowd is key in evaluating an issue. So we analyze every report that does not have any sentiment information attached and predict whether it is Positive, Negative or Neutral. Hence, at first glance on the topic&apos;s dashboard, users can see what the opinion of the crowd is.
+            br
+            br
+            | We display the location from which each report was sent so that users can get a sense of how people&apos;s report differ from one location to another. Clicking on a map pin will show a report sent from within a neighborhood of that location.
+  include _footer

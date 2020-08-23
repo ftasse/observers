@@ -8,8 +8,8 @@
         use(xlink:href='img/sprite.svg#icon-sound-mix')
     .topic-list__filter-container.menu-container.menu-container--left.menu-container--white
       .menu.menu--left.menu--full.menu--white.menu--centered(data-simplebar='' data-simplebar-auto-hide='false')
-        form.search.search--respond(action='#')
-          input.search__input(type='text' placeholder='Search topics')
+        form.search.search--respond#searchTopicFormRespond(action='#')
+          input.search__input(type='text' placeholder='Search topics' id='searchTopicPatternRespond')
           button.search__button
             svg.search__icon
               use(xlink:href='img/sprite.svg#icon-search')

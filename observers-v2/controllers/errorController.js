@@ -36,13 +36,14 @@ const sendErrorDevelopment = (err, res) => {
     res.status(err.statusCode).render('500', {
       message: err.message
     });
+  } else {
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+      error: err,
+      stack: err.stack
+    });
   }
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-    error: err,
-    stack: err.stack
-  });
 };
 
 const sendErrorProduction = (err, res) => {

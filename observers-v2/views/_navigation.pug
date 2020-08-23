@@ -10,7 +10,10 @@
     li.nav__item
       a.nav__link.nav__link--baseline(href='/#topics') Topics
     li.nav__item
-      a.nav__link.nav__link--baseline(href='#') About
+      if active === 'about'
+        a.nav__link.nav__link--baseline.nav__link--active(href='/about') About
+      else
+        a.nav__link.nav__link--baseline(href='/about') About
     if user
       li.nav__item
         button.sign-out.nav__link.nav__link--cta

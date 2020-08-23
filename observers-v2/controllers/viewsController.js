@@ -63,7 +63,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   const mostPopularTopics = await mostPopularTopicsQuery.query;
 
   res.status(200).render('overview', {
-    title: 'Topics',
+    title: 'Topics overview',
     topics,
     tags,
     categories,
@@ -85,7 +85,7 @@ exports.getTopic = catchAsync(async (req, res, next) => {
   const tags = await Tag.find();
 
   res.status(200).render('topic', {
-    title: 'The consequences of deforestation in a region',
+    title: topic.title,
     topic,
     categories,
     tags,
@@ -116,7 +116,7 @@ exports.getMe = catchAsync(async (req, res, next) => {
   const tags = await Tag.find();
 
   res.status(200).render('user', {
-    title: 'Become and observer',
+    title: 'Your account',
     tags,
     categories,
     topics,
@@ -128,6 +128,13 @@ exports.getMe = catchAsync(async (req, res, next) => {
 exports.forgotPassword = (req, res, next) => {
   res.status(200).render('forgotPassword', {
     title: 'Forgot password'
+  });
+};
+
+exports.about = (req, res, next) => {
+  res.status(200).render('about', {
+    title: 'About the project',
+    active: 'about'
   });
 };
 
