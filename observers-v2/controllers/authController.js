@@ -50,11 +50,11 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   const url = `${req.protocol}://${req.get('host')}/me`;
 
-  try {
-    await new Email(user, url).sendWelcome();
-  } catch (err) {
-    console.log('mail not sent');
-  }
+  // try {
+  //   await new Email(user, url).sendWelcome();
+  // } catch (err) {
+  //   console.log('mail not sent');
+  // }
 
   createSendJWT(res, user, 201);
 });
