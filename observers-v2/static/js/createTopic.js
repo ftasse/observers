@@ -13,10 +13,10 @@ const submitTopic = async (topic, operation, url, msg) => {
         'failed',
         'Please pick a category for your topic from the dropdown.'
       );
-    } else if (topic.description.text.trim().length < 30) {
+    } else if (topic.description.text.trim().split(' ').length < 70) {
       return showAlert(
         'failed',
-        "Your topic's description is too short.(< 30 characters)"
+        "Your topic's description is too short.(< 70 words)"
       );
     } else if (!topicLocation) {
       return showAlert(

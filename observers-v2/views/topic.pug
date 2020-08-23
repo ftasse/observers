@@ -52,7 +52,10 @@ block content
         span.info-line__item.info-line__item--2
           a.link-info.link-info--category(href=href = `/?category=${encodeURIComponent(topic.category)}#topics`)= topic.category
         span.info-line__item
-          a.link-info.link-info--small(href='#') Written by #{topic.author.name}
+          if (user && user.name.toString() === topic.author.name.toString())
+            a.link-info.link-info--small(href='#') Was written by you
+          else
+            a.link-info.link-info--small(href='#') Written by an anonymous
       .tags.margin-bottom-medium
         if topic.tags.length > 0
           .tags__title

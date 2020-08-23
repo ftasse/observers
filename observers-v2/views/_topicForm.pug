@@ -5,7 +5,7 @@
     h3.section__title.margin-bottom-small Create a new topic
     form.form.form--create-topic
       .form__group
-        input#title.form__input(type='text' placeholder='Title' required='')
+        input#title.form__input(type='text' placeholder='Title' required='' minlength=30 maxlength=120)
         label.form__label(for='title')
           | Topic&apos;s title
           span.form__message

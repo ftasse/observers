@@ -20789,6 +20789,22 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         './loader': 'loader.js'
       }
     ],
+    'apiKeys.js': [
+      function(require, module, exports) {
+        'use strict';
+
+        Object.defineProperty(exports, '__esModule', {
+          value: true
+        });
+        exports.dataQuestToken = exports.mapboxToken = void 0;
+        var mapboxToken =
+          'pk.eyJ1IjoiYXNuZWxjaHJpc3RpYW4iLCJhIjoiY2thd2Z0aXJ1MDdteTJ0bXU5NDU2bHZ4MCJ9.kChV328HGtNtda8XQQc4tA';
+        exports.mapboxToken = mapboxToken;
+        var dataQuestToken = 'qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1';
+        exports.dataQuestToken = dataQuestToken;
+      },
+      {}
+    ],
     'mapbox.js': [
       function(require, module, exports) {
         'use strict';
@@ -20797,6 +20813,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           value: true
         });
         exports.initializeCreateTopicMap = exports.displayMap = void 0;
+
+        var _apiKeys = require('./apiKeys');
 
         var getPopupHTML = function getPopupHTML(data) {
           var imageTag = data.imageCover
@@ -20845,8 +20863,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
               id: 'asnelchristian/ckawh4dvvehmi1io10tvsjvtk',
               tileSize: 512,
               zoomOffset: -1,
-              accessToken:
-                'pk.eyJ1IjoiYXNuZWxjaHJpc3RpYW4iLCJhIjoiY2thd2Z0aXJ1MDdteTJ0bXU5NDU2bHZ4MCJ9.kChV328HGtNtda8XQQc4tA',
+              accessToken: _apiKeys.mapboxToken,
               noWrap: true
             }
           ).addTo(mapObj);
@@ -20893,7 +20910,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         exports.initializeCreateTopicMap = initializeCreateTopicMap;
       },
-      {}
+      { './apiKeys': 'apiKeys.js' }
     ],
     '../../node_modules/choices.js/public/assets/scripts/choices.js': [
       function(require, module, exports) {
@@ -49341,6 +49358,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var _alert = require('./alert');
 
+        var _apiKeys = require('./apiKeys');
+
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : { default: obj };
         }
@@ -49457,7 +49476,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                         _context2.next = 4;
                         return (0, _axios.default)({
                           method: 'GET',
-                          url: 'https://www.mapquestapi.com/geocoding/v1/reverse?key=qGF0GOYsNSQ0PFJAdJBIhVglHRYkdLy1&inFormat=kvp&outFormat=json&location='
+                          url: 'https://www.mapquestapi.com/geocoding/v1/reverse?key='
+                            .concat(
+                              _apiKeys.dataQuestToken,
+                              '&inFormat=kvp&outFormat=json&location='
+                            )
                             .concat(locationLatLng.lat, ',')
                             .concat(locationLatLng.lng, '&maxResults=1')
                         });
@@ -49512,7 +49535,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         exports.getLocation = getLocation;
       },
-      { axios: '../../node_modules/axios/index.js', './alert': 'alert.js' }
+      {
+        axios: '../../node_modules/axios/index.js',
+        './alert': 'alert.js',
+        './apiKeys': 'apiKeys.js'
+      }
     ],
     'createTopic.js': [
       function(require, module, exports) {
@@ -49628,7 +49655,11 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                         );
 
                       case 8:
-                        if (!(topic.description.text.trim().length < 30)) {
+                        if (
+                          !(
+                            topic.description.text.trim().split(' ').length < 70
+                          )
+                        ) {
                           _context.next = 12;
                           break;
                         }
@@ -49637,7 +49668,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                           'return',
                           (0, _alert.showAlert)(
                             'failed',
-                            "Your topic's description is too short.(< 30 characters)"
+                            "Your topic's description is too short.(< 70 words)"
                           )
                         );
 
@@ -52574,7 +52605,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '50283' + '/'
+            protocol + '://' + hostname + ':' + '51401' + '/'
           );
 
           ws.onmessage = function(event) {
