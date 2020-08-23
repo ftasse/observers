@@ -36,7 +36,6 @@ const submitTopic = async (topic, operation, url, msg) => {
       data.append('location', JSON.stringify(topicLocation));
       data.append('imageCover', document.getElementById('imageCover').files[0]);
 
-      console.log(data);
       const res = await axios({
         method: operation,
         url: `${url}`,
