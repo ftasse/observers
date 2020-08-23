@@ -7,6 +7,7 @@ const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const hpp = require('hpp');
+const compression = require('compression');
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
@@ -71,6 +72,8 @@ app.use(
     ]
   })
 );
+
+app.use(compression());
 
 app.use(passport.initialize());
 // Routes

@@ -7,7 +7,7 @@ const updateUserInfo = async data => {
     showLoader();
     const res = await axios({
       method: 'PATCH',
-      url: 'http://127.0.0.1:3000/api/v1/users/updateme',
+      url: '/api/v1/users/updateme',
       data
     });
 

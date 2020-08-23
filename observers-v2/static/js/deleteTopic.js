@@ -9,7 +9,7 @@ const deleteTopic = async topicId => {
     showLoader();
     const res = await axios({
       method: 'DELETE',
-      url: `http://127.0.0.1:3000/api/v1/topics/${topicId}`
+      url: `/api/v1/topics/${topicId}`
     });
     if (res.status === 204) {
       showAlert('success', 'Topic successfully deleted');

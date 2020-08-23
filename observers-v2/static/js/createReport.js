@@ -80,11 +80,11 @@ export const createReport = (
   createReportForm.addEventListener('submit', e => {
     let url, msg, operation;
     if (op === 'update') {
-      url = `http://127.0.0.1:3000/api/v1/reports/${report.value}`;
+      url = `/api/v1/reports/${report.value}`;
       msg = 'Report successfully updated';
       operation = 'PATCH';
     } else {
-      url = 'http://127.0.0.1:3000/api/v1/reports';
+      url = '/api/v1/reports';
       msg = 'Report successfully submitted';
       operation = 'POST';
     }
