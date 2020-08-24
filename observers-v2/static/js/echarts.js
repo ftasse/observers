@@ -49,7 +49,7 @@ const reportChartOption = {
       fontSize: 16,
       fontWeight: 400
     },
-    subtext: 'There is a total of 200 reports',
+    subtext: '',
     subtextStyle: {
       fontFamily: 'PT serif',
       fontSize: 13,
@@ -159,6 +159,8 @@ export const reportCharts = (
     const data = JSON.parse(c.dataset.reports);
     reportChartOption.xAxis.data = data[0];
     reportChartOption.series[0].data = data[1];
+
+    reportChartOption.title.subtext = `There is a total of ${reportChartOption.series[0].data.length} reports on this topic:`;
 
     reportChart.setOption(reportChartOption);
     charts.push(reportChart);
