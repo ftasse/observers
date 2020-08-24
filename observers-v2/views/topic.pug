@@ -110,7 +110,7 @@ block content
             .report
               .report__info.info-line
                 span.info-line__item.info-line__item--1
-                  a.link-info.link-info--small(href='#') August 20, 2019
+                  a.link-info.link-info--small(href='#')= report.createdAt.toLocaleString('en-us', {month: 'long',day: 'numeric',year: 'numeric'})
                 span.info-line__item.info-line__item--2
                   a.link-info.link-info--small(href='#')= report.location.description
                 span.info-line__item
