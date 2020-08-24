@@ -98,7 +98,7 @@ block content
             label.form-button__label.form-button__label--switch(for='view-switch--map')
               svg.form-button__icon
                 use(xlink:href='/img/sprite.svg#icon-map')
-      .reports.list-view.list-view-container.margin-bottom-small
+      .reports.list-view.list-view-container.margin-bottom-small.hide
         if topic.reports.length > 0
           each report in topic.reports
             - let userVotes, likes = '', dislikes = ''
@@ -141,7 +141,7 @@ block content
                       use(xlink:href='/img/sprite.svg#icon-thumbs-down')
                     span.report__count
                      | #{report.numDisLikes}
-      .topic-map.map-container.margin-bottom-medium.hide
+      .topic-map.map-container.margin-bottom-medium
         #mapbox.map.margin-bottom-small(data-mapData=`${JSON.stringify(topic.reports.map(el => {
           return {
             location: el.location,
@@ -179,15 +179,22 @@ block content
       h3.section__title.margin-bottom-small Statistics
       include _reportCharts
 
-      .full-width.margin-bottom-medium
-        #add-report__btn.full-width__btn.btn.btn-primary.add-report__btn
-          svg.btn__icon
-            use(xlink:href='/img/sprite.svg#icon-quill')
-          span Write new report
-      .full-width
-        #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
-          svg.btn__icon
-            use(xlink:href='/img/sprite.svg#icon-quill')
-          span Create a new topic
+      if user
+        .full-width.margin-bottom-medium
+          #add-report__btn.full-width__btn.btn.btn-primary.add-report__btn
+            svg.btn__icon
+              use(xlink:href='/img/sprite.svg#icon-quill')
+            span Write new report
+        .full-width
+          #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
+            svg.btn__icon
+              use(xlink:href='/img/sprite.svg#icon-quill')
+            span Create a new topic
+      else
+        .full-width
+          a.full-width__btn.btn.btn-black(href='/login')
+            svg.btn__icon
+              use(xlink:href='img/sprite.svg#icon-quill')
+            span Log in and report
 
   include _footer

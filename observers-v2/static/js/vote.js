@@ -46,8 +46,12 @@ const vote = async (op, associatedBtnOp, associatedBtn, btn, report, value) => {
     }
   } catch (err) {
     hideLoader();
-    console.log(err);
-    showAlert('failed', err.response.data.message);
+    // console.log(err.response);
+    let message = '';
+    if (err.response.status === 401)
+      message = 'We were unable to authenticate you. Please login again!';
+    else message = 'Sorry, something went wrong!';
+    showAlert('failed', message);
   }
 };
 
