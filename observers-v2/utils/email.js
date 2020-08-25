@@ -21,13 +21,14 @@ module.exports = class Email {
     });
   }
 
-  async send(template, subject) {
+  async send(template, subject, password = '') {
     const html = pug.renderFile(
       `${__dirname}/../views/emails/${template}.pug`,
       {
         firstName: this.firstName,
         url: this.url,
-        subject
+        subject,
+        password
       }
     );
 
@@ -50,5 +51,8 @@ module.exports = class Email {
       'passwordReset',
       'Your password reset token (valid for only 10 minutes)'
     );
+  }
+  async sendWelcomeAndUpdatePassword(password) {
+    await this.send('welcomeOauth', 'Welcome dear observer!', password);
   }
 };

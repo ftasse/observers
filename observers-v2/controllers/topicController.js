@@ -1,4 +1,5 @@
 const sharp = require('sharp');
+const { Storage } = require('@google-cloud/storage');
 
 const factory = require('./handlerFactory');
 const Topic = require('../models/topicModel');
@@ -21,12 +22,31 @@ exports.resizeImageCover = catchAsync(async (req, res, next) => {
     .toFormat('jpeg')
     .toFile(`static/img/topics/${req.file.filename}`);
 
+  const storage = new Storage({
+    projectId: process.env.GOOGLE_PROJECT_ID,
+    credentials: {
+      private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+      private_key: process.env.GOOGLE_PRIVATE_KEY,
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      client_id: process.env.GOOGLE_CLIENT_ID2
+    }
+  });
+  await storage
+    .bucket(process.env.PROJECT_BUCKET)
+    .upload(`static/img/topics/${req.file.filename}`, {
+      gzip: true,
+      destination: req.file.filename,
+      metadata: {
+        cacheControl: 'public, max-age=31536000'
+      }
+    });
+  req.file.filename = `https://storage.googleapis.com/${process.env.PROJECT_BUCKET}/${req.file.filename}`;
   next();
 });
 
 exports.setLocationAndImageCover = (req, res, next) => {
   if (req.file) {
-    req.body.imageCover = `topics/${req.file.filename}`;
+    req.body.imageCover = `${req.file.filename}`;
   } else {
     delete req.body.imageCover;
   }

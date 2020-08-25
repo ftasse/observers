@@ -34,7 +34,7 @@ block content
 
   section.topic-view__info
     .topic-view__description
-      img.topic-view__img.margin-bottom-medium(src=`/img/${topic.imageCover}` alt=`${topic.slug}`)
+      img.topic-view__img.margin-bottom-medium(src=`${topic.imageCover}` alt=`${topic.slug}`)
       if topic.descriptionHTML && topic.descriptionHTML.length > 0
         .topic-view__text.topic__description.margin-bottom-extra-small.ql-generated
           p
