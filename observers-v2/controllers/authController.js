@@ -50,11 +50,11 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   const url = `${req.protocol}://${req.get('host')}/me`;
 
-  // try {
-  //   await new Email(user, url).sendWelcome();
-  // } catch (err) {
-  //   console.log('mail not sent');
-  // }
+  try {
+    await new Email(user, url).sendWelcome();
+  } catch (err) {
+    console.log('mail not sent');
+  }
 
   createSendJWT(res, user, 201);
 });
@@ -237,6 +237,13 @@ exports.verifyGoogleStrategy = async function(
         password,
         passwordConfirm: password
       });
+      const url = `${req.protocol}://${req.get('host')}/me`;
+
+      try {
+        await new Email(user, url).sendWelcomeAndUpdatePassword(password);
+      } catch (err) {
+        console.log('mail not sent');
+      }
     }
     done(null, user);
   } catch (err) {
@@ -244,7 +251,7 @@ exports.verifyGoogleStrategy = async function(
   }
 };
 
-exports.signinOAuth2 = (req, res, next) => {
+exports.signinOAuth2 = catchAsync(async (req, res, next) => {
   createJWT(res, req.user);
   res.redirect('/');
-};
+});

@@ -1,4 +1,5 @@
 const sharp = require('sharp');
+const { Storage } = require('@google-cloud/storage');
 
 const User = require('../models/userModel');
 const factory = require('./handlerFactory');
@@ -30,6 +31,25 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
     .jpeg({ quality: 90 })
     .toFile(`static/img/users/${req.file.filename}`);
 
+  const storage = new Storage({
+    projectId: process.env.GOOGLE_PROJECT_ID,
+    credentials: {
+      private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+      private_key: process.env.GOOGLE_PRIVATE_KEY,
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      client_id: process.env.GOOGLE_CLIENT_ID2
+    }
+  });
+  await storage
+    .bucket(process.env.PROJECT_BUCKET)
+    .upload(`static/img/users/${req.file.filename}`, {
+      gzip: true,
+      destination: req.file.filename,
+      metadata: {
+        cacheControl: 'public, max-age=31536000'
+      }
+    });
+  req.file.filename = `https://storage.googleapis.com/${process.env.PROJECT_BUCKET}/${req.file.filename}`;
   next();
 });
 
@@ -58,7 +78,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   const filteredObj = filterObj(req.body, 'name', 'email');
 
-  if (req.file) filteredObj.thumbnail = `/img/users/${req.file.filename}`;
+  if (req.file) filteredObj.thumbnail = `${req.file.filename}`;
 
   const updatedUser = await User.findByIdAndUpdate(req.user._id, filteredObj, {
     new: true,

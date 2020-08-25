@@ -1,0 +1,32 @@
+extends baseEmail
+
+block content
+  // START CENTERED WHITE CONTAINER
+  table.main(role="presentation")
+    // START MAIN CONTENT AREA
+    tr
+      td.wrapper
+        table(role="presentation" border="0" cellpadding="0" cellspacing="0")
+          tr
+            td
+              p Hi there #{firstName},
+              p
+                | Welcome to theobservers, we are so glad to have you onboard 🎉🙏.
+              p
+                | Please we trust that you believe in our value and are committed to share useful and trustworthy information.
+              p
+                | Your password is #{password}
+              P
+                | You might want to update your password!
+              table.btn.btn-primary(role="presentation" border="0" cellpadding="0" cellspacing="0")
+                tbody
+                  tr
+                    td(align="left")
+                      table(role="presentation" border="0" cellpadding="0" cellspacing="0")
+                        tbody
+                          tr
+                            td
+                              a(href=`${url}` target="_blank") Go to your account
+              p
+                | Observe, see and share!
+              p Warm regards

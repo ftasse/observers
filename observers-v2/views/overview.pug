@@ -65,7 +65,7 @@ block content
                   .topic__info--reports
                     span.topic__info--report-count
                       span.link-info.link-info--small #{topic.reportCount} report(s)
-                img.topic__img.margin-bottom-small(src=`img/${topic.imageCover}` alt=`${topic.title}`)
+                img.topic__img.margin-bottom-small(src=`${topic.imageCover}` alt=`${topic.title}`)
                 p.topic__title
                   a(href=`/topics/${topic.slug}`)= topic.title
                 if topic.descriptionHTML
