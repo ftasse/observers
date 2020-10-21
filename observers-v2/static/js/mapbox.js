@@ -2,7 +2,7 @@ import { mapboxToken } from './apiKeys';
 
 const getPopupHTML = data => {
   const imageTag = data.imageCover
-    ? `<img src="/img/${data.imageCover}" alt="" class="sm-card__img">`
+    ? `<img src="${data.imageCover}" alt="" class="sm-card__img">`
     : '';
   return `
     <div class="sm-card">
