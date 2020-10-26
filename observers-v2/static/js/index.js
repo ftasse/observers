@@ -10,7 +10,7 @@ import { createTopic } from './createTopic';
 import { createReport } from './createReport';
 import { showLoader } from './loader';
 import { searchTopics } from './search';
-import { reportCharts } from './echarts';
+import { charts, reportCharts } from './echarts';
 import { updateUser } from './updateUser';
 import { updatePassword } from './updatePassword';
 import './vote';
@@ -307,6 +307,7 @@ const switchListView = (mapView, listView, paginationDiv) => {
   mapView.classList.add('hide');
   listView.classList.remove('hide');
   paginationDiv.classList.remove('hide');
+  charts.forEach(c => c.resize());
 };
 
 const switchMapView = (mapView, listView, paginationDiv) => {

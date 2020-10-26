@@ -13344,20 +13344,28 @@ parcelRequire = (function(e, r, t, n) {
         var a = require('./apiKeys'),
           n = function(a) {
             var n = a.imageCover
-              ? '<img src="'.concat(
-                  a.imageCover,
-                  '" alt="" class="sm-card__img">'
-                )
-              : '';
-            return '\n    <div class="sm-card">\n        '
+                ? '<img src="'.concat(
+                    a.imageCover,
+                    '" alt="" class="sm-card__img">'
+                  )
+                : '',
+              e = a.imageCover
+                ? '<a href="/topics/'
+                    .concat(a.slug, '" class="link-info link-info--normal">')
+                    .concat(a.title, '</a>')
+                : '<p class="paragraph--small" style="font-family: \'Frank Ruhl Libre\', sans-serif">'.concat(
+                    a.title,
+                    '</p>'
+                  );
+            return '\n    <div class="sm-card" data-id=\''
+              .concat(a.id, "'>\n        ")
               .concat(
                 n,
-                '\n        <div class="sm-card__info">\n            <div class="sm-card__main">\n                <a href="/topics/'
+                '\n     \n        <div class="sm-card__info">\n            <div class="sm-card__main">\n                '
               )
-              .concat(a.slug, '" class="link-info link-info--normal">')
               .concat(
-                a.title,
-                '</a>\n            </div>\n            <div class="sm-card__sub">\n                <a href="/?category='
+                e,
+                '\n            </div>\n            <div class="sm-card__sub">\n                <a href="/?category='
               )
               .concat(
                 encodeURIComponent(a.category),
@@ -32648,7 +32656,7 @@ parcelRequire = (function(e, r, t, n) {
       function(require, module, exports) {
         'use strict';
         Object.defineProperty(exports, '__esModule', { value: !0 }),
-          (exports.reportCharts = void 0);
+          (exports.reportCharts = exports.charts = void 0);
         var t = {
             title: {
               text: 'Sentiment analysis',
@@ -32765,27 +32773,28 @@ parcelRequire = (function(e, r, t, n) {
               }
             ]
           },
-          a = [],
-          o = function(o, i) {
-            i.forEach(function(t) {
-              var o = echarts.init(t),
-                i = JSON.parse(t.dataset.reports);
-              (e.xAxis.data = i[0]),
-                (e.series[0].data = i[1]),
-                (e.title.subtext = 'There is a total of '.concat(
-                  e.series[0].data.length,
-                  ' reports on this topic:'
-                )),
-                o.setOption(e),
+          a = [];
+        exports.charts = a;
+        var o = function(o, r) {
+          r.forEach(function(t) {
+            var o = echarts.init(t),
+              r = JSON.parse(t.dataset.reports);
+            (e.xAxis.data = r[0]),
+              (e.series[0].data = r[1]),
+              (e.title.subtext = 'There is a total of '.concat(
+                e.series[0].data.length,
+                ' reports on this topic:'
+              )),
+              o.setOption(e),
+              a.push(o);
+          }),
+            o.forEach(function(e) {
+              var o = echarts.init(e);
+              (t.series[0].data = JSON.parse(e.dataset.sentiments)),
+                o.setOption(t),
                 a.push(o);
-            }),
-              o.forEach(function(e) {
-                var o = echarts.init(e);
-                (t.series[0].data = JSON.parse(e.dataset.sentiments)),
-                  o.setOption(t),
-                  a.push(o);
-              });
-          };
+            });
+        };
         (exports.reportCharts = o),
           window.addEventListener('resize', function(t) {
             a.forEach(function(t) {
@@ -33707,8 +33716,8 @@ parcelRequire = (function(e, r, t, n) {
           B = document.querySelector('#select-tags-create-topic-form'),
           I = document.querySelector('#select-mediaUrls-create-topic-form'),
           U = document.querySelectorAll('.add-report__btn'),
-          P = document.querySelector('.create-report-form'),
-          z = document.querySelector('.create-report-close'),
+          z = document.querySelector('.create-report-form'),
+          P = document.querySelector('.create-report-close'),
           C = document.querySelector('.form--create-report'),
           R = document.querySelector('#report-content'),
           V = document.querySelector('#select-mediaUrls-create-report-form'),
@@ -33870,7 +33879,10 @@ parcelRequire = (function(e, r, t, n) {
         var Se = function(e, r, t) {
             e.classList.add('hide'),
               r.classList.remove('hide'),
-              t.classList.remove('hide');
+              t.classList.remove('hide'),
+              a.charts.forEach(function(e) {
+                return e.resize();
+              });
           },
           be = function(e, r, t) {
             e.classList.remove('hide'),
@@ -33961,8 +33973,8 @@ parcelRequire = (function(e, r, t, n) {
                   e.querySelector('.add-report__btn').addEventListener(
                     'click',
                     function(r) {
-                      (P.style.transform = 'translateX(-50%) scaleX(1)'),
-                        (P.style.opacity = '1');
+                      (z.style.transform = 'translateX(-50%) scaleX(1)'),
+                        (z.style.opacity = '1');
                       var o = JSON.parse(e.dataset.report);
                       (s.value = o.id),
                         (s.report = o),
@@ -33973,14 +33985,14 @@ parcelRequire = (function(e, r, t, n) {
                 })
               : U.forEach(function(e) {
                   e.addEventListener('click', function() {
-                    (P.style.transform = 'translateX(-50%) scaleX(1)'),
-                      (P.style.opacity = '1');
+                    (z.style.transform = 'translateX(-50%) scaleX(1)'),
+                      (z.style.opacity = '1');
                   });
                 }),
               (0, i.createReport)(C, R, V, e, s, t),
-              z.addEventListener('click', function() {
-                (P.style.transform = 'translateX(-50%) scaleX(0)'),
-                  (P.style.opacity = '0');
+              P.addEventListener('click', function() {
+                (z.style.transform = 'translateX(-50%) scaleX(0)'),
+                  (z.style.opacity = '0');
               });
           }
         };

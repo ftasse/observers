@@ -147,7 +147,7 @@ const reportChartOption = {
   ]
 };
 
-const charts = [];
+export const charts = [];
 
 export const reportCharts = (
   sentimentChartContainers,

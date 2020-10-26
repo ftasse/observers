@@ -1,0 +1,5 @@
+- const reportsMoodShare = {'Negative': {name: 'Negative', value : 0, itemStyle: {color: '#000'}}, 'Neutral': {name: 'Neutral', value: 0, itemStyle: {color: '#ddd'}}, 'Positive': {name: 'Positive', value: 0, itemStyle: {color: '#ba9545'}}}
+- topic.reports.forEach(r => reportsMoodShare[r.mood].value += 1)
+- const reportsPublishedDates = topic.reports.map(r => [r.createdAt.getFullYear(), r.createdAt.getMonth() + 1, r.createdAt.getDate()].join('/'))
+- const reportsByDate = reportsPublishedDates.reduce((acc, curr) => {acc[curr] = acc[curr] ? acc[curr] += 1 : 1; return acc}, {})
+  
