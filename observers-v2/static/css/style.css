@@ -2423,6 +2423,10 @@ body {
 .report-freq {
   height: 30rem; }
 
+.report-freq--custom,
+.sentiment-pie--custom {
+  height: 38rem; }
+
 .reports__pagination {
   align-self: flex-end; }
 

@@ -84,7 +84,7 @@ exports.getTopic = catchAsync(async (req, res, next) => {
 
   const tags = await Tag.find();
 
-  res.status(200).render('topic', {
+  res.status(200).render('topicNew', {
     title: topic.title,
     topic,
     categories,

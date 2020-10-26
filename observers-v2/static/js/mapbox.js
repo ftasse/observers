@@ -4,14 +4,17 @@ const getPopupHTML = data => {
   const imageTag = data.imageCover
     ? `<img src="${data.imageCover}" alt="" class="sm-card__img">`
     : '';
+  const content = data.imageCover
+    ? `<a href="/topics/${data.slug}" class="link-info link-info--normal">${data.title}</a>`
+    : `<p class="paragraph--small" style="font-family: 'Frank Ruhl Libre', sans-serif">${data.title}</p>`;
+
   return `
-    <div class="sm-card">
+    <div class="sm-card" data-id='${data.id}'>
         ${imageTag}
+     
         <div class="sm-card__info">
             <div class="sm-card__main">
-                <a href="/topics/${
-                  data.slug
-                }" class="link-info link-info--normal">${data.title}</a>
+                ${content}
             </div>
             <div class="sm-card__sub">
                 <a href="/?category=${encodeURIComponent(

@@ -1,6 +1,6 @@
 # Observers platform
 
-Live version: https:/theobservers.org
+Live version: [here](https://observers-v2.herokuapp.com)
 
 Observers is an easy, accessible and smart platform that shows the world what people are feeling about an issue, where they are and what are their concerns.  Here, you can see reports about various topics, send your own report, or even create a topic you are passionate about!
 
