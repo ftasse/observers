@@ -1,13 +1,19 @@
 import { mapboxToken } from './apiKeys';
 
 const getPopupHTML = data => {
-  const imageTag = data.imageCover
-    ? `<img src="${data.imageCover}" alt="" class="sm-card__img">`
-    : '';
-  const content = data.imageCover
-    ? `<a href="/topics/${data.slug}" class="link-info link-info--normal">${data.title}</a>`
-    : `<p class="paragraph--small" style="font-family: 'Frank Ruhl Libre', sans-serif">${data.title}</p>`;
+  const imageCover =
+    data.imageCover.indexOf('nocover') !== -1
+      ? `/img/${data.imageCover}`
+      : data.imageCover;
 
+  let imageTag, content;
+  if (imageCover) {
+    imageTag = `<img src="${imageCover}" alt="" class="sm-card__img">`;
+    content = `<a href="/topics/${data.slug}" class="link-info link-info--normal">${data.title}</a>`;
+  } else {
+    imageTag = '';
+    content = `<p class="paragraph--small" style="font-family: 'Frank Ruhl Libre', sans-serif">${data.title}</p>`;
+  }
   return `
     <div class="sm-card" data-id='${data.id}'>
         ${imageTag}

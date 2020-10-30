@@ -13343,50 +13343,57 @@ parcelRequire = (function(e, r, t, n) {
           (exports.initializeCreateTopicMap = exports.displayMap = void 0);
         var a = require('./apiKeys'),
           n = function(a) {
-            var n = a.imageCover
-                ? '<img src="'.concat(
-                    a.imageCover,
+            var n,
+              e,
+              o =
+                -1 !== a.imageCover.indexOf('nocover')
+                  ? '/img/'.concat(a.imageCover)
+                  : a.imageCover;
+            return (
+              o
+                ? ((n = '<img src="'.concat(
+                    o,
                     '" alt="" class="sm-card__img">'
-                  )
-                : '',
-              e = a.imageCover
-                ? '<a href="/topics/'
+                  )),
+                  (e = '<a href="/topics/'
                     .concat(a.slug, '" class="link-info link-info--normal">')
-                    .concat(a.title, '</a>')
-                : '<p class="paragraph--small" style="font-family: \'Frank Ruhl Libre\', sans-serif">'.concat(
+                    .concat(a.title, '</a>')))
+                : ((n = ''),
+                  (e = '<p class="paragraph--small" style="font-family: \'Frank Ruhl Libre\', sans-serif">'.concat(
                     a.title,
                     '</p>'
-                  );
-            return '\n    <div class="sm-card" data-id=\''
-              .concat(a.id, "'>\n        ")
-              .concat(
-                n,
-                '\n     \n        <div class="sm-card__info">\n            <div class="sm-card__main">\n                '
-              )
-              .concat(
-                e,
-                '\n            </div>\n            <div class="sm-card__sub">\n                <a href="/?category='
-              )
-              .concat(
-                encodeURIComponent(a.category),
-                '#topics" class="sm-card__category sm-card__link link-info link-info--category link-info--category--small">\n                    '
-              )
-              .concat(
-                a.category,
-                '\n                 </a>\n                <a href="/?createdAt='
-              )
-              .concat(
-                new Date(a.createdAt).toISOString().split('T')[0],
-                '#topics" class="sm-card__link link-info link-info--small link-info--small--sm">\n                    Created on '
-              )
-              .concat(
-                new Date(a.createdAt).toLocaleString('en-us', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric'
-                }),
-                '\n                 </a>\n            </div>\n        </div>\n    </div>'
-              );
+                  ))),
+              '\n    <div class="sm-card" data-id=\''
+                .concat(a.id, "'>\n        ")
+                .concat(
+                  n,
+                  '\n     \n        <div class="sm-card__info">\n            <div class="sm-card__main">\n                '
+                )
+                .concat(
+                  e,
+                  '\n            </div>\n            <div class="sm-card__sub">\n                <a href="/?category='
+                )
+                .concat(
+                  encodeURIComponent(a.category),
+                  '#topics" class="sm-card__category sm-card__link link-info link-info--category link-info--category--small">\n                    '
+                )
+                .concat(
+                  a.category,
+                  '\n                 </a>\n                <a href="/?createdAt='
+                )
+                .concat(
+                  new Date(a.createdAt).toISOString().split('T')[0],
+                  '#topics" class="sm-card__link link-info link-info--small link-info--small--sm">\n                    Created on '
+                )
+                .concat(
+                  new Date(a.createdAt).toLocaleString('en-us', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                  }),
+                  '\n                 </a>\n            </div>\n        </div>\n    </div>'
+                )
+            );
           },
           e = function(e, o) {
             L.tileLayer(
