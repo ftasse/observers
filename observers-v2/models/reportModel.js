@@ -9,7 +9,7 @@ const reportSchema = new mongoose.Schema(
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'A report must have an author']
+      required: [false, 'A report can be anonymous']
     },
     topic: {
       type: mongoose.Schema.Types.ObjectId,
