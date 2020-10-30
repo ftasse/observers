@@ -21,7 +21,9 @@ block content
 
   include _computeCharts
 
-  section.topic-view__header(style=`background: linear-gradient(to bottom, rgba(240, 248, 255, .95), rgba(255, 255, 255, .9)), url('${topic.imageCover}')`)
+  - let imageCover
+  - if (topic.imageCover.indexOf('nocover') !== -1) { imageCover = `/img/${topic.imageCover}`;} else { imageCover = topic.imageCover}
+  section.topic-view__header(style=`background: linear-gradient(to bottom, rgba(240, 248, 255, .95), rgba(255, 255, 255, .9)), url('${imageCover}')`)
     a.topic-view__title.heading--primary--custom.heading--colored--secondary(href='#')= topic.title
     ul.path.margin-top-medium
       li.path__item
@@ -180,22 +182,22 @@ block content
                   | #{mediaUrl}
     .topic-view__stats
       if user
-        .full-width.margin-bottom-medium
-          #add-report__btn.full-width__btn.btn.btn-primary.add-report__btn
-            svg.btn__icon
-              use(xlink:href='/img/sprite.svg#icon-quill')
-            span Write new report
         .full-width.margin-bottom-large
           #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
             svg.btn__icon
               use(xlink:href='/img/sprite.svg#icon-quill')
             span Create a new topic
       else
+        .full-width.margin-bottom-medium
+          #add-report__btn.full-width__btn.btn.btn-primary.add-report__btn
+            svg.btn__icon
+              use(xlink:href='/img/sprite.svg#icon-quill')
+            span Write new report
         .full-width.margin-bottom-large
           a.full-width__btn.btn.btn-black(href='/login')
             svg.btn__icon
               use(xlink:href='img/sprite.svg#icon-quill')
-            span Log in and report
+            span Sign to create topics
       h3.section__title.margin-bottom-small What&apos;s been reported
       .report-block(style="max-height: 55rem" data-simplebar='' data-simplebar-auto-hide='false')
         if topic.reports.length > 0
