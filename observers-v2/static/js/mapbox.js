@@ -1,10 +1,13 @@
 import { mapboxToken } from './apiKeys';
 
 const getPopupHTML = data => {
-  const imageCover =
-    data.imageCover.indexOf('nocover') !== -1
-      ? `/img/${data.imageCover}`
-      : data.imageCover;
+  let imageCover;
+
+  if (data.imageCover && data.imageCover.indexOf('nocover') !== -1) {
+    imageCover = `/img/${data.imageCover}`;
+  } else {
+    imageCover = data.imageCover;
+  }
 
   let imageTag, content;
   if (imageCover) {
