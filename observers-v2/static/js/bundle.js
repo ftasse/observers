@@ -13343,34 +13343,32 @@ parcelRequire = (function(e, r, t, n) {
           (exports.initializeCreateTopicMap = exports.displayMap = void 0);
         var a = require('./apiKeys'),
           n = function(a) {
-            var n,
-              e,
-              o =
-                -1 !== a.imageCover.indexOf('nocover')
-                  ? '/img/'.concat(a.imageCover)
-                  : a.imageCover;
+            var n, e, o;
             return (
-              o
-                ? ((n = '<img src="'.concat(
-                    o,
+              (n =
+                a.imageCover && -1 !== a.imageCover.indexOf('nocover')
+                  ? '/img/'.concat(a.imageCover)
+                  : a.imageCover)
+                ? ((e = '<img src="'.concat(
+                    n,
                     '" alt="" class="sm-card__img">'
                   )),
-                  (e = '<a href="/topics/'
+                  (o = '<a href="/topics/'
                     .concat(a.slug, '" class="link-info link-info--normal">')
                     .concat(a.title, '</a>')))
-                : ((n = ''),
-                  (e = '<p class="paragraph--small" style="font-family: \'Frank Ruhl Libre\', sans-serif">'.concat(
+                : ((e = ''),
+                  (o = '<p class="paragraph--small" style="font-family: \'Frank Ruhl Libre\', sans-serif">'.concat(
                     a.title,
                     '</p>'
                   ))),
               '\n    <div class="sm-card" data-id=\''
                 .concat(a.id, "'>\n        ")
                 .concat(
-                  n,
+                  e,
                   '\n     \n        <div class="sm-card__info">\n            <div class="sm-card__main">\n                '
                 )
                 .concat(
-                  e,
+                  o,
                   '\n            </div>\n            <div class="sm-card__sub">\n                <a href="/?category='
                 )
                 .concat(
