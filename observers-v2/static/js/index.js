@@ -15,8 +15,9 @@ import { updateUser } from './updateUser';
 import { updatePassword } from './updatePassword';
 import './vote';
 import './deleteTopic';
-import './deleteReport';
+import { deleteReport } from './deleteReport';
 import { forgotPassword, resetPassword } from './resetPassword';
+import { showConfirm } from './alert';
 
 // DOM elements
 const listViewToggle = document.querySelector('#view-switch--list');
@@ -102,6 +103,8 @@ const userInfoFormEl = document.querySelector('.user-view__info--profile');
 const userPasswordFormEl = document.querySelector(
   '.user-view__info--password-form'
 );
+
+const deleteReportBtns = document.querySelectorAll('.delete-report__btn');
 
 const fileUploadInputs = document.querySelectorAll('.form__upload');
 
@@ -482,4 +485,14 @@ if (menuSidebarLinks) {
 
 if (reportChartContainers || sentimentChartContainers) {
   reportCharts(sentimentChartContainers, reportChartContainers);
+}
+
+if (deleteReportBtns) {
+  deleteReportBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      showConfirm('Are you sure you want to delete this report?', () => {
+        deleteReport(b.dataset.report);
+      });
+    });
+  });
 }

@@ -143,7 +143,12 @@
 
   display: flex;
   flex-direction: column;
+  position: relative;
+  border-bottom-left-radius: 2rem;
 
+  &--authored {
+    background-color: rgba($color-secondary, .1);
+  }
   &__info {
     margin-bottom: 1.5rem;
   }
@@ -162,6 +167,36 @@
   &__feel-box {
     align-self: flex-end;
   }
+  &__operation {
+    position: absolute;
+    left: -.5rem;
+    bottom: -.1rem;
+  }
+  &__btn {
+    outline: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-black;
+    color: $color-white;
+    transition: all .2s;
+    padding: 1rem;
+    border-radius: 50%;
+
+    &:hover,
+    &:active {
+      background-color: $color-primary;
+    }
+
+    &--icon {
+      fill: $color-white;
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
   &__feel {
     padding-bottom: 1rem;
     //border-bottom: 2px solid var(--color-secondary);

@@ -955,10 +955,14 @@ body {
 .report {
   padding: 2rem 1.5rem;
   margin: .2rem 0 .2rem 1.5rem;
-  width: 95%;
   box-shadow: rgba(0, 0, 0, 0.08) 0 0 3px 0;
+  width: 95%;
   display: flex;
-  flex-direction: column; }
+  flex-direction: column;
+  position: relative;
+  border-bottom-left-radius: 2rem; }
+  .report--authored {
+    background-color: rgba(186, 149, 69, 0.1); }
   .report__info {
     margin-bottom: 1.5rem; }
   .report__content {
@@ -972,6 +976,28 @@ body {
     font-size: 1.4rem; }
   .report__feel-box {
     align-self: flex-end; }
+  .report__operation {
+    position: absolute;
+    left: -.5rem;
+    bottom: -.1rem; }
+  .report__btn {
+    outline: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000000;
+    color: #ffffff;
+    transition: all .2s;
+    padding: 1rem;
+    border-radius: 50%; }
+    .report__btn:hover, .report__btn:active {
+      background-color: #D80C3D; }
+    .report__btn--icon {
+      fill: #ffffff;
+      width: 2rem;
+      height: 2rem; }
   .report__feel {
     padding-bottom: 1rem; }
   .report__feel-btn {

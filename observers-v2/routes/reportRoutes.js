@@ -17,7 +17,13 @@ router.get(
 router
   .route('/')
   .get(reportController.setTopicId, reportController.getAllReport)
-  .post(reportController.setTopicId, reportController.createReport);
+  .post(
+    authController.protect,
+    authController.restrictTo('user'),
+    reportController.setUserId,
+    reportController.setTopicId,
+    reportController.createReport
+  );
 
 router
   .route('/:id')

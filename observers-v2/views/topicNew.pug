@@ -23,6 +23,7 @@ block content
 
   - let imageCover
   - if (topic.imageCover.indexOf('nocover') !== -1) { imageCover = `/img/${topic.imageCover}`;} else { imageCover = topic.imageCover}
+  - const isAdmin = user && user.id.toString() === topic.author.id.toString()
   section.topic-view__header(style=`background: linear-gradient(to bottom, rgba(240, 248, 255, .95), rgba(255, 255, 255, .9)), url('${imageCover}')`)
     a.topic-view__title.heading--primary--custom.heading--colored--secondary(href='#')= topic.title
     ul.path.margin-top-medium
@@ -65,7 +66,7 @@ block content
                       span.info-line__item.info-line__item--2
                         a.link-info.link-info--small(href='#')= report.location.description
                       span.info-line__item
-                        if user && user._id.toString() === report.author.toString()
+                        if user && report.author && user._id.toString() === report.author.toString()
                           a.link-info.link-info--small(href='#') Written by you
                         else
                           a.link-info.link-info--small(href='#') Written by an anonymous
@@ -182,40 +183,41 @@ block content
                   | #{mediaUrl}
     .topic-view__stats
       if user
-        .full-width.margin-bottom-large
-          #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
-            svg.btn__icon
-              use(xlink:href='/img/sprite.svg#icon-quill')
-            span Create a new topic
-      else
         .full-width.margin-bottom-medium
           #add-report__btn.full-width__btn.btn.btn-primary.add-report__btn
             svg.btn__icon
               use(xlink:href='/img/sprite.svg#icon-quill')
             span Write new report
         .full-width.margin-bottom-large
+          #add-topic__btn.full-width__btn.btn.btn-black.add-topic__btn
+            svg.btn__icon
+              use(xlink:href='/img/sprite.svg#icon-quill')
+            span Create a new topic
+      else
+        .full-width.margin-bottom-large
           a.full-width__btn.btn.btn-black(href='/login')
             svg.btn__icon
               use(xlink:href='img/sprite.svg#icon-quill')
-            span Sign in to create topics
+            span Log in and report
       h3.section__title.margin-bottom-small What&apos;s been reported
       .report-block(style="max-height: 55rem" data-simplebar='' data-simplebar-auto-hide='false')
         if topic.reports.length > 0
           each report in topic.reports
             - let userVotes, likes = '', dislikes = ''
+            - let isAuthor = user && report.author && user.id.toString() === report.author.toString()
             -
               if (user)
                 userVotes = report.votes.filter(v => v.author.toString() === user._id.toString())
               if (userVotes && userVotes.length > 0 && (userVotes[0].value === 1)) likes = 'report__feel-btn--active'
               if (userVotes && userVotes.length > 0 && (userVotes[0].value === -1)) dislikes = 'report__feel-btn--active'
-            .report
+            .report(class=`${isAuthor && 'report--authored'}`)
               .report__info.info-line
                 span.info-line__item.info-line__item--1
                   a.link-info.link-info--small(href='#')= report.createdAt.toLocaleString('en-us', {month: 'long', day: 'numeric', year: 'numeric'})
                 span.info-line__item.info-line__item--2
                   a.link-info.link-info--small(href='#')= report.location.description
                 span.info-line__item
-                  if user && user._id.toString() === report.author.toString()
+                  if (isAuthor)
                     a.link-info.link-info--small(href='#') Written by you
                   else
                     a.link-info.link-info--small(href='#') Written by an anonymous
@@ -231,6 +233,11 @@ block content
                           use(xlink:href='/img/sprite.svg#icon-link')
                         | #{reportMediaUrl}
               .report__feel-box
+                if (isAdmin || isAuthor )
+                  .report__operation
+                    button.report__btn.delete-report__btn(data-report=report.id)
+                      svg.report__btn--icon
+                        use(xlink:href='/img/sprite.svg#icon-trashcan')
                 .report__feel
                   span(class=`report__feel-btn report__feel-btn--like ${likes}` data-report=`${report._id}`)
                     svg.report__icon

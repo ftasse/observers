@@ -43,15 +43,16 @@ exports.getOne = (Model, ...populateFields) =>
 
 exports.deleteOne = Model =>
   catchAsync(async (req, res, next) => {
-    let doc;
-    if (req.user.role === 'admin') {
-      doc = await Model.findByIdAndDelete(req.params.id);
-    } else {
-      doc = await Model.findOneAndDelete({
-        _id: req.params.id,
-        author: req.user._id
-      });
-    }
+    // if (req.user.role === 'admin') {
+    //   doc = await Model.findByIdAndDelete(req.params.id);
+    // } else {
+    //   doc = await Model.findOneAndDelete({
+    //     _id: req.params.id,
+    //     author: req.user._id
+    //   });
+    // }
+
+    const doc = await Model.findByIdAndDelete(req.params.id);
 
     if (!doc) {
       return next(new AppError('Document not found', 404));
