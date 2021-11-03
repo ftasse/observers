@@ -50,7 +50,7 @@
     "slugify": "^1.4.0",
     "stopword": "^1.0.1",
     "supercluster": "^7.1.0",
-    "validator": "^13.0.0",
+    "validator": "^13.7.0",
     "vote": "0.0.1",
     "xss-clean": "^0.1.1"
   },
