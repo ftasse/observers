@@ -237,13 +237,15 @@ exports.verifyGoogleStrategy = async function(
         password,
         passwordConfirm: password
       });
-      const url = `${req.protocol}://${req.get('host')}/me`;
 
+      let url = `${process.env.SITE_URL || 'theobservers.org'}/me`;
+      if (!((typeof req === 'undefined' || req === null))) { url = `${req.protocol}://${req.get('host')}/me`; }
       try {
         await new Email(user, url).sendWelcomeAndUpdatePassword(password);
       } catch (err) {
         console.log('mail not sent');
       }
+
     }
     done(null, user);
   } catch (err) {
