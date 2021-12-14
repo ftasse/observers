@@ -8,7 +8,8 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `https://${process.env.HOST}/api/v1/users/auth/google/callback`
+      callbackURL: `/api/v1/users/auth/google/callback`,
+      proxy: true
     },
     authController.verifyGoogleStrategy
   )
