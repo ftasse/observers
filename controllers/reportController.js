@@ -108,7 +108,7 @@ exports.createReport = catchAsync(async (req, res, next) => {
   msg_content_tokens = req.body.content.split(":");
   if (!req.body.location && msg_content_tokens.length > 1) {
     city = msg_content_tokens[0].trim();
-    msg = msg_content_tokens.splice(1).join(":").trim(); 
+    msg = req.body.content; // msg_content_tokens.splice(1).join(":").trim(); 
     const location = await getCoordsFromCityName(city);
     if (!location) msg = req.body.content;
     else {
