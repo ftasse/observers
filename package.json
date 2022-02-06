@@ -50,6 +50,7 @@
     "slugify": "^1.4.0",
     "stopword": "^1.0.1",
     "supercluster": "^7.1.0",
+    "twilio": "^3.73.1",
     "validator": "^13.0.0",
     "vote": "0.0.1",
     "xss-clean": "^0.1.1"
@@ -65,6 +66,7 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
+    "nodemon": "^2.0.15",
     "parcel-bundler": "^1.12.4",
     "prettier": "^1.17.0"
   },

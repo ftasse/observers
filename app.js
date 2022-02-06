@@ -48,6 +48,7 @@ app.use(apiEndpoint, apiLimiter);
 
 // BodyParser: Parses request's data into req.body
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // CookieParser: Parses cookies into req.cookies
 app.use(cookieParser());

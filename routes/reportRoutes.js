@@ -26,6 +26,15 @@ router
   );
 
 router
+  .route('/whatsapp')
+  .post(
+    reportController.setTopicId,
+    reportController.setReportFromWhatsApp,
+    reportController.createReport,
+    reportController.replyToWhatsAppReport
+  );
+
+router
   .route('/:id')
   .get(reportController.getReport)
   .patch(

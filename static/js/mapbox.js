@@ -1,4 +1,5 @@
-import { mapboxToken } from './apiKeys';
+//import { mapboxToken } from './apiKeys';
+const mapboxToken = process.env["MAPBOX_TOKEN"];
 
 const getPopupHTML = data => {
   let imageCover;

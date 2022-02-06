@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { showAlert } from './alert';
-import { dataQuestToken } from './apiKeys';
+//import { dataQuestToken } from './apiKeys';
+const dataQuestToken = process.env["MAPQUEST_TOKEN"];
 
 export const geoLocate = async () => {
   const getPosition = function(options) {

@@ -71,12 +71,14 @@ exports.createOne = Model =>
     }
     const doc = await Model.create(req.body);
 
-    res.status(201).json({
+    if (!req.body.SmsMessageSid) {
+     res.status(201).json({
       status: 'success',
       data: {
         data: doc
       }
     });
+    } else next();
   });
 
 exports.updateOne = Model =>
