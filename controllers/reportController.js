@@ -62,10 +62,9 @@ exports.setReportFromWhatsApp = (req, res, next) => {
   msg_content_tokens = req.body.Body.split(":");
   metadata = msg_content_tokens[0].split('/');
   if (metadata.length > 1) {
-   topicCode = metadata[0];
-   if (topicCode.toLowerCase() == "droits-humains") req.body.topic = "5f986356291678001796b16b";
-   else if (topicCode.toLowerCase() == "human-rights") req.body.topic = "5f986356291678001796b16b";
-   else req.body.topic = topicCode;
+   topicCode = metadata[0].toLowerCase().replace("-","").trim();
+   if (topicCode == "droitshumains" || topicCode == "humanrights") req.body.topic = "5f986356291678001796b16b";
+   req.body.topicCode = topicCode
    metadata = metadata.splice(1);
   }
   if (!req.body.topic || metadata.length == 0) {
