@@ -11,7 +11,7 @@ const getCoordsFromCityName = async (city, country) => {
   try {
     const dataQuestToken = process.env["MAPQUEST_TOKEN"];
     var url = `https://www.mapquestapi.com/geocoding/v1/address?key=${dataQuestToken}&inFormat=kvp&outFormat=json&city=${encodeURIComponent(city)}&maxResults=1`;
-    if country: url = url + `&country={encodeURIComponent(country)}`;
+    if (country) url = url + `&country={encodeURIComponent(country)}`;
     const res = await axios({
       method: 'GET',
       url: url
