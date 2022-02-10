@@ -7,12 +7,14 @@ const AppError = require('../utils/appError');
 
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
-const getCoordsFromCityName = async city => {
+const getCoordsFromCityName = async (city, country) => {
   try {
     const dataQuestToken = process.env["MAPQUEST_TOKEN"];
+    var url = `https://www.mapquestapi.com/geocoding/v1/address?key=${dataQuestToken}&inFormat=kvp&outFormat=json&city=${encodeURIComponent(city)}&maxResults=1`;
+    if country: url = url + `&country={encodeURIComponent(country)}`;
     const res = await axios({
       method: 'GET',
-      url: `https://www.mapquestapi.com/geocoding/v1/address?key=${dataQuestToken}&inFormat=kvp&outFormat=json&location=${encodeURIComponent(city)}&maxResults=1`
+      url: url
     });
     if (res.status === 200) {
       const name = [
@@ -63,7 +65,10 @@ exports.setReportFromWhatsApp = (req, res, next) => {
   metadata = msg_content_tokens[0].split('/');
   if (metadata.length > 1) {
    topicCode = metadata[0].toLowerCase().replace("-","").trim();
-   if (topicCode == "droitshumains" || topicCode == "humanrights") req.body.topic = "5f986356291678001796b16b";
+   if (topicCode == "droitshumains" || topicCode == "humanrights") {
+     req.body.topic = "5f986356291678001796b16b";
+     req.body.country = "Cameroon";
+   }
    req.body.topicCode = topicCode
    metadata = metadata.splice(1);
   }
@@ -108,7 +113,7 @@ exports.createReport = catchAsync(async (req, res, next) => {
   if (!req.body.location && msg_content_tokens.length > 1) {
     city = msg_content_tokens[0].trim();
     msg = req.body.content; // msg_content_tokens.splice(1).join(":").trim(); 
-    const location = await getCoordsFromCityName(city);
+    const location = await getCoordsFromCityName(city, req.body.country);
     if (!location) msg = req.body.content;
     else {
       location.description = location.address;
