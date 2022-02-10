@@ -11,7 +11,7 @@ const getCoordsFromCityName = async (city, country) => {
   try {
     const dataQuestToken = process.env["MAPQUEST_TOKEN"];
     var url = `https://www.mapquestapi.com/geocoding/v1/address?key=${dataQuestToken}&inFormat=kvp&outFormat=json&city=${encodeURIComponent(city)}&maxResults=1`;
-    if (country) url = url + `&country={encodeURIComponent(country)}`;
+    if (country) url = url + `&country=${encodeURIComponent(country)}`;
     const res = await axios({
       method: 'GET',
       url: url
@@ -22,6 +22,10 @@ const getCoordsFromCityName = async (city, country) => {
         res.data.results[0].locations[0].adminArea3,
         res.data.results[0].locations[0].adminArea5
       ];
+      if (country && name[0] != country) {
+        console.log(`Incorrect location "${name}" for provided (${city}, ${country})`);
+        return null;
+      }
       const locationLatLng = res.data.results[0].locations[0].latLng;
       return {
         coordinates: [locationLatLng.lng, locationLatLng.lat],
@@ -67,7 +71,7 @@ exports.setReportFromWhatsApp = (req, res, next) => {
    topicCode = metadata[0].toLowerCase().replace("-","").trim();
    if (topicCode == "droitshumains" || topicCode == "humanrights") {
      req.body.topic = "5f986356291678001796b16b";
-     req.body.country = "Cameroon";
+     req.body.country = "CM";
    }
    req.body.topicCode = topicCode
    metadata = metadata.splice(1);
@@ -114,12 +118,12 @@ exports.createReport = catchAsync(async (req, res, next) => {
     city = msg_content_tokens[0].trim();
     msg = req.body.content; // msg_content_tokens.splice(1).join(":").trim(); 
     const location = await getCoordsFromCityName(city, req.body.country);
-    if (!location) msg = req.body.content;
+    if (!location) msg = req.body.content.trim();
     else {
       location.description = location.address;
       location.type = 'Point';
       delete location.address;
-      req.body.content = msg;
+      req.body.content = msg.trim();
       req.body.location = location;
     }
   }
